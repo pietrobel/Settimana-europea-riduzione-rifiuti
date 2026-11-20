@@ -1,0 +1,6 @@
+{
+  "name": "SERR 2026 - Risorsa Didattica",
+  "description": "Applicazione didattica interattiva per la Settimana Europea per la Riduzione dei Rifiuti (SERR) 2026 per scuola primaria e secondaria di primo grado.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
