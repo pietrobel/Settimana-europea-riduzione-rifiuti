@@ -23,6 +23,7 @@ import {
   renderWorksheetsHub,
   type CommonHubContext
 } from "./serr/render_common_and_hub.ts";
+import { renderPortalView } from "./serr/render_portal.ts";
 
 declare global {
   interface Window {
@@ -193,6 +194,10 @@ async function bootSerrLabs(): Promise<void> {
   storageBackendLabel = loaded.backend;
 
   window.openSerrModule = (tab: string, subTab?: string) => {
+    if (tab === "portale") {
+      window.__SERR_BRIDGE?.setActiveSection?.("portale");
+      return;
+    }
     if (tab === "mezzovalle" && subTab) {
       setMezzovalleSubTab(subTab as "home");
     } else if (tab === "villacolle" && subTab) {
@@ -204,6 +209,15 @@ async function bootSerrLabs(): Promise<void> {
   };
 
   renderRoot();
+
+  const portaleMount = document.getElementById("portale-root");
+  if (portaleMount) {
+    renderPortalView(portaleMount, {
+      esc: getEsc(),
+      onJumpSection: (sec: string) => window.__SERR_BRIDGE?.setActiveSection?.(sec),
+      onOpenLab: (tab: string) => window.openSerrModule?.(tab)
+    });
+  }
 }
 
 if (document.readyState === "loading") {

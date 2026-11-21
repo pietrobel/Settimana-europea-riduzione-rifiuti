@@ -97,6 +97,7 @@ export function renderLabOverview(container: HTMLElement, ctx: CommonHubContext)
         <button type="button" class="serr-action-tile" data-hub-nav="diario"><strong>Il Mio Diario (${ctx.state.diaryEntries.length})</strong><span>Salvataggio offline persistente (${e(ctx.storageBackend)})</span></button>
         <button type="button" class="serr-action-tile" data-hub-nav="missioni"><strong>Missioni Finali &amp; Attestati</strong><span>3 missioni con attestato personalizzato scaricabile</span></button>
         <button type="button" class="serr-action-tile" data-hub-nav="monitoraggio"><strong>Monitoraggio &amp; Fonti (${totalDone} att.)</strong><span>Risultati senza classifiche + trasparenza scientifica</span></button>
+        <button type="button" class="serr-action-tile" data-open-portale="1"><strong>Portale, App &amp; Film Consigliati</strong><span>Link esterni, calcolatori, video e film gratuiti</span></button>
       </div>
     </div>
   `;
@@ -110,6 +111,9 @@ export function renderLabOverview(container: HTMLElement, ctx: CommonHubContext)
   container.querySelectorAll<HTMLButtonElement>("[data-hub-nav]").forEach((b) =>
     b.addEventListener("click", () => ctx.navigateTo(b.dataset.hubNav || "overview"))
   );
+  container.querySelector<HTMLButtonElement>("[data-open-portale]")?.addEventListener("click", () => {
+    window.openSerrModule?.("portale");
+  });
 }
 
 /* ================= ATTIVITA 6: SUPERMERCATO DELLE SCELTE ================= */

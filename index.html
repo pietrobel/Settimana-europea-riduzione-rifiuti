@@ -91,8 +91,8 @@
     }
 
     .app-shell {
-      width: min(100vw, calc(100dvh * 16 / 9));
-      height: min(100dvh, calc(100vw * 9 / 16));
+      width: 100%;
+      height: 100dvh;
       max-width: 100vw;
       max-height: 100dvh;
       display: flex;
@@ -100,7 +100,6 @@
       background: var(--bg);
       overflow: hidden;
       position: relative;
-      box-shadow: 0 14px 40px rgba(15, 23, 42, 0.18);
     }
     html.app-fullscreen .app-shell {
       width: 100vw;
@@ -175,23 +174,26 @@
     .primary-nav {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
       overflow-x: auto;
-      scrollbar-width: none;
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 transparent;
       flex: 1 1 auto;
       justify-content: center;
+      padding-bottom: 2px;
     }
-    .primary-nav::-webkit-scrollbar { display: none; }
+    .primary-nav::-webkit-scrollbar { height: 4px; }
+    .primary-nav::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
     .nav-btn {
       background: transparent;
       border: 0;
       border-bottom: 2.5px solid transparent;
       color: var(--text-muted);
       font-family: inherit;
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      padding: 6px 5px;
-      min-height: 36px;
+      padding: 5px 4px;
+      min-height: 34px;
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
@@ -338,22 +340,30 @@
       flex: 1 1 0;
       min-height: 0;
       overflow-y: auto;
-      scrollbar-width: none;
+      scrollbar-width: thin;
+      scrollbar-color: #94a3b8 transparent;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
+      padding-right: 4px;
     }
-    .stage-body::-webkit-scrollbar { display: none; }
+    .stage-body::-webkit-scrollbar { width: 7px; }
+    .stage-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    .stage-body::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     .subpanel-fit {
       flex: 1 1 0;
       min-height: 0;
       overflow-y: auto;
-      scrollbar-width: none;
+      scrollbar-width: thin;
+      scrollbar-color: #94a3b8 transparent;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      padding-right: 4px;
     }
-    .subpanel-fit::-webkit-scrollbar { display: none; }
+    .subpanel-fit::-webkit-scrollbar { width: 7px; }
+    .subpanel-fit::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    .subpanel-fit::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     .pager-bar {
       display: flex;
       align-items: center;
@@ -1671,7 +1681,8 @@
     body.print-preview-mode .subpanel-fit { height: auto; overflow: visible; display: block; }
 
     /* ===== MODULO DIDATTICO INTERATTIVO SERR (MEZZOVALLE & VILLACOLLE) ===== */
-    #sec-serr-lab .stage-body { overflow-y: auto; padding-right: 4px; }
+    #sec-serr-lab .stage-body,
+    #sec-portale .stage-body { overflow-y: auto; padding-right: 4px; }
     .serr-top-tabs { display: flex; gap: 6px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
     .serr-tab-btn { border: 1px solid var(--border); background: #fff; color: var(--text); border-radius: 999px; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.15s ease; }
     .serr-tab-btn:hover { background: var(--surface-soft, #f3f7f4); }
@@ -1795,6 +1806,7 @@
           <button type="button" class="nav-btn" data-nav="territorio">Territorio</button>
           <button type="button" class="nav-btn" data-nav="galleria">Galleria</button>
           <button type="button" class="nav-btn" data-nav="evento">Evento</button>
+          <button type="button" class="nav-btn" data-nav="portale">Portale &amp; Film</button>
         </nav>
         <div class="topbar-cta">
           <button type="button" class="icon-btn teacher-link" id="btn-open-progettazioni" aria-pressed="false" title="Area Docenti: tutte le progettazioni, 80 attività, 17 format, 20 compiti, 6 UdA e rubriche">
@@ -1831,30 +1843,32 @@
 
       <!-- 0. PAGINA INIZIALE: COS'E LA SERR 2026 -->
       <section id="sec-home" class="section-panel active" aria-labelledby="h-home">
-        <div class="stage-body">
-          <div class="hero-box" style="margin-bottom:0;padding:14px 18px;gap:16px;">
+        <div class="stage-body" style="gap:10px;">
+          <div class="hero-box" style="margin-bottom:0;padding:12px 16px;gap:14px;">
             <div>
-              <div class="meta-line">
+              <div class="meta-line" style="margin-bottom:4px;font-size:0.82rem;">
                 <span>Settimana Europea per la Riduzione dei Rifiuti (EWWR / SERR)</span>
                 <span aria-hidden="true">·</span>
                 <span>21–29 novembre 2026</span>
                 <span aria-hidden="true">·</span>
                 <span id="hero-level-text">Primaria e Secondaria I grado · Tutti i Cinque Borghi</span>
               </div>
-              <h1 id="h-home" style="margin-bottom:6px;">Cos'è la SERR 2026?</h1>
-              <p style="margin-bottom:8px;font-size:0.94rem;">
+              <h1 id="h-home" style="margin-bottom:5px;font-size:clamp(1.35rem, 2.2vw, 1.9rem);">Cos'è la SERR 2026?</h1>
+              <p style="margin-bottom:6px;font-size:0.9rem;line-height:1.4;">
                 La <strong>SERR (Settimana Europea per la Riduzione dei Rifiuti)</strong> è la campagna europea che invita scuole, famiglie e Comuni a intervenire <strong>prima che un rifiuto nasca</strong>: progettare oggetti riparabili, comprare in modo consapevole e azzerare gli sprechi quotidiani.
               </p>
-              <p style="margin-bottom:10px;font-size:0.9rem;color:var(--text-muted);">
+              <p style="margin-bottom:8px;font-size:0.86rem;line-height:1.38;color:var(--text-muted);">
                 In questa piattaforma i cinque borghi collaborano su cinque temi complementari: <strong>Mezzovalle</strong> (<em>Acqua &amp; Impronta Nascosta</em>), <strong>Villacolle</strong> (<em>Filiera Corta &amp; Km Zero</em>), <strong>Cefalana</strong> (<em>Riparazione &amp; Ecodesign</em>), <strong>Dragano</strong> (<em>Bosco Pulito &amp; Compost</em>) e <strong>Campolieto</strong> (<em>RAEE, Energia &amp; Coding</em>).
               </p>
-              <div style="display:flex;flex-wrap:wrap;gap:10px;" class="no-print">
-                <button type="button" class="btn btn-primary" data-jump="presentazioni">1. Inizia dalle Lezioni &amp; Slide</button>
-                <button type="button" class="btn btn-secondary" data-jump="tema">2. Mappa dei Cinque Borghi</button>
-                <button type="button" class="btn" data-jump="giochi">3. Giochi &amp; Coding</button>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;" class="no-print">
+                <button type="button" class="btn btn-primary btn-sm" data-jump="presentazioni">1. Inizia dalle Lezioni &amp; Slide</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-jump="tema">2. Mappa dei Cinque Borghi</button>
+                <button type="button" class="btn btn-sm" data-jump="giochi">3. Giochi &amp; Coding</button>
+                <button type="button" class="btn btn-primary btn-sm" data-jump="serr-lab">4. Laboratori Mezzovalle &amp; Villacolle →</button>
+                <button type="button" class="btn btn-sm" data-jump="portale">5. Portale, App &amp; Film</button>
               </div>
-              <div style="margin-top:6px;font-size:0.81rem;color:var(--text-muted);">
-                <strong>Percorso studenti:</strong> esplora le slide di ogni argomento, supera i mini-quiz intermedi e sblocca il Quiz Finale. Le progettazioni per i docenti sono raggiungibili dal pulsante in alto.
+              <div style="margin-top:5px;font-size:0.78rem;color:var(--text-muted);">
+                <strong>Percorso studenti:</strong> esplora le slide di ogni argomento, supera i mini-quiz intermedi e sblocca il Quiz Finale. Le progettazioni per i docenti sono in alto.
               </div>
             </div>
             <div class="mascot-frame" style="height:100%;justify-content:space-between;">
@@ -1863,49 +1877,46 @@
                   src="/src/assets/images/mascotte_hero_rico_1795078010281.jpg"
                   alt="Rico il Riccio Circolare con zainetto di tela rammendato, borraccia in acciaio, matita di legno, un germoglio e una macchinina giocattolo riparata"
                   class="mascot-img"
-                  style="width:100%;height:100%;max-height:230px;object-fit:contain;object-position:center;"
+                  style="width:100%;height:100%;max-height:205px;object-fit:contain;object-position:center;"
                   referrerPolicy="no-referrer"
                   onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
                 />
                 <div class="mascot-fallback">Rico il Riccio Circolare — Mascotte SERR 2026</div>
               </div>
-              <div class="mascot-caption" style="padding:7px 12px;font-size:0.83rem;">
+              <div class="mascot-caption" style="padding:6px 10px;font-size:0.8rem;">
                 <strong>Ciao, sono Rico!</strong> Slogan 2026: <em>“Progetta meglio, acquista consapevole, riduci gli sprechi”</em>.
               </div>
             </div>
           </div>
 
-          <div class="grid-2" style="margin-bottom:0;flex:1 1 0;min-height:0;align-items:stretch;">
-            <article class="card" style="display:flex;flex-direction:column;justify-content:space-between;">
+          <div class="grid-2" style="margin-bottom:0;flex:1 1 0;min-height:210px;align-items:stretch;gap:10px;">
+            <article class="card" style="display:flex;flex-direction:column;justify-content:space-between;padding:11px 14px;">
               <div>
-                <div class="meta-line" style="margin-bottom:6px;">I 3 Pilastri della Campagna 2026</div>
-                <h3 style="margin-bottom:8px;">Come partecipare durante la settimana 21–29 novembre</h3>
-                <div style="display:grid;gap:8px;">
-                  <div class="card-soft" style="padding:8px 12px;">
+                <div class="meta-line" style="margin-bottom:4px;font-size:0.8rem;">I 3 Pilastri della Campagna 2026</div>
+                <h3 style="margin-bottom:6px;font-size:1.05rem;">Come partecipare (21–29 novembre)</h3>
+                <div style="display:grid;gap:6px;">
+                  <div class="card-soft" style="padding:6px 10px;font-size:0.85rem;">
                     <strong>01 · Progetta meglio:</strong> oggetti durevoli e riparabili con viti (<em>Cefalana</em>), prevenzione RAEE (<em>Campolieto</em>) e imballaggi essenziali.
                   </div>
-                  <div class="card-soft" style="padding:8px 12px;">
+                  <div class="card-soft" style="padding:6px 10px;font-size:0.85rem;">
                     <strong>02 · Acquista consapevole:</strong> cibo locale di stagione sfuso (<em>Villacolle</em>), lettura etichette e valutazione impronta idrica (<em>Mezzovalle</em>).
                   </div>
-                  <div class="card-soft" style="padding:8px 12px;">
+                  <div class="card-soft" style="padding:6px 10px;font-size:0.85rem;">
                     <strong>03 · Riduci gli sprechi:</strong> recupero avanzi, compostaggio scolastico e cura dei boschi (<em>Dragano</em>) senza plastica monouso.
                   </div>
                 </div>
               </div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center;">
-                <button type="button" class="btn btn-primary" style="min-height:34px;padding:6px 12px;font-size:0.84rem;" data-jump="serr-lab">Apri Laboratori SERR: Mezzovalle &amp; Villacolle →</button>
-              </div>
-              <p class="source-note" style="margin-bottom:0;margin-top:6px;">Privacy &amp; dati: valori WFN/FAO indicativi; nessun dato identificativo richiesto, Diario e Decalogo salvati localmente offline nel browser (IndexedDB) ed esportabili in JSON.</p>
+              <p class="source-note" style="margin-bottom:0;margin-top:6px;font-size:0.75rem;">Privacy &amp; dati: valori WFN/FAO indicativi; nessun dato identificativo richiesto, Diario e Decalogo salvati localmente offline (IndexedDB) ed esportabili in JSON.</p>
             </article>
 
-            <article class="card" style="display:flex;flex-direction:column;justify-content:space-between;min-height:0;">
+            <article class="card" style="display:flex;flex-direction:column;justify-content:space-between;min-height:210px;padding:11px 14px;">
               <div>
-                <div class="meta-line" style="margin-bottom:4px;">Direttiva Quadro UE 2008/98/CE</div>
-                <h3 style="margin-bottom:4px;">La Gerarchia Europea delle 5R</h3>
-                <p style="font-size:0.86rem;margin-bottom:6px;">Prima di differenziare nel bidone, la scelta migliore è sempre in cima alla piramide rovesciata: <strong>prevenire</strong> e <strong>riparare</strong>.</p>
+                <div class="meta-line" style="margin-bottom:3px;font-size:0.8rem;">Direttiva Quadro UE 2008/98/CE</div>
+                <h3 style="margin-bottom:3px;font-size:1.05rem;">La Gerarchia Europea delle 5R</h3>
+                <p style="font-size:0.83rem;margin-bottom:4px;">Prima di differenziare nel bidone, la scelta migliore è sempre in cima alla piramide rovesciata: <strong>prevenire</strong> e <strong>riparare</strong>.</p>
               </div>
-              <div style="flex:1 1 0;min-height:130px;display:flex;align-items:center;justify-content:center;width:100%;">
-                <svg viewBox="0 0 360 190" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;max-height:215px;max-width:460px;display:block;" role="img" aria-labelledby="svg-gerarchia-title">
+              <div style="flex:1 1 0;min-height:145px;display:flex;align-items:center;justify-content:center;width:100%;">
+                <svg viewBox="0 0 360 190" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;max-height:195px;max-width:460px;display:block;" role="img" aria-labelledby="svg-gerarchia-title">
                   <title id="svg-gerarchia-title">Piramide rovesciata della gerarchia europea dei rifiuti: dalla prevenzione allo smaltimento</title>
                   <rect x="2" y="2" width="356" height="186" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
                   <polygon points="28,12 332,12 304,42 56,42" fill="#14532d" />
@@ -3030,6 +3041,24 @@
       <div class="stage-body">
         <div id="serr-lab-root">
           <p style="font-size:0.88rem;color:var(--text-muted);">Caricamento laboratori SERR Mezzovalle e Villacolle…</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-portale" class="section-panel" aria-labelledby="h-portale">
+      <div class="stage-head">
+        <div>
+          <div class="meta-line" style="margin-bottom:2px;">Portale Esterno · Siti, App, Video &amp; Film Consigliati</div>
+          <h2 id="h-portale">Portale Risorse Esterne, App &amp; Film</h2>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-sm" data-jump="serr-lab">Torna ai Laboratori SERR</button>
+          <button type="button" class="btn btn-sm" data-jump="home">Pagina iniziale</button>
+        </div>
+      </div>
+      <div class="stage-body">
+        <div id="portale-root">
+          <p style="font-size:0.88rem;color:var(--text-muted);">Caricamento portale risorse e film…</p>
         </div>
       </div>
     </section>
