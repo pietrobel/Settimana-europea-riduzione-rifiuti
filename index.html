@@ -491,7 +491,9 @@
       display: block;
       width: 100%;
       height: auto;
-      object-fit: cover;
+      max-height: 280px;
+      object-fit: contain;
+      object-position: center;
       background: #fdfcf8;
       transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -1667,6 +1669,96 @@
     body.print-preview-mode .section-panel.active,
     body.print-preview-mode .stage-body,
     body.print-preview-mode .subpanel-fit { height: auto; overflow: visible; display: block; }
+
+    /* ===== MODULO DIDATTICO INTERATTIVO SERR (MEZZOVALLE & VILLACOLLE) ===== */
+    #sec-serr-lab .stage-body { overflow-y: auto; padding-right: 4px; }
+    .serr-top-tabs { display: flex; gap: 6px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+    .serr-tab-btn { border: 1px solid var(--border); background: #fff; color: var(--text); border-radius: 999px; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.15s ease; }
+    .serr-tab-btn:hover { background: var(--surface-soft, #f3f7f4); }
+    .serr-tab-btn.active { background: var(--accent, #1b6b3e); color: #fff; border-color: var(--accent, #1b6b3e); }
+    .serr-hero-box { background: linear-gradient(135deg, #eef7f1 0%, #e4f2f8 100%); border: 1px solid #c5dfd0; border-radius: 14px; padding: 14px 16px; }
+    .serr-kicker { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; color: #19643d; text-transform: uppercase; }
+    .serr-path-banner { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; border-radius: 14px; padding: 12px 16px; margin-bottom: 10px; }
+    .serr-path-mezz { background: linear-gradient(135deg, #e7f4fb 0%, #f1f8fc 100%); border: 1px solid #b5d8ec; }
+    .serr-path-villa { background: linear-gradient(135deg, #eaf6ee 0%, #f5fbf6 100%); border: 1px solid #b8dec3; }
+    .serr-path-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .serr-subnav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .serr-pill { border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 5px 10px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+    .serr-pill.active { background: #1e4d38; color: #fff; border-color: #1e4d38; }
+    .serr-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .serr-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .serr-grid-study { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 12px; }
+    @media (max-width: 860px) { .serr-grid-2, .serr-grid-3, .serr-grid-study { grid-template-columns: 1fr; } }
+    .serr-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+    .serr-border-mezz { border-left: 4px solid #2b7bb9; }
+    .serr-border-villa { border-left: 4px solid #257a49; }
+    .serr-list { margin: 6px 0 0 18px; padding: 0; font-size: 0.84rem; line-height: 1.45; }
+    .serr-list li { margin-bottom: 4px; }
+    .serr-progress-note { margin-top: 10px; padding: 8px 10px; background: #f4f8f5; border-radius: 8px; font-size: 0.82rem; }
+    .serr-mini-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; }
+    .serr-action-tile { text-align: left; background: #f8fbf9; border: 1px solid #d5e3d9; border-radius: 10px; padding: 9px 11px; cursor: pointer; display: flex; flex-direction: column; gap: 3px; transition: 0.14s ease; }
+    .serr-action-tile:hover { border-color: #1f6f46; background: #eff8f2; }
+    .serr-action-tile strong { font-size: 0.84rem; color: #164f32; }
+    .serr-action-tile span { font-size: 0.76rem; color: var(--text-muted); }
+    .serr-info-strip { background: #f2f7fb; border: 1px solid #c9dfef; border-radius: 10px; padding: 8px 12px; font-size: 0.82rem; margin-bottom: 10px; }
+    .serr-filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .serr-chip { border: 1px solid var(--border); background: #fff; border-radius: 999px; padding: 4px 10px; font-size: 0.77rem; font-weight: 600; cursor: pointer; }
+    .serr-chip.active { background: #1c6b42; color: #fff; border-color: #1c6b42; }
+    .serr-food-bars, .serr-catalog-list, .serr-quiz-scroll { display: flex; flex-direction: column; gap: 6px; max-height: 360px; overflow-y: auto; padding-right: 4px; }
+    .serr-food-row { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 6px 8px; cursor: pointer; width: 100%; }
+    .serr-food-row.active { border-color: #1c6b42; background: #f0f9f3; }
+    .serr-bar-track { height: 9px; background: #e8eef2; border-radius: 999px; overflow: hidden; margin-top: 3px; }
+    .serr-bar-fill { height: 100%; background: #2b7bb9; border-radius: 999px; }
+    .serr-bar-fill.alt { background: #25804f; }
+    .serr-bar-fill.co2 { background: #c7532b; }
+    .serr-bar-fill.co2-alt { background: #488c68; }
+    .serr-stack-bar { display: flex; border-radius: 8px; overflow: hidden; font-size: 0.72rem; font-weight: 700; color: #fff; text-align: center; line-height: 22px; margin-top: 8px; }
+    .serr-badge-small { display: inline-block; background: #e6f2ec; color: #185737; border-radius: 6px; padding: 2px 7px; font-size: 0.72rem; font-weight: 700; }
+    .serr-select, .serr-input, .serr-input-num { border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 8px; font-size: 0.83rem; background: #fff; font-family: inherit; }
+    .serr-input { width: 100%; box-sizing: border-box; margin-top: 3px; }
+    .serr-input-num { width: 72px; text-align: right; }
+    .serr-label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; }
+    .serr-comp-box { background: #f7faf8; border: 1px solid #d5e4da; border-radius: 10px; padding: 9px 11px; font-size: 0.83rem; }
+    .serr-order-list, .serr-decalogo-list { display: flex; flex-direction: column; gap: 6px; }
+    .serr-order-item, .serr-decalogo-row { display: flex; align-items: center; gap: 8px; background: #f9fbfa; border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; }
+    .serr-order-num { width: 28px; height: 28px; border-radius: 50%; background: #1e6e46; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; }
+    .serr-feedback { border-radius: 10px; padding: 8px 12px; font-size: 0.82rem; }
+    .serr-feedback.ok { background: #eaf7ee; border: 1px solid #88cba0; color: #164f2f; }
+    .serr-feedback.warn { background: #fff4e5; border: 1px solid #e4ad61; color: #754108; }
+    .serr-calc-row { display: flex; gap: 6px; align-items: center; }
+    .serr-phase-stepper { display: grid; grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)); gap: 6px; }
+    .serr-step-btn { border: 1px solid var(--border); background: #fff; border-radius: 9px; padding: 6px 8px; text-align: left; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+    .serr-step-btn.active { background: #1d6b43; color: #fff; border-color: #1d6b43; }
+    .serr-step-btn span { font-weight: 800; font-size: 0.76rem; }
+    .serr-step-btn small { font-size: 0.72rem; opacity: 0.9; }
+    .serr-mini-stat { background: #f8fafb; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; font-size: 0.81rem; }
+    .serr-mini-stat p { margin: 4px 0 0; }
+    .serr-opt-btn { text-align: left; border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 7px 10px; font-size: 0.81rem; cursor: pointer; }
+    .serr-opt-btn.is-sel { border-color: #2b7bb9; background: #eef6fc; font-weight: 700; }
+    .serr-opt-btn.is-ok { border-color: #25804f; background: #eaf7ee; color: #144d2e; font-weight: 700; }
+    .serr-opt-btn.is-err { border-color: #c73c32; background: #fdeceb; color: #7d1d17; }
+    .serr-prod-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 10px; padding: 7px 10px; background: #fff; }
+    .serr-prod-item.selected, .serr-prod-item.active { border-color: #25804f; background: #eff9f2; }
+    .serr-stages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+    .serr-stage-item { background: #f8fbf9; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
+    .serr-drag-chip { border: 1px solid #9ab8a6; background: #fff; border-radius: 8px; padding: 5px 9px; font-size: 0.78rem; font-weight: 700; cursor: grab; }
+    .serr-drag-chip.is-sel { border-color: #2b7bb9; background: #e8f4fc; }
+    .serr-drag-chip.is-ok { border-color: #25804f; background: #e8f6ed; }
+    .serr-drag-chip.is-err { border-color: #c73c32; background: #fdeceb; }
+    .serr-bins-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; }
+    .serr-bin-drop { border: 2px dashed #b9c9c0; border-radius: 10px; padding: 8px 6px; text-align: center; cursor: pointer; background: #fafcfb; display: flex; flex-direction: column; gap: 2px; font-size: 0.77rem; }
+    .serr-bin-drop.drag-over { background: #e7f6ec; border-color: #1f6e45; }
+    .serr-sheet-preview { background: #fff; border: 1px solid #b8c6be; border-radius: 10px; padding: 14px; }
+    .serr-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 6px; }
+    .serr-table th, .serr-table td { border: 1px solid #cbd5e1; padding: 5px 7px; text-align: left; }
+    .serr-table th { background: #f1f5f9; }
+    .serr-poster-preview { max-width: 340px; margin: 10px auto 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+    .serr-poster-preview svg { width: 100%; height: auto; display: block; }
+    .serr-concept-map { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 10px; background: #f7fbf8; border-radius: 10px; border: 1px solid #d2e4d8; }
+    .serr-map-node { background: #fff; border: 1.5px solid #267b4d; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; color: #164f30; }
+    .serr-map-arrow { font-weight: 900; color: #267b4d; }
+    .serr-q-block { border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 8px; }
+    .btn-sm { min-height: 30px !important; padding: 4px 10px !important; font-size: 0.78rem !important; }
   </style>
 </head>
 <body>
@@ -1694,6 +1786,7 @@
         <a href="#home" class="brand" id="brand-home">SERR 2026 · Cinque Borghi</a>
         <nav class="primary-nav" aria-label="Sezioni principali studenti">
           <button type="button" class="nav-btn" data-nav="home" aria-current="page">Cos'è la SERR</button>
+          <button type="button" class="nav-btn" data-nav="serr-lab">Percorsi SERR</button>
           <button type="button" class="nav-btn" data-nav="presentazioni">Lezioni &amp; Slide</button>
           <button type="button" class="nav-btn" data-nav="tema">Mappa</button>
           <button type="button" class="nav-btn" data-nav="quiz">Quiz</button>
@@ -1739,7 +1832,7 @@
       <!-- 0. PAGINA INIZIALE: COS'E LA SERR 2026 -->
       <section id="sec-home" class="section-panel active" aria-labelledby="h-home">
         <div class="stage-body">
-          <div class="hero-box" style="margin-bottom:0;">
+          <div class="hero-box" style="margin-bottom:0;padding:14px 18px;gap:16px;">
             <div>
               <div class="meta-line">
                 <span>Settimana Europea per la Riduzione dei Rifiuti (EWWR / SERR)</span>
@@ -1748,11 +1841,11 @@
                 <span aria-hidden="true">·</span>
                 <span id="hero-level-text">Primaria e Secondaria I grado · Tutti i Cinque Borghi</span>
               </div>
-              <h1 id="h-home" style="margin-bottom:8px;">Cos'è la SERR 2026?</h1>
-              <p style="margin-bottom:10px;font-size:0.96rem;">
+              <h1 id="h-home" style="margin-bottom:6px;">Cos'è la SERR 2026?</h1>
+              <p style="margin-bottom:8px;font-size:0.94rem;">
                 La <strong>SERR (Settimana Europea per la Riduzione dei Rifiuti)</strong> è la campagna europea che invita scuole, famiglie e Comuni a intervenire <strong>prima che un rifiuto nasca</strong>: progettare oggetti riparabili, comprare in modo consapevole e azzerare gli sprechi quotidiani.
               </p>
-              <p style="margin-bottom:12px;font-size:0.92rem;color:var(--text-muted);">
+              <p style="margin-bottom:10px;font-size:0.9rem;color:var(--text-muted);">
                 In questa piattaforma i cinque borghi collaborano su cinque temi complementari: <strong>Mezzovalle</strong> (<em>Acqua &amp; Impronta Nascosta</em>), <strong>Villacolle</strong> (<em>Filiera Corta &amp; Km Zero</em>), <strong>Cefalana</strong> (<em>Riparazione &amp; Ecodesign</em>), <strong>Dragano</strong> (<em>Bosco Pulito &amp; Compost</em>) e <strong>Campolieto</strong> (<em>RAEE, Energia &amp; Coding</em>).
               </p>
               <div style="display:flex;flex-wrap:wrap;gap:10px;" class="no-print">
@@ -1760,21 +1853,23 @@
                 <button type="button" class="btn btn-secondary" data-jump="tema">2. Mappa dei Cinque Borghi</button>
                 <button type="button" class="btn" data-jump="giochi">3. Giochi &amp; Coding</button>
               </div>
-              <div style="margin-top:8px;font-size:0.82rem;color:var(--text-muted);">
+              <div style="margin-top:6px;font-size:0.81rem;color:var(--text-muted);">
                 <strong>Percorso studenti:</strong> esplora le slide di ogni argomento, supera i mini-quiz intermedi e sblocca il Quiz Finale. Le progettazioni per i docenti sono raggiungibili dal pulsante in alto.
               </div>
             </div>
-            <div class="mascot-frame" style="max-height:290px;">
-              <img
-                src="/src/assets/images/mascotte_hero_rico_1795078010281.jpg"
-                alt="Rico il Riccio Circolare con zainetto di tela rammendato, borraccia in acciaio, matita di legno, un germoglio e una macchinina giocattolo riparata"
-                class="mascot-img"
-                style="max-height:220px;object-fit:cover;"
-                referrerPolicy="no-referrer"
-                onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
-              />
-              <div class="mascot-fallback">Rico il Riccio Circolare — Mascotte SERR 2026</div>
-              <div class="mascot-caption" style="padding:8px 12px;font-size:0.84rem;">
+            <div class="mascot-frame" style="height:100%;justify-content:space-between;">
+              <div style="flex:1 1 0;min-height:140px;display:flex;align-items:center;justify-content:center;background:#fdfcf8;padding:4px;">
+                <img
+                  src="/src/assets/images/mascotte_hero_rico_1795078010281.jpg"
+                  alt="Rico il Riccio Circolare con zainetto di tela rammendato, borraccia in acciaio, matita di legno, un germoglio e una macchinina giocattolo riparata"
+                  class="mascot-img"
+                  style="width:100%;height:100%;max-height:230px;object-fit:contain;object-position:center;"
+                  referrerPolicy="no-referrer"
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
+                />
+                <div class="mascot-fallback">Rico il Riccio Circolare — Mascotte SERR 2026</div>
+              </div>
+              <div class="mascot-caption" style="padding:7px 12px;font-size:0.83rem;">
                 <strong>Ciao, sono Rico!</strong> Slogan 2026: <em>“Progetta meglio, acquista consapevole, riduci gli sprechi”</em>.
               </div>
             </div>
@@ -1797,29 +1892,34 @@
                   </div>
                 </div>
               </div>
-              <p class="source-note" style="margin-bottom:0;">Privacy &amp; dati: valori WFN/ISPRA indicativi da verificare; nessun dato personale identificativo, senza <code>localStorage</code> o <code>sessionStorage</code>.</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center;">
+                <button type="button" class="btn btn-primary" style="min-height:34px;padding:6px 12px;font-size:0.84rem;" data-jump="serr-lab">Apri Laboratori SERR: Mezzovalle &amp; Villacolle →</button>
+              </div>
+              <p class="source-note" style="margin-bottom:0;margin-top:6px;">Privacy &amp; dati: valori WFN/FAO indicativi; nessun dato identificativo richiesto, Diario e Decalogo salvati localmente offline nel browser (IndexedDB) ed esportabili in JSON.</p>
             </article>
 
-            <article class="card" style="display:flex;flex-direction:column;justify-content:space-between;">
+            <article class="card" style="display:flex;flex-direction:column;justify-content:space-between;min-height:0;">
               <div>
-                <div class="meta-line" style="margin-bottom:6px;">Direttiva Quadro UE 2008/98/CE</div>
-                <h3 style="margin-bottom:6px;">La Gerarchia Europea delle 5R</h3>
-                <p style="font-size:0.88rem;margin-bottom:8px;">Prima di differenziare nel bidone, la scelta migliore è sempre in cima alla piramide rovesciata: <strong>prevenire</strong> e <strong>riparare</strong>.</p>
+                <div class="meta-line" style="margin-bottom:4px;">Direttiva Quadro UE 2008/98/CE</div>
+                <h3 style="margin-bottom:4px;">La Gerarchia Europea delle 5R</h3>
+                <p style="font-size:0.86rem;margin-bottom:6px;">Prima di differenziare nel bidone, la scelta migliore è sempre in cima alla piramide rovesciata: <strong>prevenire</strong> e <strong>riparare</strong>.</p>
               </div>
-              <svg viewBox="0 0 360 185" width="100%" style="max-height:175px;" role="img" aria-labelledby="svg-gerarchia-title">
-                <title id="svg-gerarchia-title">Piramide rovesciata della gerarchia europea dei rifiuti: dalla prevenzione allo smaltimento</title>
-                <rect x="0" y="0" width="360" height="185" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
-                <polygon points="28,12 332,12 304,42 56,42" fill="#14532d" />
-                <text x="180" y="31" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1. Prevenzione (Progetta e riduci)</text>
-                <polygon points="58,47 302,47 276,77 84,77" fill="#166534" />
-                <text x="180" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2. Riutilizzo e Riparazione</text>
-                <polygon points="86,82 274,82 250,112 110,112" fill="#0369a1" />
-                <text x="180" y="101" text-anchor="middle" font-size="11.5" font-weight="700" fill="#ffffff">3. Riciclaggio dei materiali</text>
-                <polygon points="112,117 248,117 224,145 136,145" fill="#475569" />
-                <text x="180" y="135" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">4. Altro recupero</text>
-                <polygon points="138,150 222,150 202,175 158,175" fill="#991b1b" />
-                <text x="180" y="167" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">5. Smaltimento</text>
-              </svg>
+              <div style="flex:1 1 0;min-height:130px;display:flex;align-items:center;justify-content:center;width:100%;">
+                <svg viewBox="0 0 360 190" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;max-height:215px;max-width:460px;display:block;" role="img" aria-labelledby="svg-gerarchia-title">
+                  <title id="svg-gerarchia-title">Piramide rovesciata della gerarchia europea dei rifiuti: dalla prevenzione allo smaltimento</title>
+                  <rect x="2" y="2" width="356" height="186" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
+                  <polygon points="28,12 332,12 304,42 56,42" fill="#14532d" />
+                  <text x="180" y="31" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1. Prevenzione (Progetta e riduci)</text>
+                  <polygon points="58,47 302,47 276,77 84,77" fill="#166534" />
+                  <text x="180" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2. Riutilizzo e Riparazione</text>
+                  <polygon points="86,82 274,82 250,112 110,112" fill="#0369a1" />
+                  <text x="180" y="101" text-anchor="middle" font-size="11.5" font-weight="700" fill="#ffffff">3. Riciclaggio dei materiali</text>
+                  <polygon points="112,117 248,117 224,145 136,145" fill="#475569" />
+                  <text x="180" y="135" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">4. Altro recupero</text>
+                  <polygon points="138,150 222,150 202,176 158,176" fill="#991b1b" />
+                  <text x="180" y="167" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">5. Smaltimento</text>
+                </svg>
+              </div>
             </article>
           </div>
         </div>
@@ -2914,6 +3014,25 @@
         </div>
       </div>
     </section>
+
+    <section id="sec-serr-lab" class="section-panel" aria-labelledby="h-serr-lab">
+      <div class="stage-head">
+        <div>
+          <div class="meta-line" style="margin-bottom:2px;">Modulo Didattico Interattivo · Percorsi Mezzovalle &amp; Villacolle</div>
+          <h2 id="h-serr-lab">SETTIMANA EUROPEA PER LA RIDUZIONE DEI RIFIUTI</h2>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-sm" onclick="window.openSerrModule && window.openSerrModule('mezzovalle', 'home')">Percorso A · Mezzovalle</button>
+          <button type="button" class="btn btn-sm" onclick="window.openSerrModule && window.openSerrModule('villacolle', 'home')">Percorso B · Villacolle</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="window.openSerrModule && window.openSerrModule('overview')">Hub SERR</button>
+        </div>
+      </div>
+      <div class="stage-body">
+        <div id="serr-lab-root">
+          <p style="font-size:0.88rem;color:var(--text-muted);">Caricamento laboratori SERR Mezzovalle e Villacolle…</p>
+        </div>
+      </div>
+    </section>
   </main>
   </div><!-- /.app-shell -->
 
@@ -3175,7 +3294,8 @@
           errMsg: "Attenzione ai valori idrici: 150 g di mela richiedono circa 123 L indicativi, contro oltre 470 L del formaggio e oltre 2.500 L del cioccolato."
         },
         topicTools: [
-          { label: "Studia Presentazione: Acqua & Cibo", kind: "lesson", lessonId: "mezzovalle", style: "primary" },
+          { label: "Apri Laboratorio Mezzovalle (A1–A5)", kind: "serrLab", labTab: "mezzovalle", labSub: "home", style: "primary" },
+          { label: "Studia Presentazione: Acqua & Cibo", kind: "lesson", lessonId: "mezzovalle", style: "" },
           { label: "Gioca: Piatto 1000 Litri (Gioco 6)", kind: "game", gameNum: 6, style: "secondary" },
           { label: "Apri Calcolatore Idrico", kind: "section", section: "studenti", subtabGroup: "stud", subtarget: "stud-calc", style: "" },
           { label: "Quiz Mezzovalle (Acqua & Cibo)", kind: "quiz", town: "mezzovalle", style: "" }
@@ -3201,7 +3321,8 @@
           errMsg: "Ricorda la regola di Villacolle: a novembre i frutti di stagione locali sono mandarini, arance, cachi e mele, meglio se sfusi."
         },
         topicTools: [
-          { label: "Studia Presentazione: Km 0 & Imballi", kind: "lesson", lessonId: "villacolle", style: "primary" },
+          { label: "Apri Laboratorio Villacolle (B1–B5)", kind: "serrLab", labTab: "villacolle", labSub: "home", style: "primary" },
+          { label: "Studia Presentazione: Km 0 & Imballi", kind: "lesson", lessonId: "villacolle", style: "" },
           { label: "Gioca: Corsa dei Km (Gioco 5)", kind: "game", gameNum: 5, style: "secondary" },
           { label: "Gioca: Stagionalità 60s (Gioco 7)", kind: "game", gameNum: 7, style: "" },
           { label: "Quiz Villacolle (Km Zero & Imballi)", kind: "quiz", town: "villacolle", style: "" }
@@ -4134,6 +4255,9 @@
         setTownFilter(tool.town);
         setActiveSection("docenti");
         activateCatTab(0);
+      } else if (tool.kind === "serrLab") {
+        if (window.openSerrModule) window.openSerrModule(tool.labTab || "overview", tool.labSub || "home");
+        else setActiveSection("serr-lab");
       } else if (tool.kind === "section") {
         setActiveSection(tool.section);
         if (tool.subtabGroup && tool.subtarget) {
@@ -8493,7 +8617,9 @@
     renderGame7Board();
     initGame8();
     renderGamification();
+    window.__SERR_BRIDGE = { setActiveSection, addXp, escHtml };
   })();
   </script>
+  <script type="module" src="/src/serrLabs.ts"></script>
 </body>
 </html>
