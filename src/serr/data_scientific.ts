@@ -949,24 +949,24 @@ export const STUDY_UNITS: StudyUnit[] = [
     deepTheory: [
       "Un imballaggio protegge e conserva l'alimento evitando che si rovini prima del consumo, ma una quota crescente dei rifiuti urbani proviene da confezioni ridondanti o monoporzione.",
       "Si distinguono tre livelli: imballaggio primario (a diretto contatto con l'alimento, come un barattolo o una bustina), secondario (raggruppa più unità, come la scatola di cartone esterna delle merendine) e terziario (pallet e film estensibile per il trasporto logistico).",
-      "Pesando alimento netto e imballo (tara) emerge il costo nascosto del monoporzione: 100 g di biscotti in vaschetta e pellicola da 25 g significano che il 20% del peso acquistato è spazzatura immediata. Il Precycling consiste proprio nell'evitare imballi secondari e monouso già davanti allo scaffale."
+      "Pesando alimento netto e imballo (tara) emerge il costo nascosto del monoporzione: Tara % = (Peso Imballaggio ÷ Peso Lordo) × 100. Su 100 g di biscotti in vaschetta e pellicola da 25 g (125 g lordi), il 20% del peso acquistato è rifiuto immediato. Il Precycling applica le prime due 'R' inglesi — Refuse (rifiuta il superfluo) e Reduce (riduci) — prima ancora di creare il rifiuto."
     ],
     simplifiedReview: [
       "Primario = tocca il cibo; Secondario = scatola esterna di più pezzi; Terziario = bancale per camion.",
-      "Le confezioni monoporzione producono moltissima plastica in più per ogni grammo di cibo!",
-      "Precycling vuol dire scegliere prodotti sfusi o grandi già nel negozio, prima di creare il rifiuto."
+      "Le confezioni monoporzione aumentano molto la Tara % (plastica in più rispetto al cibo netto)!",
+      "Precycling applica Refuse e Reduce (le prime R inglesi delle 5R): scegli sfuso già in negozio."
     ],
     infographicType: "packaging_three_tiers",
     conceptMap: {
       root: "Imballaggi & Precycling",
       branches: [
         { label: "3 Livelli", children: ["Primario (contatto cibo)", "Secondario (multiplo) · Terziario (trasporto)"] },
-        { label: "Critici", children: ["Poliaccoppiati C/PAP fusi", "Monoporzioni multi-strato"] },
-        { label: "Alternativa 5R", children: ["Sfuso + Portamerenda", "Vetro / Alluminio monomateriale"] }
+        { label: "Calcolo Tara %", children: ["(Imballo ÷ Lordo) × 100", "Monoporzioni multi-strato = alto spreco"] },
+        { label: "5R Originali (EN)", children: ["Refuse · Reduce · Reuse", "Recycle · Rot (Composta)"] }
       ]
     },
     glossary: [
-      { term: "Precycling", def: "Scelta d'acquisto preventiva per evitare alla fonte materiali destinati a diventare rifiuto." },
+      { term: "Precycling", def: "Scelta d'acquisto preventiva (Refuse e Reduce delle 5R inglesi) per evitare alla fonte materiali destinati a diventare rifiuto." },
       { term: "Poliaccoppiato", def: "Imballaggio formato da due o più materiali diversi incollati insieme (es. carta+plastica+alluminio)." }
     ],
     dailyExample: "Una bottiglia grande di succo in vetro (o frutta fresca) al posto di 6 brick piccoli elimina 6 cannucce, 6 brick e pellicole esterne."
@@ -998,9 +998,10 @@ export const STUDY_UNITS: StudyUnit[] = [
     },
     glossary: [
       { term: "Frazione estranea", def: "Materiale non conforme conferito per errore in un contenitore di raccolta differenziata." },
-      { term: "EN 13432", def: "Norma europea che certifica la compostabilità industriale di un imballaggio biodegradabile." }
+      { term: "EN 13432", def: "Norma europea che certifica la compostabilità industriale di un imballaggio biodegradabile." },
+      { term: "Tethered Caps (SUP)", def: "Tappi di plastica ancorati al collo di bottiglie e cartoni (Direttiva UE 2019/904) per facilitarne il recupero insieme al contenitore ed evitare la dispersione in ambiente." }
     ],
-    dailyExample: "Schiacciare per lungo la bottiglia PET e riavvitare il tappo attaccato (Direttiva SUP) riduce il volume nel bidone ed evita dispersioni."
+    dailyExample: "Schiacciare per lungo la bottiglia PET e lasciare il tappo ancorato (Tethered Cap, Direttiva SUP) riduce il volume nel bidone ed evita che il tappo finisca in natura."
   },
   {
     id: "v_study_7",
@@ -1202,21 +1203,21 @@ export const PRINTABLE_WORKSHEETS: PrintableWorksheetDef[] = [
   },
   {
     id: "ws_v4", pathway: "villacolle", code: "V-04",
-    title: "Analizziamo gli imballaggi",
-    objective: "Classificare gli involucri per materiale (codice), necessità reale, alternativa sfusa e conferimento locale.",
-    materials: "Confezioni vuote e pulite portate da casa, tabella codici imballo dell'app.",
+    title: "Analizziamo gli imballaggi & Calcolo della Tara %",
+    objective: "Classificare gli involucri per codice materiale, calcolare l'incidenza della tara (Tara ÷ Lordo × 100), valutare l'alternativa sfusa e il conferimento locale.",
+    materials: "Confezioni vuote e pulite portate da casa, bilancia di precisione, tabella codici imballo e Calcolatore Tara % dell'app (B4).",
     steps: [
-      "Esamina almeno 5 confezioni diverse cercando la sigla del materiale (PAP, PET, ALU, GL, C/PAP).",
-      "Valuta se l'imballaggio è necessario alla conservazione, riducibile o del tutto superfluo.",
-      "Indica il contenitore corretto verificando le regole del tuo Comune."
+      "Esamina almeno 5 confezioni cercando la sigla ambientale (PAP, PET, ALU, GL, C/PAP 84) e verifica eventuali Tethered Caps (Direttiva SUP).",
+      "Pesa alimento netto e imballaggio calcolando la Tara % = (Peso Imballo ÷ Peso Lordo) × 100.",
+      "Applica Refuse e Reduce (le prime 'R' inglesi delle 5R): valuta l'alternativa sfusa e controlla il calendario del tuo Comune."
     ],
-    tableCols: ["Prodotto", "Materiale & Codice", "Necessità", "Alternativa sostenibile", "Conferimento (Comune)"],
+    tableCols: ["Prodotto", "Materiale & Codice", "Tara % (Imballo/Lordo)", "Alternativa 5R (Refuse/Reduce)", "Conferimento (Comune)"],
     defaultRows: [
-      ["Banana in vaschetta", "PS 6 + LDPE 4", "Superfluo", "Banana sfusa", "Plastica (da evitare all'acquisto)"],
-      ["Mini-brick succo", "C/PAP 84", "Superfluo", "Spremuta in borraccia", "Verificare regola comunale C/PAP"]
+      ["Banana in vaschetta", "PS 6 + LDPE 4", "15 g / 165 g = 9,1%", "Banana sfusa (0 g imballo)", "Plastica (da evitare all'acquisto)"],
+      ["Mini-brick succo", "C/PAP 84", "14 g / 214 g = 6,5%", "Spremuta o acqua in borraccia", "Verificare regola comunale C/PAP"]
     ],
-    observationPrompt: "Quali imballaggi sono risultati più difficili da differenziare perché formati da più strati fusi insieme?",
-    conclusionPrompt: "Regola d'oro del Precycling da applicare al prossimo giro al supermercato."
+    observationPrompt: "Quali imballaggi hanno avuto la Tara % più alta o strati compositi difficili da riciclare?",
+    conclusionPrompt: "Regola d'oro del Precycling (Refuse & Reduce) da applicare al prossimo giro al supermercato."
   },
   {
     id: "ws_v5", pathway: "villacolle", code: "V-05",

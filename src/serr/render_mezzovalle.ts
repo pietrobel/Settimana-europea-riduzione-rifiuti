@@ -79,7 +79,7 @@ export function renderMezzovalleView(container: HTMLElement, ctx: MezzovalleCont
   container.innerHTML = `
     <div class="serr-path-banner serr-path-mezz">
       <div>
-        <div class="serr-kicker">PERCORSO A · MEZZOVALLE</div>
+        <div class="serr-kicker">TEMATICA A: ACQUA, CIBO &amp; IMPRONTA NASCOSTA · COMUNE ABBINATO: MEZZOVALLE</div>
         <h3 style="margin:2px 0 4px;">L'Impronta Nascosta: calcolare il valore del cibo e delle risorse</h3>
         <p style="margin:0;font-size:0.86rem;opacity:0.94;">Percorso laboratoriale di analisi dell'impronta idrica ed ecologica degli alimenti, per comprendere il consumo invisibile di acqua, suolo ed energia nascosto dietro le nostre scelte quotidiane.</p>
       </div>

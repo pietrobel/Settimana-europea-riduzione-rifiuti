@@ -1,4 +1,7 @@
+import { TOPIC_PROFILES, type AgeBandId, type SerrTopicId } from "./data_intro_videos.ts";
+
 export type PortalCategory = "pagine" | "app" | "video";
+export type PortalTopicFilter = "tutte" | SerrTopicId;
 
 export interface PortalLinkItem {
   id: string;
@@ -6,7 +9,10 @@ export interface PortalLinkItem {
   title: string;
   provider: string;
   url: string;
-  borgo: "Tutti" | "Mezzovalle" | "Villacolle" | "Cefalana" | "Dragano" | "Campolieto";
+  topicId: "tutte" | SerrTopicId;
+  tematica: string;
+  ageBand: AgeBandId;
+  ageRangeLabel: string;
   costLabel: string;
   language: string;
   description: string;
@@ -19,9 +25,11 @@ export interface RecommendedFilmItem {
   originalTitle?: string;
   year: number;
   durationMin: number;
+  ageBand: AgeBandId;
   ageRange: string;
-  borgo: "Tutti" | "Mezzovalle" | "Villacolle" | "Cefalana" | "Dragano" | "Campolieto";
-  theme: string;
+  topicId: "tutte" | SerrTopicId;
+  tematica: string;
+  themeDetail: string;
   isFree: boolean;
   freeUrl?: string;
   freeButtonLabel?: string;
@@ -32,6 +40,11 @@ export interface RecommendedFilmItem {
   discussionPrompt: string;
 }
 
+function topicName(tid: "tutte" | SerrTopicId): string {
+  if (tid === "tutte") return "Tutte le tematiche SERR 2026";
+  return TOPIC_PROFILES[tid].tematica;
+}
+
 export const PORTAL_LINKS: PortalLinkItem[] = [
   /* ----- PAGINE WEB ISTITUZIONALI & SCIENTIFICHE ----- */
   {
@@ -40,7 +53,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "EWWR – European Week for Waste Reduction",
     provider: "Portale Europeo Ufficiale SERR",
     url: "https://www.ewwr.eu",
-    borgo: "Tutti",
+    topicId: "tutte",
+    tematica: topicName("tutte"),
+    ageBand: "tutte",
+    ageRangeLabel: "Adatto 6–14 anni (Primaria e Media)",
     costLabel: "Gratuito",
     language: "EN / FR / IT (risorse EU)",
     description:
@@ -53,12 +69,15 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "SERR Italia – Portale Nazionale (ENVI.info)",
     provider: "Comitato Promotore Nazionale SERR",
     url: "https://www.envi.info",
-    borgo: "Tutti",
+    topicId: "tutte",
+    tematica: topicName("tutte"),
+    ageBand: "tutte",
+    ageRangeLabel: "Adatto 6–14 anni (Primaria e Media)",
     costLabel: "Gratuito",
     language: "Italiano",
     description:
       "Portale italiano di riferimento per iscrivere azioni scolastiche alla SERR, leggere storie di scuole italiane virtuose e scaricare i kit di comunicazione.",
-    classUse: "Idee pratiche dalle scuole italiane per progettazione e evento finale dei Cinque Borghi."
+    classUse: "Idee pratiche dalle scuole italiane per progettazione ed evento finale."
   },
   {
     id: "web-mase",
@@ -66,7 +85,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "MASE – Ministero dell'Ambiente e della Sicurezza Energetica",
     provider: "Istituzione Nazionale",
     url: "https://www.mase.gov.it",
-    borgo: "Tutti",
+    topicId: "tutte",
+    tematica: topicName("tutte"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 11–14 anni · Scuola Media",
     costLabel: "Gratuito",
     language: "Italiano",
     description:
@@ -79,7 +101,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "ISPRA – Rifiuti Urbani & Educazione Ambientale",
     provider: "Istituto Superiore per la Protezione e la Ricerca Ambientale",
     url: "https://www.isprambiente.gov.it",
-    borgo: "Campolieto",
+    topicId: "campolieto",
+    tematica: topicName("campolieto"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 11–14 anni · Scuola Media",
     costLabel: "Gratuito",
     language: "Italiano",
     description:
@@ -92,11 +117,14 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Water Footprint Network (Impronta Idrica)",
     provider: "Fondazione Scientifica Internazionale",
     url: "https://www.waterfootprint.org",
-    borgo: "Mezzovalle",
+    topicId: "mezzovalle",
+    tematica: topicName("mezzovalle"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 11–14 anni · Scuola Media",
     costLabel: "Gratuito",
     language: "Inglese",
     description:
-      "Fonte scientifica mondiale di riferimento usata nel percorso di Mezzovalle per distinguere acqua verde, blu e grigia lungo la produzione di alimenti e tessuti.",
+      "Fonte scientifica mondiale di riferimento per distinguere acqua verde, blu e grigia lungo la produzione di alimenti e tessuti.",
     classUse: "Verifica delle fonti scientifiche usate in A1 e A2 sull'acqua virtuale."
   },
   {
@@ -105,7 +133,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "FAO – Technical Platform on Food Loss and Waste",
     provider: "Organizzazione delle Nazioni Unite (FAO)",
     url: "https://www.fao.org/platform-food-loss-waste/en",
-    borgo: "Mezzovalle",
+    topicId: "mezzovalle",
+    tematica: topicName("mezzovalle"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 11–14 anni · Scuola Media",
     costLabel: "Gratuito",
     language: "Inglese / Multilingue",
     description:
@@ -118,7 +149,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "CREA – Alimenti, Nutrizione & Stagionalità",
     provider: "Consiglio per la ricerca in agricoltura (Italia)",
     url: "https://www.crea.gov.it",
-    borgo: "Villacolle",
+    topicId: "villacolle",
+    tematica: topicName("villacolle"),
+    ageBand: "tutte",
+    ageRangeLabel: "Adatto 6–14 anni (Primaria e Media)",
     costLabel: "Gratuito",
     language: "Italiano",
     description:
@@ -131,12 +165,15 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "CONAI – Progetti Scuole ed Ecodesign Imballaggi",
     provider: "Consorzio Nazionale Imballaggi",
     url: "https://www.conai.org",
-    borgo: "Villacolle",
+    topicId: "villacolle",
+    tematica: topicName("villacolle"),
+    ageBand: "primaria",
+    ageRangeLabel: "Consigliato 6–10 anni · Scuola Primaria",
     costLabel: "Gratuito",
     language: "Italiano",
     description:
       "Informazioni sui consorzi di filiera (carta, plastica, vetro, acciaio, alluminio, legno), prevenzione del packaging e progetti scolastici come Riciclo di Classe.",
-    classUse: "Supporto a Caccia agli Imballaggi (B4) e progettazione imballaggi ridotti."
+    classUse: "Supporto a Caccia agli Imballaggi e progettazione imballaggi ridotti."
   },
   {
     id: "web-emf",
@@ -144,7 +181,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Ellen MacArthur Foundation – Economia Circolare",
     provider: "Fondazione Internazionale Economia Circolare",
     url: "https://www.ellenmacarthurfoundation.org",
-    borgo: "Cefalana",
+    topicId: "cefalana",
+    tematica: topicName("cefalana"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 11–14 anni · Scuola Media",
     costLabel: "Gratuito",
     language: "Inglese",
     description:
@@ -157,12 +197,15 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "ONU Italia (UNRIC) – Agenda 2030 in Italiano",
     provider: "Centro Regionale d'Informazione ONU",
     url: "https://unric.org/it/agenda-2030/",
-    borgo: "Dragano",
+    topicId: "dragano",
+    tematica: topicName("dragano"),
+    ageBand: "tutte",
+    ageRangeLabel: "Adatto 6–14 anni (Primaria e Media)",
     costLabel: "Gratuito",
     language: "Italiano",
     description:
       "Schede ufficiali in italiano sui 17 Obiettivi di Sviluppo Sostenibile, in particolare Goal 12 (Consumo e produzione responsabili) e Goal 15 (Vita sulla Terra).",
-    classUse: "Collegamento interdisciplinare di Educazione Civica per tutti i borghi."
+    classUse: "Collegamento interdisciplinare di Educazione Civica."
   },
 
   /* ----- APPLICAZIONI & CALCOLATORI ESTERNI ----- */
@@ -172,7 +215,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Junker App – Guida Raccolta Differenziata Comunale",
     provider: "Junker Srl (Italia)",
     url: "https://junkerapp.it",
-    borgo: "Villacolle",
+    topicId: "villacolle",
+    tematica: topicName("villacolle"),
+    ageBand: "tutte",
+    ageRangeLabel: "Adatto 6–14 anni (con docente o famiglia)",
     costLabel: "App gratuita",
     language: "Italiano",
     description:
@@ -185,12 +231,15 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Water Footprint Interactive Calculator",
     provider: "Water Footprint Network",
     url: "https://www.waterfootprint.org/interactive-tools/",
-    borgo: "Mezzovalle",
+    topicId: "mezzovalle",
+    tematica: topicName("mezzovalle"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 11–14 anni · Scuola Media",
     costLabel: "Web app gratuita",
     language: "Inglese",
     description:
       "Strumenti interattivi online (Quick & Extended Calculator) per confrontare la propria impronta idrica settimanale legata a dieta e consumi domestici.",
-    classUse: "Confronto guidato alla LIM dopo il Calcolatore locale di Mezzovalle (A2)."
+    classUse: "Confronto guidato alla LIM dopo il Calcolatore locale sull'acqua nascosta."
   },
   {
     id: "app-overshoot-calc",
@@ -198,7 +247,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Personal Footprint Calculator (Quanti Pianeti Usi?)",
     provider: "Global Footprint Network",
     url: "https://www.footprintcalculator.org",
-    borgo: "Tutti",
+    topicId: "tutte",
+    tematica: topicName("tutte"),
+    ageBand: "tutte",
+    ageRangeLabel: "Adatto 8–14 anni (guidato in Primaria, autonomo alle Medie)",
     costLabel: "Web app gratuita",
     language: "Italiano / Multilingue",
     description:
@@ -211,7 +263,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Earth Overshoot Day – Dati & Soluzioni",
     provider: "Global Footprint Network",
     url: "https://www.overshootday.org",
-    borgo: "Dragano",
+    topicId: "dragano",
+    tematica: topicName("dragano"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 11–14 anni · Scuola Media",
     costLabel: "Gratuito",
     language: "Inglese / Risorse globali",
     description:
@@ -224,12 +279,15 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "iFixit – Manuali Gratuiti di Riparazione",
     provider: "Comunità Open-Source iFixit",
     url: "https://www.ifixit.com",
-    borgo: "Cefalana",
+    topicId: "cefalana",
+    tematica: topicName("cefalana"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 11–14 anni · Scuola Media",
     costLabel: "Gratuito / Open Source",
     language: "Italiano / Inglese",
     description:
       "Migliaia di guide fotografiche passo-passo per riparare dispositivi elettronici, piccoli elettrodomestici e oggetti di uso comune con indici di riparabilità.",
-    classUse: "Osservare con il docente l'indice di riparabilità degli oggetti (modulo Ecodesign)."
+    classUse: "Osservare con il docente l'indice di riparabilità degli oggetti (viti vs colla)."
   },
   {
     id: "app-openfoodfacts",
@@ -237,12 +295,15 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Open Food Facts – Eco-Score e Imballaggi",
     provider: "Progetto Open Data Collaborativo",
     url: "https://world.openfoodfacts.org",
-    borgo: "Villacolle",
+    topicId: "villacolle",
+    tematica: topicName("villacolle"),
+    ageBand: "tutte",
+    ageRangeLabel: "Adatto 8–14 anni",
     costLabel: "Gratuito / Open Data",
     language: "Italiano / Multilingue",
     description:
-      "Database aperto e collaborativo sui prodotti alimentari: permette di esplorare ingredienti, materiali di confezionamento, grado di trasformazione NOVA e Eco-Score.",
-    classUse: "Analisi scientifica delle etichette durante le attività del Supermercato delle Scelte."
+      "Database aperto sui prodotti alimentari: permette di esplorare ingredienti, materiali di confezionamento, grado di trasformazione NOVA e Eco-Score.",
+    classUse: "Analisi scientifica delle etichette durante l'attività Supermercato delle Scelte."
   },
   {
     id: "app-tgtg",
@@ -250,7 +311,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Too Good To Go – Piattaforma Antispreco",
     provider: "Too Good To Go",
     url: "https://www.toogoodtogo.com",
-    borgo: "Mezzovalle",
+    topicId: "mezzovalle",
+    tematica: topicName("mezzovalle"),
+    ageBand: "tutte",
+    ageRangeLabel: "Adatto 6–14 anni (esempio per famiglie e classi)",
     costLabel: "Informazioni & App gratuite",
     language: "Italiano",
     description:
@@ -263,27 +327,33 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "DireFareRAEE – Guida al Riciclo Elettronico",
     provider: "Erion WEEE",
     url: "https://www.direfareraee.it",
-    borgo: "Campolieto",
+    topicId: "campolieto",
+    tematica: topicName("campolieto"),
+    ageBand: "primaria",
+    ageRangeLabel: "Consigliato 6–10 anni & 11–14 anni",
     costLabel: "Gratuito",
     language: "Italiano",
     description:
       "Portale divulgativo dedicato ai Rifiuti di Apparecchiature Elettriche ed Elettroniche: spiega cosa c'è dentro smartphone e pc e come funzionano i punti di raccolta Uno contro Zero.",
-    classUse: "Preparazione alle sfide di Campolieto su RAEE, materie prime critiche e raccolta."
+    classUse: "Preparazione alle attività su RAEE, materie prime critiche e raccolta sicura."
   },
 
-  /* ----- VIDEO DIDATTICI & CORTOMETRAGGI ESTERNI ----- */
+  /* ----- VIDEO DIDATTICI & PORTALI ESTERNI ----- */
   {
     id: "vid-storyofstuff-site",
     category: "video",
     title: "The Story of Stuff Project – Libreria Video Completa",
     provider: "The Story of Stuff Project",
     url: "https://www.storyofstuff.org/movies/",
-    borgo: "Cefalana",
+    topicId: "cefalana",
+    tematica: topicName("cefalana"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 10–14 anni (Primaria V e Media)",
     costLabel: "Visione gratuita online",
     language: "Inglese (sottotitoli disponibili)",
     description:
       "Raccolta ufficiale gratuita di cortometraggi animati (The Story of Stuff, Bottled Water, Electronics, Microfibers) che illustrano estrazione, produzione, consumo e smaltimento.",
-    classUse: "Proiezione alla LIM di un corto da 8–20 minuti seguita da mappa concettuale."
+    classUse: "Proiezione alla LIM di un corto seguita da mappa concettuale."
   },
   {
     id: "vid-storyofstuff-yt",
@@ -291,12 +361,15 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Canale YouTube Ufficiale – The Story of Stuff",
     provider: "YouTube (@StoryofStuff)",
     url: "https://www.youtube.com/@StoryofStuff",
-    borgo: "Tutti",
+    topicId: "tutte",
+    tematica: topicName("tutte"),
+    ageBand: "tutte",
+    ageRangeLabel: "Adatto 9–14 anni (con sottotitoli IT)",
     costLabel: "Visione gratuita YouTube",
-    language: "Inglese (CC / sottotitoli automatici IT)",
+    language: "Inglese (CC / sottotitoli IT)",
     description:
       "Tutti i mini-documentari animati della serie disponibili gratuitamente in streaming con attivazione dei sottotitoli italiani per le classi.",
-    classUse: "Copia il link di un video singolo nello strumento YouTube di Strumenti & IA."
+    classUse: "Video rapidi integrabili nella sezione Video Intro o nel lettore di classe."
   },
   {
     id: "vid-raiscuola",
@@ -304,7 +377,10 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Rai Scuola – Economia Circolare, Rifiuti e Spreco",
     provider: "Rai Cultura / Rai Scuola",
     url: "https://www.raiscuola.rai.it",
-    borgo: "Dragano",
+    topicId: "dragano",
+    tematica: topicName("dragano"),
+    ageBand: "tutte",
+    ageRangeLabel: "Adatto 6–14 anni (Primaria e Media)",
     costLabel: "Visione gratuita",
     language: "Italiano",
     description:
@@ -317,12 +393,47 @@ export const PORTAL_LINKS: PortalLinkItem[] = [
     title: "Erion WEEE – Risorse Multimediali sui RAEE",
     provider: "Consorzio Erion WEEE",
     url: "https://erionweee.it",
-    borgo: "Campolieto",
+    topicId: "campolieto",
+    tematica: topicName("campolieto"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 11–14 anni · Scuola Media",
     costLabel: "Gratuito",
     language: "Italiano",
     description:
       "Sezione informativa e materiali video sulle filiere di recupero dei piccoli elettrodomestici, computer, lampadine e batterie dismesse.",
-    classUse: "Approfondimento visivo sul riciclo dei metalli rari per Campolieto."
+    classUse: "Approfondimento visivo sul riciclo dei metalli rari."
+  },
+  {
+    id: "vid-villa-conai-yt",
+    category: "video",
+    title: "CONAI & Il Cammino – Imballaggi e Stagionalità (Video Primaria)",
+    provider: "CONAI / Cooperativa Il Cammino (YouTube)",
+    url: "https://www.youtube.com/watch?v=uH04E_8dXjs",
+    topicId: "villacolle",
+    tematica: topicName("villacolle"),
+    ageBand: "primaria",
+    ageRangeLabel: "Consigliato 6–10 anni · Scuola Primaria",
+    costLabel: "Visione gratuita YouTube",
+    language: "Italiano",
+    description:
+      "Video animati brevi per la Primaria su funzione degli imballaggi ('La straordinaria storia degli imballaggi e del riciclo') e stagionalità alimentare ('W il cibo di stagione': youtu.be/Zpe9JPGPb9U).",
+    classUse: "Visione prima di B2 (Calendario Stagionalità) e B4 (Caccia agli Imballaggi)."
+  },
+  {
+    id: "vid-villa-altroconsumo-yt",
+    category: "video",
+    title: "Altroconsumo & CEMAD – Filiera corta vs Km 0 e Stagionalità (Media)",
+    provider: "Altroconsumo / CEMAD Gemelli (YouTube)",
+    url: "https://www.youtube.com/watch?v=AlRe5fH0UnE",
+    topicId: "villacolle",
+    tematica: topicName("villacolle"),
+    ageBand: "media",
+    ageRangeLabel: "Consigliato 11–14 anni · Scuola Media",
+    costLabel: "Visione gratuita YouTube",
+    language: "Italiano",
+    description:
+      "Analisi chiara della differenza tra numero di passaggi (filiera corta) e vicinanza geografica (Km 0), abbinata al video CEMAD sulla stagionalità di frutta e verdura (youtu.be/jS4lMag3IoQ).",
+    classUse: "Discussione critica su serre riscaldate, origine obbligatoria e imballaggi."
   }
 ];
 
@@ -333,9 +444,11 @@ export const RECOMMENDED_FILMS: RecommendedFilmItem[] = [
     originalTitle: "The Story of Stuff",
     year: 2007,
     durationMin: 20,
-    ageRange: "9–14 anni",
-    borgo: "Cefalana",
-    theme: "Economia dei materiali, consumo e prevenzione rifiuti",
+    ageBand: "media",
+    ageRange: "10–14 anni (Primaria V e Media)",
+    topicId: "cefalana",
+    tematica: topicName("cefalana"),
+    themeDetail: "Economia dei materiali, consumo e prevenzione rifiuti",
     isFree: true,
     freeUrl: "https://www.storyofstuff.org/movies/",
     freeButtonLabel: "Guarda gratis sul sito ufficiale ↗",
@@ -352,9 +465,11 @@ export const RECOMMENDED_FILMS: RecommendedFilmItem[] = [
     title: "The Story of Electronics & The Story of Bottled Water",
     year: 2010,
     durationMin: 16,
-    ageRange: "9–14 anni",
-    borgo: "Campolieto",
-    theme: "Obsolescenza programmata, RAEE e acqua in bottiglia",
+    ageBand: "tutte",
+    ageRange: "8–14 anni (Primaria e Media)",
+    topicId: "campolieto",
+    tematica: topicName("campolieto"),
+    themeDetail: "Obsolescenza programmata, RAEE e acqua in bottiglia",
     isFree: true,
     freeUrl: "https://www.storyofstuff.org/movies/",
     freeButtonLabel: "Guarda gratis su Story of Stuff ↗",
@@ -362,7 +477,7 @@ export const RECOMMENDED_FILMS: RecommendedFilmItem[] = [
     synopsis:
       "Due corti animati gemelli: il primo svela come molti dispositivi elettronici vengano progettati per durare poco ('designed for the dump'), il secondo confronta l'acqua del rubinetto/borraccia con la plastica delle bottiglie usa e getta.",
     discussionPrompt:
-      "Confrontate in classe i vantaggi della borraccia di Rico e dell'indice di riparabilità dei dispositivi."
+      "Confrontate in classe i vantaggi della borraccia riutilizzabile e dell'indice di riparabilità dei dispositivi."
   },
   {
     id: "film-home",
@@ -370,9 +485,11 @@ export const RECOMMENDED_FILMS: RecommendedFilmItem[] = [
     originalTitle: "HOME (Yann Arthus-Bertrand)",
     year: 2009,
     durationMin: 93,
-    ageRange: "10–14 anni",
-    borgo: "Mezzovalle",
-    theme: "Acqua, agricoltura intensiva, suolo e fragilità degli ecosistemi",
+    ageBand: "media",
+    ageRange: "10–14 anni (Primaria V e Media)",
+    topicId: "mezzovalle",
+    tematica: topicName("mezzovalle"),
+    themeDetail: "Acqua, agricoltura intensiva, suolo e fragilità degli ecosistemi",
     isFree: true,
     freeUrl: "https://www.goodplanet.org",
     freeButtonLabel: "Vai al progetto gratuito GoodPlanet ↗",
@@ -380,16 +497,18 @@ export const RECOMMENDED_FILMS: RecommendedFilmItem[] = [
     synopsis:
       "Documentario girato interamente con riprese aeree in oltre 50 Paesi, voluto espressamente senza scopo di lucro per mostrare gratuitamente a scuole e cittadini il legame tra acqua dolce, agricoltura, foreste ed energia.",
     discussionPrompt:
-      "Selezionate 15 minuti dedicati all'acqua agricola per collegarli ai grafici di Mezzovalle."
+      "Selezionate 15 minuti dedicati all'acqua agricola per collegarli ai grafici sull'acqua nascosta."
   },
   {
     id: "film-materia-viva",
     title: "Materia Viva",
     year: 2023,
     durationMin: 75,
-    ageRange: "11–14 anni",
-    borgo: "Campolieto",
-    theme: "Economia circolare, smartphone, terre rare e RAEE in Italia",
+    ageBand: "media",
+    ageRange: "11–14 anni · Scuola Media",
+    topicId: "campolieto",
+    tematica: topicName("campolieto"),
+    themeDetail: "Economia circolare, smartphone, terre rare e RAEE in Italia",
     isFree: true,
     freeUrl: "https://www.raiplay.it",
     freeButtonLabel: "Cerca su RaiPlay (streaming gratuito) ↗",
@@ -406,9 +525,11 @@ export const RECOMMENDED_FILMS: RecommendedFilmItem[] = [
     title: "Affamati di spreco",
     year: 2015,
     durationMin: 52,
-    ageRange: "11–14 anni",
-    borgo: "Mezzovalle",
-    theme: "Spreco alimentare domestico e recupero delle eccedenze in Italia",
+    ageBand: "media",
+    ageRange: "11–14 anni · Scuola Media",
+    topicId: "mezzovalle",
+    tematica: topicName("mezzovalle"),
+    themeDetail: "Spreco alimentare domestico e recupero delle eccedenze in Italia",
     isFree: true,
     freeUrl: "https://www.raiscuola.rai.it",
     freeButtonLabel: "Cerca negli archivi Rai Scuola ↗",
@@ -423,15 +544,17 @@ export const RECOMMENDED_FILMS: RecommendedFilmItem[] = [
     title: "WALL·E",
     year: 2008,
     durationMin: 98,
-    ageRange: "6–14 anni",
-    borgo: "Dragano",
-    theme: "Iperconsumo, montagna di rifiuti, biodiversità e speranza",
+    ageBand: "primaria",
+    ageRange: "6–14 anni (Ideale per Scuola Primaria & famiglie)",
+    topicId: "dragano",
+    tematica: topicName("dragano"),
+    themeDetail: "Iperconsumo, montagna di rifiuti, biodiversità e speranza",
     isFree: false,
     accessLabel: "Non gratuito online · Disponibile su Disney+, noleggio digitale o mediateca scolastica",
     synopsis:
       "Capolavoro d'animazione Pixar praticamente privo di dialoghi nella prima parte: un piccolo robottino compattatore resta solo su una Terra sommersa dai rifiuti, finché un semplice germoglio riaccende la cura per il pianeta.",
     discussionPrompt:
-      "Prima ancora di riciclare, cosa avrebbero dovuto cambiare gli abitanti dell'Axiom? Perfetto per Primaria e Secondaria."
+      "Prima ancora di riciclare, cosa avrebbero dovuto cambiare gli abitanti dell'Axiom? Perfetto per Primaria e Media."
   },
   {
     id: "film-lorax",
@@ -439,15 +562,17 @@ export const RECOMMENDED_FILMS: RecommendedFilmItem[] = [
     originalTitle: "The Lorax",
     year: 2012,
     durationMin: 86,
-    ageRange: "6–11 anni",
-    borgo: "Dragano",
-    theme: "Tutela dei boschi, domanda inutile di prodotti usa e getta, aria pulita",
+    ageBand: "primaria",
+    ageRange: "6–10 anni · Scuola Primaria",
+    topicId: "dragano",
+    tematica: topicName("dragano"),
+    themeDetail: "Tutela dei boschi, domanda inutile di prodotti usa e getta, aria pulita",
     isFree: false,
     accessLabel: "Non gratuito online · Disponibile a noleggio digitale o in DVD / mediateche comunali",
     synopsis:
       "Tratto dal celebre libro illustrato del Dr. Seuss: racconta come l'avidità di produrre sempre più oggetti superflui distrugga una foresta intera finché un bambino decide di piantare l'ultimo seme rimasto.",
     discussionPrompt:
-      "In classe: quali oggetti 'Thneed' compriamo oggi anche se non ci servono davvero?"
+      "In classe: quali oggetti superflui compriamo oggi anche se non ci servono davvero?"
   },
   {
     id: "film-domani",
@@ -455,26 +580,30 @@ export const RECOMMENDED_FILMS: RecommendedFilmItem[] = [
     originalTitle: "Demain",
     year: 2015,
     durationMin: 118,
-    ageRange: "11–14 anni",
-    borgo: "Villacolle",
-    theme: "Agricoltura locale, filiera corta, scuole virtuose ed economia circolare",
+    ageBand: "media",
+    ageRange: "11–14 anni · Scuola Media",
+    topicId: "villacolle",
+    tematica: topicName("villacolle"),
+    themeDetail: "Agricoltura locale, filiera corta, scuole virtuose ed economia circolare",
     isFree: false,
     accessLabel: "Non gratuito online · Noleggio digitale (CHILI, Apple TV, Timvision) o cineforum scolastici",
     synopsis:
       "Documentario costruttivo premiato con il Premio César: invece di limitarsi alle emergenze, viaggia tra Francia, Inghilterra, Finlandia e India per mostrare orti urbani, mense sostenibili e scuole che già funzionano bene.",
     discussionPrompt:
-      "Prendete spunto dalle comunità mostrate nel film per scrivere un articolo del Decalogo di Mezzovalle e Villacolle."
+      "Prendete spunto dalle comunità mostrate nel film per scrivere un articolo del Decalogo del Cibo Sostenibile."
   },
   {
     id: "film-just-eat-it",
     title: "Just Eat It: A Food Waste Story",
     year: 2014,
     durationMin: 75,
-    ageRange: "11–14 anni",
-    borgo: "Mezzovalle",
-    theme: "Spreco estetico di frutta e verdura, date di scadenza e frigorifero",
+    ageBand: "media",
+    ageRange: "11–14 anni · Scuola Media",
+    topicId: "mezzovalle",
+    tematica: topicName("mezzovalle"),
+    themeDetail: "Spreco estetico di frutta e verdura, date di scadenza e frigorifero",
     isFree: false,
-    accessLabel: "Non gratuito online in Italia · Noleggio digitale / rassegne scolastiche (disponibili estratti sul web)",
+    accessLabel: "Non gratuito online in Italia · Noleggio digitale / rassegne scolastiche",
     synopsis:
       "Due giovani registi fanno una scommessa: smettere di comprare al supermercato per sei mesi e nutrirsi solo del cibo perfettamente commestibile scartato da negozi e fattorie per difetti estetici o date vicine.",
     discussionPrompt:
@@ -486,44 +615,50 @@ export const RECOMMENDED_FILMS: RecommendedFilmItem[] = [
     originalTitle: "Before the Flood",
     year: 2016,
     durationMin: 96,
-    ageRange: "12–14 anni",
-    borgo: "Dragano",
-    theme: "Clima, scelte alimentari, deforestazione e transizione energetica",
+    ageBand: "media",
+    ageRange: "12–14 anni · Scuola Media",
+    topicId: "dragano",
+    tematica: topicName("dragano"),
+    themeDetail: "Clima, scelte alimentari, deforestazione e transizione energetica",
     isFree: false,
     accessLabel: "Piattaforme on demand (Disney+ / archivi scolastici National Geographic)",
     synopsis:
       "Viaggio documentario prodotto da National Geographic che mostra in modo diretto come produzione alimentare, foreste, energia e consumi quotidiani influenzino l'equilibrio climatico del pianeta.",
     discussionPrompt:
-      "Confrontate le scelte energetiche e alimentari mostrate con i laboratori di Mezzovalle e Campolieto."
+      "Confrontate le scelte energetiche e alimentari mostrate con i percorsi di impronta ecologica e energia."
   },
   {
     id: "film-wasted",
     title: "Wasted! The Story of Food Waste",
     year: 2017,
     durationMin: 90,
-    ageRange: "12–14 anni",
-    borgo: "Villacolle",
-    theme: "Trasformazione creativa degli scarti alimentari e cucina circolare",
+    ageBand: "media",
+    ageRange: "12–14 anni · Scuola Media",
+    topicId: "villacolle",
+    tematica: topicName("villacolle"),
+    themeDetail: "Trasformazione creativa degli scarti alimentari e cucina circolare",
     isFree: false,
     accessLabel: "Non gratuito online · Disponibile a noleggio su Prime Video / Apple TV / archivi",
     synopsis:
       "Documentario dinamico che coinvolge chef internazionali e ricercatori per dimostrare come bucce, ossa, pane raffermo e parti meno usate degli alimenti possano diventare piatti gustosi evitando il cassonetto.",
     discussionPrompt:
-      "Progettate una ricetta antispreco di classe per la rubrica Cucina di Recupero."
+      "Progettate una ricetta antispreco di classe partendo da ingredienti recuperati."
   },
   {
     id: "film-plastic-ocean",
     title: "A Plastic Ocean",
     year: 2016,
     durationMin: 102,
-    ageRange: "11–14 anni",
-    borgo: "Villacolle",
-    theme: "Imballaggi monouso, microplastiche marine e alternative sfuse",
+    ageBand: "tutte",
+    ageRange: "10–14 anni (Primaria V e Media)",
+    topicId: "villacolle",
+    tematica: topicName("villacolle"),
+    themeDetail: "Imballaggi monouso, microplastiche marine e alternative sfuse",
     isFree: false,
     accessLabel: "Non gratuito su catalogo commerciale italiano · Utilizzato in rassegne ambientali scolastiche",
     synopsis:
       "Indagine giornalistica e scientifica girata in venti località marine per documentare dove finiscono milioni di imballaggi in plastica monouso e perché la prevenzione alla fonte è molto più efficace della pulizia a valle.",
     discussionPrompt:
-      "Collegate il documentario alle regole dell'Attività 4 'Caccia agli Imballaggi' di Villacolle."
+      "Collegate il documentario alle regole di Caccia agli Imballaggi e acquisto sfuso."
   }
 ];

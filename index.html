@@ -147,53 +147,63 @@
     .skip-link:focus { left: 16px; outline: 3px solid var(--focus); outline-offset: 2px; }
     :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
-    /* Single Header Bar */
+    /* Single / Responsive Header Bar (zero overlap between brand & scrollable nav) */
     .topbar {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       flex: 0 0 auto;
       z-index: 50;
+      position: relative;
     }
     .topbar-inner {
       width: 100%;
-      padding: 6px 16px;
+      padding: 6px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      box-sizing: border-box;
     }
     .brand {
       font-family: var(--font-display);
-      font-size: 1.04rem;
+      font-size: 1.02rem;
       font-weight: 700;
       color: var(--accent);
       text-decoration: none;
       white-space: nowrap;
-      flex-shrink: 0;
+      flex: 0 0 auto;
+      position: relative;
+      z-index: 2;
+      padding-right: 6px;
     }
     .primary-nav {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       overflow-x: auto;
+      overflow-y: hidden;
       scrollbar-width: thin;
-      scrollbar-color: #cbd5e1 transparent;
-      flex: 1 1 auto;
-      justify-content: center;
-      padding-bottom: 2px;
+      scrollbar-color: #94a3b8 transparent;
+      flex: 1 1 0%;
+      min-width: 0;
+      justify-content: safe center;
+      padding: 3px 6px 6px;
+      position: relative;
+      z-index: 1;
+      -webkit-overflow-scrolling: touch;
     }
-    .primary-nav::-webkit-scrollbar { height: 4px; }
-    .primary-nav::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    .primary-nav::-webkit-scrollbar { height: 5px; }
+    .primary-nav::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 999px; }
     .nav-btn {
       background: transparent;
       border: 0;
       border-bottom: 2.5px solid transparent;
       color: var(--text-muted);
       font-family: inherit;
-      font-size: 0.8rem;
+      font-size: 0.79rem;
       font-weight: 600;
-      padding: 5px 4px;
-      min-height: 34px;
+      padding: 5px 6px;
+      min-height: 32px;
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
@@ -206,7 +216,21 @@
       align-items: center;
       gap: 8px;
       flex-shrink: 0;
+      flex-wrap: wrap;
     }
+    .age-cta-select {
+      min-height: 36px;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 1px solid #94c5a5;
+      background: #eef8f2;
+      color: #14532d;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .age-cta-select:hover { border-color: var(--accent); }
     .icon-btn {
       display: inline-flex;
       align-items: center;
@@ -439,21 +463,26 @@
     }
     .map-canvas-box {
       flex: 1 1 0;
-      min-height: 0;
+      min-height: 210px;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
     .map-canvas-box .map-interactive-wrap {
+      position: relative;
+      width: min(100%, max(260px, calc((100dvh - 245px) * 16 / 9)));
       aspect-ratio: 16 / 9;
-      width: auto;
-      max-width: 100%;
-      max-height: 100%;
+      height: auto;
+      flex-shrink: 0;
       margin: 0 auto;
     }
     .map-canvas-box .map-interactive-wrap img.mascot-img {
+      display: block;
       width: 100%;
       height: 100%;
+      max-height: none;
       object-fit: cover;
     }
     .map-bottom-bar {
@@ -1495,6 +1524,36 @@
       height: 100%;
       max-height: 230px;
     }
+    .pres-vis-toggle {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pres-video-slot {
+      flex: 1 1 0;
+      min-height: 155px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pres-video-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #0f172a;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .pres-video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
     .pres-rico-tip {
       background: #dcfce7;
       border: 1px solid #86efac;
@@ -1559,6 +1618,17 @@
       .hero-box, .quiz-layout, .mascot-banner.wide, .ws-editor-grid, .coding-main-grid, .map-split-stage {
         grid-template-columns: 1fr;
       }
+      .map-split-stage {
+        overflow-y: auto;
+        grid-template-rows: auto auto;
+      }
+      .map-pane-left {
+        flex-shrink: 0;
+      }
+      .map-pane-right {
+        overflow: visible;
+        min-height: 360px;
+      }
       .coding-ide-split {
         grid-template-columns: 1fr;
       }
@@ -1572,6 +1642,19 @@
     }
 
     /* Mobile Landscape (16:9 handheld fit — keep 2-column split instead of stacking!) */
+    @media (max-width: 1600px) {
+      .topbar-inner { flex-wrap: wrap; gap: 6px 10px; padding: 6px 14px; }
+      .primary-nav {
+        order: 3;
+        flex: 0 0 100%;
+        width: 100%;
+        border-top: 1px solid var(--border);
+        padding: 4px 4px 6px;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+
     @media (max-width: 1080px) and (orientation: landscape) and (max-height: 560px) {
       .app-shell {
         width: 100vw;
@@ -1579,10 +1662,11 @@
         box-shadow: none;
       }
       .mobile-rotate-banner { display: none !important; }
-      .topbar-inner { padding: 4px 10px; gap: 8px; }
+      .topbar-inner { padding: 4px 10px; gap: 4px 8px; }
       .brand { font-size: 0.92rem; }
-      .nav-btn { font-size: 0.78rem; min-height: 30px; padding: 4px; }
-      .icon-btn { min-height: 30px; padding: 4px 8px; font-size: 0.76rem; }
+      .primary-nav { padding: 2px 2px 4px; }
+      .nav-btn { font-size: 0.77rem; min-height: 28px; padding: 3px 5px; }
+      .icon-btn, .age-cta-select { min-height: 30px; padding: 4px 8px; font-size: 0.75rem; }
       .main-wrap { padding: 8px 10px; }
       .hero-box, .quiz-layout, .coding-main-grid, .map-split-stage, .pres-slide-grid {
         grid-template-columns: 1.2fr 1fr;
@@ -1607,11 +1691,13 @@
       }
       .map-split-stage {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
+        grid-template-rows: auto auto;
+        overflow-y: auto;
       }
       .map-canvas-box .map-interactive-wrap {
         width: 100%;
         height: auto;
+        aspect-ratio: 16 / 9;
       }
     }
 
@@ -1624,6 +1710,8 @@
       .bar-row { grid-template-columns: 1fr; gap: 4px; }
       .stepper-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .topbar-inner { flex-wrap: wrap; gap: 6px; padding: 6px 10px; }
+      .topbar-cta { gap: 5px; }
+      .age-cta-select { font-size: 0.75rem; min-height: 32px; padding: 4px 6px; max-width: 150px; }
       .main-wrap { padding: 10px; }
       .primary-nav { width: 100%; gap: 8px; justify-content: flex-start; -webkit-overflow-scrolling: touch; }
       .btn, .seg-btn { white-space: normal; text-align: center; }
@@ -1682,6 +1770,7 @@
 
     /* ===== MODULO DIDATTICO INTERATTIVO SERR (MEZZOVALLE & VILLACOLLE) ===== */
     #sec-serr-lab .stage-body,
+    #sec-video .stage-body,
     #sec-portale .stage-body { overflow-y: auto; padding-right: 4px; }
     .serr-top-tabs { display: flex; gap: 6px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
     .serr-tab-btn { border: 1px solid var(--border); background: #fff; color: var(--text); border-radius: 999px; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.15s ease; }
@@ -1806,9 +1895,15 @@
           <button type="button" class="nav-btn" data-nav="territorio">Territorio</button>
           <button type="button" class="nav-btn" data-nav="galleria">Galleria</button>
           <button type="button" class="nav-btn" data-nav="evento">Evento</button>
+          <button type="button" class="nav-btn" data-nav="video">Video Intro</button>
           <button type="button" class="nav-btn" data-nav="portale">Portale &amp; Film</button>
         </nav>
         <div class="topbar-cta">
+          <select id="topbar-age-select" class="age-cta-select" aria-label="Suggerisci contenuti per fascia d'età" title="Suggerisci i contenuti per fascia d'età">
+            <option value="entrambi">Età: Tutte (6–14)</option>
+            <option value="primaria">Età: 6–10 (Primaria)</option>
+            <option value="secondaria">Età: 11–14 (Media)</option>
+          </select>
           <button type="button" class="icon-btn teacher-link" id="btn-open-progettazioni" aria-pressed="false" title="Area Docenti: tutte le progettazioni, 80 attività, 17 format, 20 compiti, 6 UdA e rubriche">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             <span>Progettazioni Docenti</span>
@@ -1817,7 +1912,7 @@
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
             <span id="fs-btn-label">Schermo intero</span>
           </button>
-          <button type="button" class="icon-btn" id="btn-open-settings" aria-haspopup="dialog" aria-controls="settings-modal-backdrop" title="Impostazioni dispositivo, livello scolastico e accessibilità">
+          <button type="button" class="icon-btn" id="btn-open-settings" aria-haspopup="dialog" aria-controls="settings-modal-backdrop" title="Impostazioni dispositivo, fascia d'età e accessibilità">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             <span>Impostazioni</span>
           </button>
@@ -1858,17 +1953,25 @@
                 La <strong>SERR (Settimana Europea per la Riduzione dei Rifiuti)</strong> è la campagna europea che invita scuole, famiglie e Comuni a intervenire <strong>prima che un rifiuto nasca</strong>: progettare oggetti riparabili, comprare in modo consapevole e azzerare gli sprechi quotidiani.
               </p>
               <p style="margin-bottom:8px;font-size:0.86rem;line-height:1.38;color:var(--text-muted);">
-                In questa piattaforma i cinque borghi collaborano su cinque temi complementari: <strong>Mezzovalle</strong> (<em>Acqua &amp; Impronta Nascosta</em>), <strong>Villacolle</strong> (<em>Filiera Corta &amp; Km Zero</em>), <strong>Cefalana</strong> (<em>Riparazione &amp; Ecodesign</em>), <strong>Dragano</strong> (<em>Bosco Pulito &amp; Compost</em>) e <strong>Campolieto</strong> (<em>RAEE, Energia &amp; Coding</em>).
+                La piattaforma è organizzata per <strong>tematiche educative</strong> collegate ai territori: <em>Acqua &amp; Impronta Nascosta</em> (Mezzovalle), <em>Filiera Corta &amp; Km Zero</em> (Villacolle), <em>Riparazione &amp; Ecodesign</em> (Cefalana), <em>Bosco Pulito &amp; Compost</em> (Dragano) e <em>RAEE, Energia &amp; Coding</em> (Campolieto).
               </p>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;" class="no-print">
+                <span style="font-size:0.8rem;font-weight:700;color:var(--text);">Suggerisci per fascia d'età:</span>
+                <div class="segmented" role="group" aria-label="Suggerisci contenuti per fascia d'età">
+                  <button type="button" class="seg-btn" data-level="entrambi" aria-pressed="true" style="min-height:30px;padding:3px 9px;font-size:0.78rem;">Tutte le età (6–14)</button>
+                  <button type="button" class="seg-btn" data-level="primaria" aria-pressed="false" style="min-height:30px;padding:3px 9px;font-size:0.78rem;">6–10 anni · Primaria</button>
+                  <button type="button" class="seg-btn" data-level="secondaria" aria-pressed="false" style="min-height:30px;padding:3px 9px;font-size:0.78rem;">11–14 anni · Media</button>
+                </div>
+              </div>
               <div style="display:flex;flex-wrap:wrap;gap:8px;" class="no-print">
-                <button type="button" class="btn btn-primary btn-sm" data-jump="presentazioni">1. Inizia dalle Lezioni &amp; Slide</button>
-                <button type="button" class="btn btn-secondary btn-sm" data-jump="tema">2. Mappa dei Cinque Borghi</button>
-                <button type="button" class="btn btn-sm" data-jump="giochi">3. Giochi &amp; Coding</button>
-                <button type="button" class="btn btn-primary btn-sm" data-jump="serr-lab">4. Laboratori Mezzovalle &amp; Villacolle →</button>
+                <button type="button" class="btn btn-primary btn-sm" data-jump="video">1. Video Intro (3–5 min)</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-jump="tema">2. Mappa &amp; Video</button>
+                <button type="button" class="btn btn-sm" data-jump="presentazioni">3. Lezioni &amp; Slide</button>
+                <button type="button" class="btn btn-primary btn-sm" data-jump="serr-lab">4. Laboratori SERR →</button>
                 <button type="button" class="btn btn-sm" data-jump="portale">5. Portale, App &amp; Film</button>
               </div>
               <div style="margin-top:5px;font-size:0.78rem;color:var(--text-muted);">
-                <strong>Percorso studenti:</strong> esplora le slide di ogni argomento, supera i mini-quiz intermedi e sblocca il Quiz Finale. Le progettazioni per i docenti sono in alto.
+                <strong>Percorso consigliato:</strong> guarda il breve video introduttivo di ciascuna tematica, esplora le slide e sblocca i quiz. Le progettazioni docenti sono in alto.
               </div>
             </div>
             <div class="mascot-frame" style="height:100%;justify-content:space-between;">
@@ -1911,24 +2014,24 @@
 
             <article class="card" style="display:flex;flex-direction:column;justify-content:space-between;min-height:210px;padding:11px 14px;">
               <div>
-                <div class="meta-line" style="margin-bottom:3px;font-size:0.8rem;">Direttiva Quadro UE 2008/98/CE</div>
-                <h3 style="margin-bottom:3px;font-size:1.05rem;">La Gerarchia Europea delle 5R</h3>
-                <p style="font-size:0.83rem;margin-bottom:4px;">Prima di differenziare nel bidone, la scelta migliore è sempre in cima alla piramide rovesciata: <strong>prevenire</strong> e <strong>riparare</strong>.</p>
+                <div class="meta-line" style="margin-bottom:3px;font-size:0.8rem;">Regola Zero Waste · Termini Originali Inglesi</div>
+                <h3 style="margin-bottom:3px;font-size:1.05rem;">Le 5R Originali (e perché in italiano cambiano)</h3>
+                <p style="font-size:0.8rem;margin-bottom:5px;line-height:1.36;">La regola delle <strong>5R</strong> nasce in inglese: <strong>Refuse</strong> (rifiuta il superfluo), <strong>Reduce</strong> (riduci), <strong>Reuse</strong> (riusa e ripara), <strong>Recycle</strong> (ricicla) e <strong>Rot</strong> (composta gli scarti organici). Tradotta in italiano non ha cinque parole con la R — soprattutto la 5ª (<strong>Rot</strong> = <em>composta</em>, talvolta sostituita in altre versioni con <em>Repurpose</em> o <em>Recover</em>): per evitare errori, nel grafico qui sotto usiamo i <strong>5 termini originali in inglese</strong>.</p>
               </div>
-              <div style="flex:1 1 0;min-height:145px;display:flex;align-items:center;justify-content:center;width:100%;">
-                <svg viewBox="0 0 360 190" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;max-height:195px;max-width:460px;display:block;" role="img" aria-labelledby="svg-gerarchia-title">
-                  <title id="svg-gerarchia-title">Piramide rovesciata della gerarchia europea dei rifiuti: dalla prevenzione allo smaltimento</title>
-                  <rect x="2" y="2" width="356" height="186" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
-                  <polygon points="28,12 332,12 304,42 56,42" fill="#14532d" />
-                  <text x="180" y="31" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1. Prevenzione (Progetta e riduci)</text>
-                  <polygon points="58,47 302,47 276,77 84,77" fill="#166534" />
-                  <text x="180" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2. Riutilizzo e Riparazione</text>
-                  <polygon points="86,82 274,82 250,112 110,112" fill="#0369a1" />
-                  <text x="180" y="101" text-anchor="middle" font-size="11.5" font-weight="700" fill="#ffffff">3. Riciclaggio dei materiali</text>
-                  <polygon points="112,117 248,117 224,145 136,145" fill="#475569" />
-                  <text x="180" y="135" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">4. Altro recupero</text>
-                  <polygon points="138,150 222,150 202,176 158,176" fill="#991b1b" />
-                  <text x="180" y="167" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">5. Smaltimento</text>
+              <div style="flex:1 1 0;min-height:148px;display:flex;align-items:center;justify-content:center;width:100%;">
+                <svg viewBox="0 0 360 192" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;max-height:195px;max-width:460px;display:block;" role="img" aria-labelledby="svg-gerarchia-title">
+                  <title id="svg-gerarchia-title">Piramide rovesciata delle 5R originali in inglese: 1. Refuse, 2. Reduce, 3. Reuse, 4. Recycle, 5. Rot</title>
+                  <rect x="2" y="2" width="356" height="188" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
+                  <polygon points="20,12 340,12 316,42 44,42" fill="#14532d" />
+                  <text x="180" y="31.5" text-anchor="middle" font-size="13" font-weight="800" fill="#ffffff">1. Refuse</text>
+                  <polygon points="48,47 312,47 288,77 72,77" fill="#166534" />
+                  <text x="180" y="66.5" text-anchor="middle" font-size="13" font-weight="800" fill="#ffffff">2. Reduce</text>
+                  <polygon points="76,82 284,82 260,112 100,112" fill="#0369a1" />
+                  <text x="180" y="101.5" text-anchor="middle" font-size="13" font-weight="800" fill="#ffffff">3. Reuse</text>
+                  <polygon points="104,117 256,117 232,147 128,147" fill="#475569" />
+                  <text x="180" y="136.5" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffffff">4. Recycle</text>
+                  <polygon points="130,152 230,152 212,180 148,180" fill="#92400e" />
+                  <text x="180" y="170.5" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffffff">5. Rot</text>
                 </svg>
               </div>
             </article>
@@ -2091,12 +2194,12 @@
         <div data-subpanel="stud" id="subpanel-stud-pact" class="subpanel-fit" style="display:none;">
           <div class="grid-2" style="margin-bottom:0;">
             <article class="card" data-level-block="primaria">
-              <div class="meta-line">Primaria · Cinque Borghi SERR</div>
-              <h3>Le 5R e il viaggio della merenda</h3>
+              <div class="meta-line">Primaria · Cinque Borghi SERR (5R originali inglesi)</div>
+              <h3>Le 5R inglesi e il viaggio della merenda</h3>
               <ul style="margin-bottom:0;">
-                <li><strong>Riduci e Rifiuta il superfluo:</strong> niente doppi incarti o bottigliette usa e getta.</li>
-                <li><strong>Riusa e Ripara:</strong> portamerenda lavabile, borraccia, quaderni finiti e giochi riparati.</li>
-                <li><strong>Ricicla bene:</strong> verifica sempre i simboli e il calendario del tuo Comune.</li>
+                <li><strong>Refuse &amp; Reduce (Rifiuta il superfluo e Riduci):</strong> niente doppi incarti o bottigliette usa e getta.</li>
+                <li><strong>Reuse (Riusa e Ripara):</strong> portamerenda lavabile, borraccia, quaderni finiti e giochi riparati.</li>
+                <li><strong>Recycle &amp; Rot (Ricicla &amp; Composta):</strong> verifica simboli, umido compostabile e calendario del tuo Comune.</li>
               </ul>
             </article>
             <article class="card" data-level-block="secondaria">
@@ -2123,10 +2226,20 @@
     <section id="sec-presentazioni" class="section-panel" aria-labelledby="h-presentazioni">
       <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-shrink:0;">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <h2 id="h-presentazioni" style="margin:0;font-size:1.18rem;">Lezioni &amp; Slide Interattive</h2>
+          <h2 id="h-presentazioni" style="margin:0;font-size:1.18rem;">Lezioni &amp; Slide per Tematica</h2>
           <span class="meta-line" style="margin:0;font-size:0.8rem;" id="pres-unlocked-counter">Moduli completati: 0 / 6</span>
         </div>
-        <div class="pres-deck-tabs no-print" id="pres-deck-tabs" role="tablist" aria-label="Scegli argomento della presentazione"></div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;" class="no-print">
+          <select id="pres-comune-select" class="field-select" style="width:auto;min-height:34px;padding:4px 8px;font-size:0.8rem;" aria-label="Seleziona un Comune per vedere la sua tematica">
+            <option value="">Seleziona Comune → Tematica...</option>
+            <option value="mezzovalle">Mezzovalle → Acqua &amp; Impronta Nascosta</option>
+            <option value="villacolle">Villacolle → Filiera Corta &amp; Imballi</option>
+            <option value="cefalana">Cefalana → Riparazione &amp; Ecodesign</option>
+            <option value="dragano">Dragano → Bosco Pulito &amp; Compost</option>
+            <option value="campolieto">Campolieto → RAEE, Energia &amp; IA</option>
+          </select>
+          <div class="pres-deck-tabs" id="pres-deck-tabs" role="tablist" aria-label="Scegli tematica della presentazione"></div>
+        </div>
       </div>
 
       <div class="stage-body">
@@ -2337,8 +2450,8 @@
       <div id="panel-game-5" class="card" style="display:none;">
         <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;">
           <div>
-            <h3>Gioco 5 (Villacolle): “La Corsa dei Chilometri”</h3>
-            <p style="margin-bottom:0;">Regola: tra i due alimenti proposti per la spesa di Villacolle, scegli quello che percorre meno chilometri (filiera corta e stagione)! Obiettivo: arrivare al traguardo con meno km totali possibili.</p>
+            <h3>Gioco 5 · Filiera Corta &amp; Km Zero (Villacolle): “La Corsa dei Chilometri”</h3>
+            <p style="margin-bottom:0;">Regola: tra i due alimenti proposti, scegli quello che percorre meno chilometri (filiera corta di Villacolle e stagione)! Obiettivo: arrivare al traguardo con meno km totali possibili.</p>
           </div>
           <button type="button" class="btn no-print" id="btn-g5-reset">Ricomincia Corsa</button>
         </div>
@@ -2579,40 +2692,43 @@
           <div class="grid-5-borghi" style="margin-bottom:0;flex:1 1 0;min-height:0;align-content:stretch;">
             <article class="card">
               <div>
-                <div class="meta-line">Mezzovalle · L'Impronta Nascosta</div>
-                <h3 style="font-size:1rem;margin-bottom:4px;">Acqua Virtuale &amp; Cibo</h3>
+                <div class="meta-line">Tematica 1 · Comune abbinato: Mezzovalle</div>
+                <h3 style="font-size:1rem;margin-bottom:4px;">Acqua Virtuale, Cibo &amp; Impronta Nascosta</h3>
                 <p style="font-size:0.84rem;margin-bottom:0;">Acqua verde, blu e grigia negli alimenti, regola FIFO, etichette e recupero creativo degli avanzi.</p>
               </div>
               <button type="button" class="btn btn-primary no-print" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" data-open-lesson="mezzovalle">Apri Lezione &amp; Slide</button>
             </article>
             <article class="card">
               <div>
-                <div class="meta-line">Villacolle · Dal Campo alla Tavola</div>
-                <h3 style="font-size:1rem;margin-bottom:4px;">Filiera Corta &amp; Km Zero</h3>
-                <p style="font-size:0.84rem;margin-bottom:0;">Stagionalità di novembre, precycling sugli imballaggi e scelte sfuse dai produttori vicini.</p>
+                <div class="meta-line">Tematica 2 · Comune abbinato: Villacolle</div>
+                <h3 style="font-size:1rem;margin-bottom:4px;">Filiera Corta, Stagionalità &amp; Imballaggi</h3>
+                <p style="font-size:0.84rem;margin-bottom:0;">Lezione completa in 8 tappe: serre vs pieno campo, calcolo della Tara %, codici CONAI e Tethered Caps, video di supporto e quiz.</p>
               </div>
-              <button type="button" class="btn btn-primary no-print" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" data-open-lesson="villacolle">Apri Lezione &amp; Slide</button>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;" class="no-print">
+                <button type="button" class="btn btn-primary" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" data-open-lesson="villacolle">Apri Lezione &amp; Slide</button>
+                <button type="button" class="btn btn-secondary" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" onclick="window.openSerrModule && window.openSerrModule('villacolle', 'lezione')">Lab Lezione &amp; Video</button>
+              </div>
             </article>
             <article class="card">
               <div>
-                <div class="meta-line">Cefalana · La Rocca delle Terme</div>
-                <h3 style="font-size:1rem;margin-bottom:4px;">Riparazione &amp; Ecodesign</h3>
+                <div class="meta-line">Tematica 3 · Comune abbinato: Cefalana</div>
+                <h3 style="font-size:1rem;margin-bottom:4px;">Riparazione, Acqua Storica &amp; Ecodesign</h3>
                 <p style="font-size:0.84rem;margin-bottom:0;">Viti vs colla, Repair Café, vuoto a rendere, vetro/alluminio e caccia al greenwashing.</p>
               </div>
               <button type="button" class="btn btn-primary no-print" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" data-open-lesson="cefalana">Apri Lezione &amp; Slide</button>
             </article>
             <article class="card">
               <div>
-                <div class="meta-line">Dragano · Il Bosco del Gorgo</div>
-                <h3 style="font-size:1rem;margin-bottom:4px;">Bosco Pulito &amp; Compost</h3>
+                <div class="meta-line">Tematica 4 · Comune abbinato: Dragano</div>
+                <h3 style="font-size:1rem;margin-bottom:4px;">Bosco Pulito, Biodiversità &amp; Compost</h3>
                 <p style="font-size:0.84rem;margin-bottom:0;">Compostiera scolastica, differenza tra biodegradabile e EN 13432 e sentieri senza tracce.</p>
               </div>
               <button type="button" class="btn btn-primary no-print" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" data-open-lesson="dragano">Apri Lezione &amp; Slide</button>
             </article>
             <article class="card">
               <div>
-                <div class="meta-line">Campolieto · Il Paese del Grano</div>
-                <h3 style="font-size:1rem;margin-bottom:4px;">RAEE, Energia &amp; Coding IA</h3>
+                <div class="meta-line">Tematica 5 · Comune abbinato: Campolieto</div>
+                <h3 style="font-size:1rem;margin-bottom:4px;">RAEE, Digitale Sostenibile &amp; Energia</h3>
                 <p style="font-size:0.84rem;margin-bottom:0;">Prevenzione rifiuti elettronici e pile, risparmio energetico, coding differenziata e uso critico dell'IA.</p>
               </div>
               <button type="button" class="btn btn-primary no-print" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" data-open-lesson="campolieto">Apri Lezione &amp; Slide</button>
@@ -2620,8 +2736,8 @@
             <article class="card" style="background:var(--accent-soft);border-color:#86efac;">
               <div>
                 <div class="meta-line">Fondamenti · 21–29 Novembre</div>
-                <h3 style="font-size:1rem;margin-bottom:4px;">SERR 2026 &amp; Gerarchia 5R</h3>
-                <p style="font-size:0.84rem;margin-bottom:0;">Le basi comuni per tutti i Cinque Borghi: prevenzione a monte, riuso e merenda senza involucri.</p>
+                <h3 style="font-size:1rem;margin-bottom:4px;">SERR 2026 &amp; Le 5R Originali</h3>
+                <p style="font-size:0.84rem;margin-bottom:0;">I 5 termini originali inglesi (<em>Refuse, Reduce, Reuse, Recycle, Rot</em>): tradotti in italiano la 5ª R significa <em>compostare</em> e può variare in altri elenchi.</p>
               </div>
               <button type="button" class="btn btn-secondary no-print" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" data-open-lesson="serr">Apri Lezione Base</button>
             </article>
@@ -2714,13 +2830,13 @@
                     <input type="text" id="work-alias" class="field-input" required placeholder="Es. GruppoUlivo2A" maxlength="28" />
                   </div>
                   <div>
-                    <label for="work-town" class="toolbar-label">Borgo:</label>
+                    <label for="work-town" class="toolbar-label">Tematica / Comune:</label>
                     <select id="work-town" class="field-select">
-                      <option value="Mezzovalle">Mezzovalle</option>
-                      <option value="Villacolle">Villacolle</option>
-                      <option value="Cefalana">Cefalana</option>
-                      <option value="Dragano">Dragano</option>
-                      <option value="Campolieto">Campolieto</option>
+                      <option value="Mezzovalle">Acqua &amp; Cibo · Mezzovalle</option>
+                      <option value="Villacolle">Filiera Corta &amp; Imballi · Villacolle</option>
+                      <option value="Cefalana">Riparazione &amp; Ecodesign · Cefalana</option>
+                      <option value="Dragano">Bosco Pulito &amp; Compost · Dragano</option>
+                      <option value="Campolieto">RAEE &amp; Energia · Campolieto</option>
                     </select>
                   </div>
                 </div>
@@ -2867,16 +2983,16 @@
         <div id="panel-cat-activities" class="subpanel-fit">
           <div class="filter-bar no-print" style="padding:10px 12px;margin-bottom:8px;">
             <div>
-              <label for="cat-filter-town" class="toolbar-label">Borgo / Tema SERR:</label>
+              <label for="cat-filter-town" class="toolbar-label">Tematica SERR (o seleziona Comune):</label>
               <select id="cat-filter-town" class="field-select" style="min-height:36px;padding:4px 8px;">
-                <option value="tutti">Tutti i borghi (80 attività)</option>
-                <option value="selected">Selezionati sulla Mappa</option>
-                <option value="mezzovalle">Mezzovalle · Impronta Nascosta (16)</option>
-                <option value="villacolle">Villacolle · Dal Campo alla Tavola (16)</option>
-                <option value="cefalana">Cefalana · Riparazione &amp; Ecodesign (12)</option>
-                <option value="dragano">Dragano · Bosco Pulito &amp; Compost (12)</option>
-                <option value="campolieto">Campolieto · RAEE, Digitale &amp; Energia (12)</option>
-                <option value="comuni">Percorsi condivisi 5 Borghi (12)</option>
+                <option value="tutti">Tutte le tematiche (80 attività)</option>
+                <option value="selected">Tematiche dei Comuni attivi su Mappa</option>
+                <option value="mezzovalle">Acqua &amp; Impronta Nascosta · Comune: Mezzovalle (16)</option>
+                <option value="villacolle">Filiera Corta &amp; Km Zero · Comune: Villacolle (16)</option>
+                <option value="cefalana">Riparazione &amp; Ecodesign · Comune: Cefalana (12)</option>
+                <option value="dragano">Bosco Pulito &amp; Compost · Comune: Dragano (12)</option>
+                <option value="campolieto">RAEE, Digitale &amp; Energia · Comune: Campolieto (12)</option>
+                <option value="comuni">Percorsi condivisi intertematici (12)</option>
               </select>
             </div>
             <div>
@@ -2927,8 +3043,8 @@
         <div id="panel-doc-rubriche" class="subpanel-fit" style="display:none;">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-shrink:0;" class="no-print">
             <div class="segmented" role="tablist" aria-label="Sottoviste Rubriche e Comuni">
-              <button type="button" class="seg-btn" role="tab" data-subtab="docrub" data-subtarget="docrub-mezz" aria-pressed="true" aria-selected="true">Rubrica Mezzovalle</button>
-              <button type="button" class="seg-btn" role="tab" data-subtab="docrub" data-subtarget="docrub-villa" aria-pressed="false" aria-selected="false">Rubrica Villacolle</button>
+              <button type="button" class="seg-btn" role="tab" data-subtab="docrub" data-subtarget="docrub-mezz" aria-pressed="true" aria-selected="true">Rubrica Acqua &amp; Cibo</button>
+              <button type="button" class="seg-btn" role="tab" data-subtab="docrub" data-subtarget="docrub-villa" aria-pressed="false" aria-selected="false">Rubrica Filiera &amp; Imballi</button>
               <button type="button" class="seg-btn" role="tab" data-subtab="docrub" data-subtarget="docrub-cal" aria-pressed="false" aria-selected="false">Comuni &amp; Calendario</button>
             </div>
             <button type="button" class="btn btn-primary" id="btn-print-territorio" style="min-height:34px;padding:4px 12px;font-size:0.84rem;">Stampa schede A4</button>
@@ -2936,7 +3052,7 @@
 
           <div data-subpanel="docrub" id="subpanel-docrub-mezz" class="subpanel-fit">
             <article class="card" style="margin-bottom:0;">
-              <div class="meta-line"><span>Mezzovalle · L'Impronta Nascosta</span><span aria-hidden="true">·</span><span>Matematica, Scienze, Ed. Civica</span></div>
+              <div class="meta-line"><span>Tematica: Acqua &amp; Impronta Nascosta (Comune: Mezzovalle)</span><span aria-hidden="true">·</span><span>Matematica, Scienze, Ed. Civica</span></div>
               <h3>“L’Impronta Nascosta: calcolare il valore del cibo e delle risorse”</h3>
               <p class="source-note" style="border-top:0;padding-top:0;margin-bottom:8px;">Valori indicativi WFN (da verificare): pane 1.608 L/kg, formaggio 3.178 L/kg, mela 822 L/kg, pomodoro 214 L/kg.</p>
               <div class="table-wrap" style="margin-bottom:8px;">
@@ -2961,7 +3077,7 @@
 
           <div data-subpanel="docrub" id="subpanel-docrub-villa" class="subpanel-fit" style="display:none;">
             <article class="card" style="margin-bottom:0;">
-              <div class="meta-line"><span>Villacolle · Dal Campo alla Tavola</span><span aria-hidden="true">·</span><span>Geografia, Tecnologia, Italiano</span></div>
+              <div class="meta-line"><span>Tematica: Filiera Corta &amp; Km Zero (Comune: Villacolle)</span><span aria-hidden="true">·</span><span>Geografia, Tecnologia, Italiano</span></div>
               <h3>“Dal Campo alla Tavola: filiera corta e scelte a impatto zero”</h3>
               <div class="table-wrap" style="margin-bottom:8px;">
                 <table>
@@ -3029,18 +3145,36 @@
     <section id="sec-serr-lab" class="section-panel" aria-labelledby="h-serr-lab">
       <div class="stage-head">
         <div>
-          <div class="meta-line" style="margin-bottom:2px;">Modulo Didattico Interattivo · Percorsi Mezzovalle &amp; Villacolle</div>
+          <div class="meta-line" style="margin-bottom:2px;">Modulo Didattico Interattivo · Tematiche Acqua &amp; Cibo (Mezzovalle) e Filiera Corta (Villacolle)</div>
           <h2 id="h-serr-lab">SETTIMANA EUROPEA PER LA RIDUZIONE DEI RIFIUTI</h2>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button type="button" class="btn btn-sm" onclick="window.openSerrModule && window.openSerrModule('mezzovalle', 'home')">Percorso A · Mezzovalle</button>
-          <button type="button" class="btn btn-sm" onclick="window.openSerrModule && window.openSerrModule('villacolle', 'home')">Percorso B · Villacolle</button>
+          <button type="button" class="btn btn-sm" onclick="window.openSerrModule && window.openSerrModule('mezzovalle', 'home')">Tematica A · Acqua &amp; Cibo (Mezzovalle)</button>
+          <button type="button" class="btn btn-sm" onclick="window.openSerrModule && window.openSerrModule('villacolle', 'home')">Tematica B · Filiera &amp; Imballi (Villacolle)</button>
           <button type="button" class="btn btn-primary btn-sm" onclick="window.openSerrModule && window.openSerrModule('overview')">Hub SERR</button>
         </div>
       </div>
       <div class="stage-body">
         <div id="serr-lab-root">
           <p style="font-size:0.88rem;color:var(--text-muted);">Caricamento laboratori SERR Mezzovalle e Villacolle…</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-video" class="section-panel" aria-labelledby="h-video">
+      <div class="stage-head">
+        <div>
+          <div class="meta-line" style="margin-bottom:2px;">Video Brevi (3–5 min) · Scuola Primaria e Scuola Media</div>
+          <h2 id="h-video">Video Introduttivi delle 5 Tematiche</h2>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-sm" data-jump="tema">Apri Mappa Interattiva</button>
+          <button type="button" class="btn btn-sm" data-jump="portale">Portale &amp; Film lunghi</button>
+        </div>
+      </div>
+      <div class="stage-body">
+        <div id="video-intro-root">
+          <p style="font-size:0.88rem;color:var(--text-muted);">Caricamento video introduttivi per fascia d'età…</p>
         </div>
       </div>
     </section>
@@ -3089,23 +3223,23 @@
         </div>
 
         <div class="card-soft">
-          <div class="toolbar-label" id="level-label" style="display:block;margin-bottom:6px;">Livello scolastico:</div>
+          <div class="toolbar-label" id="level-label" style="display:block;margin-bottom:6px;">Suggerisci contenuti per fascia d'età:</div>
           <div class="segmented" role="group" aria-labelledby="level-label">
-            <button type="button" class="seg-btn" data-level="primaria" aria-pressed="false">Primaria</button>
-            <button type="button" class="seg-btn" data-level="secondaria" aria-pressed="false">Secondaria I grado</button>
-            <button type="button" class="seg-btn" data-level="entrambi" aria-pressed="true">Entrambi</button>
+            <button type="button" class="seg-btn" data-level="primaria" aria-pressed="false">6–10 anni (Primaria)</button>
+            <button type="button" class="seg-btn" data-level="secondaria" aria-pressed="false">11–14 anni (Scuola Media)</button>
+            <button type="button" class="seg-btn" data-level="entrambi" aria-pressed="true">Tutte le età (6–14)</button>
           </div>
         </div>
 
         <div class="card-soft">
-          <div class="toolbar-label" id="town-label" style="display:block;margin-bottom:6px;">Filtro rapido Borgo (Quiz):</div>
+          <div class="toolbar-label" id="town-label" style="display:block;margin-bottom:6px;">Filtra per Tematica o Comune (Quiz):</div>
           <div class="segmented" role="group" aria-labelledby="town-label" style="flex-wrap:wrap;">
-            <button type="button" class="seg-btn" data-townfilter="tutti" aria-pressed="true">Tutti</button>
-            <button type="button" class="seg-btn" data-townfilter="mezzovalle" aria-pressed="false">Mezzovalle</button>
-            <button type="button" class="seg-btn" data-townfilter="villacolle" aria-pressed="false">Villacolle</button>
-            <button type="button" class="seg-btn" data-townfilter="cefalana" aria-pressed="false">Cefalana</button>
-            <button type="button" class="seg-btn" data-townfilter="dragano" aria-pressed="false">Dragano</button>
-            <button type="button" class="seg-btn" data-townfilter="campolieto" aria-pressed="false">Campolieto</button>
+            <button type="button" class="seg-btn" data-townfilter="tutti" aria-pressed="true">Tutte</button>
+            <button type="button" class="seg-btn" data-townfilter="mezzovalle" aria-pressed="false">Acqua &amp; Cibo (Mezzovalle)</button>
+            <button type="button" class="seg-btn" data-townfilter="villacolle" aria-pressed="false">Km Zero &amp; Imballi (Villacolle)</button>
+            <button type="button" class="seg-btn" data-townfilter="cefalana" aria-pressed="false">Riparazione &amp; Ecodesign (Cefalana)</button>
+            <button type="button" class="seg-btn" data-townfilter="dragano" aria-pressed="false">Bosco &amp; Compost (Dragano)</button>
+            <button type="button" class="seg-btn" data-townfilter="campolieto" aria-pressed="false">RAEE &amp; Energia (Campolieto)</button>
           </div>
         </div>
 
@@ -3302,6 +3436,16 @@
       comuni: "Percorsi Condivisi"
     };
 
+    const TOPIC_LABELS = {
+      serr: "SERR & Gerarchia 5R",
+      mezzovalle: "Acqua, Cibo & Impronta Nascosta",
+      villacolle: "Filiera Corta, Km Zero & Imballaggi",
+      cefalana: "Riparazione, Acqua Storica & Ecodesign",
+      dragano: "Bosco Pulito, Natura & Compostaggio",
+      campolieto: "RAEE, Digitale Sostenibile & Energia",
+      comuni: "Percorsi Condivisi"
+    };
+
     const TOWN_DATA = {
       mezzovalle: {
         name: "Mezzovalle",
@@ -3351,8 +3495,9 @@
         },
         topicTools: [
           { label: "Apri Laboratorio Villacolle (B1–B5)", kind: "serrLab", labTab: "villacolle", labSub: "home", style: "primary" },
+          { label: "Lezione Completa & Video (Villacolle)", kind: "serrLab", labTab: "villacolle", labSub: "lezione", style: "secondary" },
           { label: "Studia Presentazione: Km 0 & Imballi", kind: "lesson", lessonId: "villacolle", style: "" },
-          { label: "Gioca: Corsa dei Km (Gioco 5)", kind: "game", gameNum: 5, style: "secondary" },
+          { label: "Gioca: Corsa dei Km (Gioco 5)", kind: "game", gameNum: 5, style: "" },
           { label: "Gioca: Stagionalità 60s (Gioco 7)", kind: "game", gameNum: 7, style: "" },
           { label: "Quiz Villacolle (Km Zero & Imballi)", kind: "quiz", town: "villacolle", style: "" }
         ]
@@ -3454,9 +3599,9 @@
     /* ==================== KNOWLEDGE BASE CHIUSA PER RICOBOT ==================== */
     const CHAT_KB = [
       { keys: ["serr", "2026", "date", "slogan", "quando", "cos'è", "settimana"], ans: "La SERR 2026 (Settimana Europea per la Riduzione dei Rifiuti) si svolge dal 21 al 29 novembre 2026 nei Cinque Borghi. Slogan: 'Progetta meglio, acquista consapevole, riduci gli sprechi'." },
-      { keys: ["5r", "gerarchia", "piramide", "prevenzione", "riciclo", "riuso"], ans: "La gerarchia europea (Direttiva 2008/98/CE) mette al 1° posto la Prevenzione (non creare il rifiuto), poi Riutilizzo e Riparazione, Riciclaggio, Recupero e infine Smaltimento." },
+      { keys: ["5r", "gerarchia", "piramide", "prevenzione", "riciclo", "riuso", "refuse", "reduce", "rot"], ans: "La formula originale delle 5R (Zero Waste) nasce in inglese con 5 parole che iniziano tutte per R: Refuse (Rifiuta il superfluo), Reduce (Riduci), Reuse (Riusa), Recycle (Ricicla) e Rot (Composta gli scarti organici). Tradotte in italiano non iniziano tutte con la R — soprattutto la quinta ('Rot' = composta), che in altre versioni cambia in 'Repurpose' o 'Recover': per chiarezza manteniamo i 5 termini inglesi originali!" },
       { keys: ["idrica", "acqua", "virtuale", "litri", "mezzovalle"], ans: "Mezzovalle approfondisce l'Impronta Idrica e il valore del cibo: l'acqua virtuale comprende tutta l'acqua usata per coltivare, trasformare e produrre un alimento (es. pane ~1.608 L/kg, mele ~822 L/kg secondo valori medi indicativi Water Footprint Network, da verificare)." },
-      { keys: ["filiera", "km", "stagione", "stagionalità", "villacolle", "imballaggi"], ans: "Villacolle lavora su 'Dal Campo alla Tavola': scegliere alimenti locali di stagione e sfusi riduce chilometri di trasporto, refrigerazione e imballaggi monouso." },
+      { keys: ["filiera", "km", "stagione", "stagionalità", "villacolle", "imballaggi", "tara", "tethered"], ans: "Villacolle lavora su Filiera Corta, Stagionalità e Imballaggi: distingue filiera corta (pochi passaggi) da Km 0 (vicinanza), smaschera le serre riscaldate fuori stagione, calcola la tara (%) sugli involucri, usa il Precycling (Refuse & Reduce allo scaffale) e legge sigle CONAI, EN 13432 e tappi legati Tethered Caps." },
       { keys: ["cefalana", "riparazione", "riparare", "ecodesign", "vetro"], ans: "Cefalana cura Riparazione, Acqua & Ecodesign: viti al posto di colle permanenti, Repair Café, vuoto a rendere e materiali permanenti come vetro e alluminio." },
       { keys: ["dragano", "bosco", "compost", "umido", "sentieri", "biodiversità"], ans: "Dragano lavora su Bosco Pulito & Biodiversità: compostaggio dell'umido vegetale, tempi di degradazione nel suolo e regole 'Zero tracce' sui sentieri." },
       { keys: ["campolieto", "raee", "pile", "telefono", "energia", "digitale", "coding"], ans: "Campolieto approfondisce RAEE, Digitale Sostenibile & Energia: pile e dispositivi elettronici ai centri dedicati, riduzione consumi energetici e pensiero computazionale con il Coding Missione Raccolta Differenziata." },
@@ -3508,7 +3653,7 @@
       { diff: 3, q: "In un pranzo consapevole a casa, dove si controlla prima di fare la spesa?", opts: ["In frigo e in dispensa, per usare prima ciò che già abbiamo", "Solo in televisione", "Da nessuna parte"], ans: 0, exp: "La lista della spesa dopo aver controllato la dispensa evita doppioni destinati a scadere." },
       { diff: 3, q: "Quale di questi oggetti si può riciclare moltissime volte se conferito pulito?", opts: ["Una bottiglia di vetro", "Un fazzoletto sporco", "Uno scontrino chimico"], ans: 0, exp: "Il vetro è un materiale permanente riciclabile quasi all'infinito." },
       { diff: 3, q: "Che cosa rappresenta una t-shirt scambiata al mercatino scolastico di Mezzovalle?", opts: ["Migliaia di litri d'acqua risparmiati evitando di produrne una nuova", "Uno spreco", "Un rifiuto pericoloso"], ans: 0, exp: "Il riuso dei vestiti taglia consumi idrici e rifiuti tessili." },
-      { diff: 3, q: "Qual è il gradino più alto e importante delle 5R?", opts: ["Prevenzione (non produrre proprio lo spreco)", "Discarica", "Bruciare tutto"], ans: 0, exp: "Il miglior rifiuto è sempre quello che non abbiamo creato!" }
+      { diff: 3, q: "Qual è il gradino più alto delle 5R (Refuse & Reduce in inglese / Prevenzione in italiano)?", opts: ["Prevenzione (Refuse & Reduce: non produrre proprio lo spreco)", "Discarica", "Bruciare tutto"], ans: 0, exp: "In italiano non tutte le parole iniziano per R, ma l'origine inglese (Refuse, Reduce, Reuse, Recycle, Rot) mette sempre al 1° posto non creare il rifiuto!" }
     ];
 
     const QUIZ_PRIMARIA_B = [
@@ -3522,31 +3667,31 @@
       { diff: 1, q: "Quale merenda ha meno involucri?", opts: ["Mandarino sbucciato a mano e pane del forno locale", "Merendina in plastica dentro un cartone dentro altra plastica", "Cinque snack monouso"], ans: 0, exp: "Meno strati avvolgono il cibo, meno rifiuti finiscono nel cestino." },
       { diff: 1, q: "Perché in classe separiamo bene carta, plastica e organico?", opts: ["Perché i materiali puliti possono essere riciclati nel modo giusto", "Perché i bidoni sono colorati", "Non serve a nulla"], ans: 0, exp: "Riciclare funziona solo se ogni materiale è pulito e al posto giusto." },
       { diff: 1, q: "Dove si controllano i giorni giusti della raccolta differenziata a Villacolle e nei altri Comuni?", opts: ["Sul calendario ufficiale del proprio Comune", "Si tirano a indovinare", "Sul giornale sportivo"], ans: 0, exp: "Ogni Comune ha regole proprie da verificare sul sito ufficiale." },
-      { diff: 2, q: "Che cos'è la 'filiera corta'?", opts: ["Quando il cibo passa direttamente o quasi dal contadino a chi lo mangia", "Una fila corta al bar", "Un nastro piccolo"], ans: 0, exp: "Pochi passaggi garantiscono cibo fresco, meno imballi e sostegno ai produttori locali." },
-      { diff: 2, q: "Un vasetto di vetro vuoto del miele locale come si può riusare?", opts: ["Come portapenne o contenitore per semi e bottoni", "Va buttato subito per strada", "Non serve più"], ans: 0, exp: "Il vetro resistente è perfetto per mille riusi in classe e a casa." },
-      { diff: 2, q: "Con una bottiglietta di plastica e il suo tappo, come si conferiscono in genere (salvo diversa regola locale)?", opts: ["Schiaccia la bottiglia per lungo e riavvita il tappo", "Butta il tappo nel vetro", "Metti il tappo nell'umido"], ans: 0, exp: "Schiacciare riduce il volume nei bidoni e riavvitare evita di perdere il tappo." },
-      { diff: 2, q: "Perché comprare una bottiglia grande di succo o fare una spremuta batte 6 brick piccoli con cannuccia?", opts: ["Produce molti meno rifiuti di plastica, cartone e cannucce", "Costa sempre dieci volte di più", "Non cambia niente"], ans: 0, exp: "Le monoporzioni generano molto più scarto a parità di cibo." },
-      { diff: 2, q: "Come proteggi e decori i quaderni a inizio anno senza copertine di plastica?", opts: ["Con carta da pacchi riusata, pagine di giornale o disegni propri", "Con tre copertine sintetiche nuove", "Non usi i quaderni"], ans: 0, exp: "Il riuso creativo sostituisce la plastica nuova." },
-      { diff: 2, q: "Quale matita o strumento scolastico produce meno rifiuti in plastica?", opts: ["Matita di legno e penna ricaricabile", "Penna economica che si butta appena scarica", "Dieci evidenziatori al mese"], ans: 0, exp: "Ricaricare e usare il legno riduce i piccoli rifiuti misti difficili da riciclare." },
-      { diff: 2, q: "Se metti una buccia d'arancia nel bidone della carta, cosa succede?", opts: ["Sporchi la carta e rischi di rovinare tutto il riciclo di quel bidone", "Diventa carta profumata", "Sparisce"], ans: 0, exp: "La carta deve rimanere asciutta e pulita." },
-      { diff: 2, q: "Perché è importante non lasciare rifiuti nei sentieri di Dragano o nelle campagne?", opts: ["Inquinano suolo e acque e possono ferire gli animali del bosco", "Perché diventano alberi", "Perché li mangiano gli uccelli"], ans: 0, exp: "La plastica in natura dura moltissimi anni e danneggia gli ecosistemi." },
-      { diff: 2, q: "Quando un oggetto è fatto con viti anziché colla, è più facile...", opts: ["Aprirlo, ripararlo e cambiare un pezzo", "Romperlo e buttarlo", "Nasconderlo"], ans: 0, exp: "'Progetta meglio' vuol dire proprio costruire oggetti riparabili!" },
-      { diff: 2, q: "Che cosa trovi scritto sulle confezioni per capire in quale materiale sono fatte?", opts: ["L'etichetta ambientale degli imballaggi (es. Carta, Plastica, Vetro)", "Solo il nome del cane", "Le tabelline"], ans: 0, exp: "Leggere le etichette aiuta a non sbagliare contenitore." },
+      { diff: 2, q: "Perché si parla di '5R' anche se in italiano parole come Prevenzione o Compostaggio non iniziano con R?", opts: ["Perché la regola nasce dai 5 termini inglesi originali: Refuse, Reduce, Reuse, Recycle, Rot", "Perché in italiano ci sono solo verbi che finiscono in -are", "È un gioco sulle ruote delle bici"], ans: 0, exp: "La 5ª R originale è Rot (compostare gli scarti organici), non inizia per R in italiano e in alcune liste viene cambiata: meglio usare i 5 termini originali." },
+      { diff: 2, q: "Che cos'è la 'filiera corta' rispetto al 'Km 0'?", opts: ["Filiera corta = pochissimi passaggi tra agricoltore e famiglia; Km 0 = vicinanza geografica dei luoghi di produzione", "Significano entrambe trasporto in aereo", "Riguardano solo il colore delle casse"], ans: 0, exp: "Pochi passaggi + vicinanza garantiscono cibo fresco, meno imballi e sostegno ai produttori locali." },
+      { diff: 2, q: "Un vasetto di vetro vuoto del miele locale come si può riusare ('Reuse')?", opts: ["Come portapenne o contenitore per semi e bottoni", "Va buttato subito per strada", "Non serve più"], ans: 0, exp: "Il vetro resistente è perfetto per mille riusi in classe e a casa." },
+      { diff: 2, q: "Con una bottiglietta PET di plastica e il suo tappo attaccato (Tethered Cap), come si conferiscono?", opts: ["Schiaccia la bottiglia per lungo e riavvita il tappo attaccato", "Strappa e butta il tappo nel vetro", "Metti il tappo nell'umido"], ans: 0, exp: "Schiacciare riduce il volume nei bidoni e lasciare il tappo attaccato evita che si perda nell'ambiente." },
+      { diff: 2, q: "Perché comprare una bottiglia grande o preparare una spremuta batte 6 brick piccoli (C/PAP) con cannuccia?", opts: ["Produce molti meno rifiuti poliaccoppiati difficili da separare", "Costa sempre dieci volte di più", "Non cambia niente"], ans: 0, exp: "Le monoporzioni generano molto più scarto a parità di cibo (Reduce)." },
+      { diff: 2, q: "Come proteggi e decori i quaderni a inizio anno senza copertine di plastica?", opts: ["Con carta da pacchi riusata, pagine di giornale o disegni propri (Reuse)", "Con tre copertine sintetiche nuove", "Non usi i quaderni"], ans: 0, exp: "Il riuso sostituisce la plastica nuova." },
+      { diff: 2, q: "Quale strumento scolastico produce meno rifiuti in plastica?", opts: ["Matita di legno e penna ricaricabile", "Penna economica che si butta appena scarica", "Dieci evidenziatori al mese"], ans: 0, exp: "Ricaricare e usare il legno riduce i piccoli rifiuti misti difficili da riciclare." },
+      { diff: 2, q: "Se metti una buccia d'arancia nel bidone della carta, cosa succede?", opts: ["Sporchi la carta e rischi di rovinare tutto il riciclo di quel bidone", "Diventa carta profumata", "Sparisce"], ans: 0, exp: "La carta deve rimanere asciutta e pulita; la buccia va nell'organico ('Rot' -> compost!)." },
+      { diff: 2, q: "Perché un pomodoro locale coltivato in serra riscaldata d'inverno consuma molta energia?", opts: ["Perché bisogna bruciare combustibile per scaldare la serra quando fuori fa freddo", "Perché il pomodoro usa la corrente elettrica come i tablet", "Non consuma nulla"], ans: 0, exp: "Il cibo amico del clima è sia vicino (Km 0) sia coltivato nella sua stagione naturale." },
+      { diff: 2, q: "Che cosa trovi scritto sulle confezioni per capire in quale materiale sono fatte (es. PAP 21, PET 01, GL 70)?", opts: ["L'etichetta ambientale degli imballaggi (Carta, Plastica, Vetro)", "Solo il nome del cane", "Le tabelline"], ans: 0, exp: "Leggere le etichette aiuta a non sbagliare contenitore." },
       { diff: 3, q: "Confronta 1 kg di arance locali siciliane di novembre e 1 kg di mirtilli arrivati in aereo dal Sud America: cosa cambia?", opts: ["Le arance locali percorrono pochissimi km e usano pochissima energia per trasporto e freddo", "I mirtilli volano senza carburante", "Consumano uguale"], ans: 0, exp: "Il trasporto aereo moltiplica le emissioni rispetto ai prodotti locali di stagione." },
-      { diff: 3, q: "In un negozio sfuso portiamo da casa contenitori puliti: che parola SERR usiamo?", opts: ["Prevenzione (evitiamo a monte il sacchetto o la vaschetta)", "Smaltimento", "Discarica"], ans: 0, exp: "Evitare l'imballaggio prima ancora di comprarlo è prevenzione pura." },
-      { diff: 3, q: "Cosa succede se gli imballaggi hanno molti materiali incollati insieme (carta + plastica + alluminio)?", opts: ["È molto più difficile separarli e riciclarli", "Si riciclano tre volte più facilmente", "Diventano compost"], ans: 0, exp: "I materiali monomateriale e semplici si recuperano molto meglio." },
-      { diff: 3, q: "Che cos'è un gruppo di acquisto o mercato contadino del territorio?", opts: ["Un incontro diretto tra famiglie e agricoltori vicini senza lunghi passaggi", "Un negozio di giocattoli online", "Una discarica"], ans: 0, exp: "Rafforza l'economia locale e taglia i chilometri del cibo." },
-      { diff: 3, q: "Perché il vetro e le lattine di alluminio sono campioni del riciclo?", opts: ["Perché se raccolti puliti si possono rifondere moltissime volte senza perdere qualità", "Perché spariscono con la pioggia", "Perché sono fatti di legno"], ans: 0, exp: "Sono materiali preziosi e permanenti." },
-      { diff: 3, q: "Un temperino metallico con la vite per sostituire la lametta rappresenta...", opts: ["Un buon progetto durevole (Ecodesign)", "Uno spreco", "Un rifiuto umido"], ans: 0, exp: "Dura molti anni invece di finire rotto dopo un mese." },
-      { diff: 3, q: "Cos'è il 'vuoto a rendere' usato nei paesi dai nostri nonni?", opts: ["Restituire la bottiglia di vetro al negoziante perché venga lavata e riusata tale e quale", "Buttare la bottiglia nel fiume", "Tenere la bottiglia vuota sotto il letto"], ans: 0, exp: "Riutilizzare un contenitore risparmia perfino l'energia di rifusione!" },
-      { diff: 3, q: "Cosa fanno i 'Custodi dell'Aula' a Villacolle e Mezzovalle?", opts: ["Controllano che luci, rubinetti e raccolta siano rispettati ogni giorno", "Comprano merendine a tutti", "Lasciano la LIM accesa la notte"], ans: 0, exp: "Piccoli turni di responsabilità rendono sostenibile l'intera scuola." },
-      { diff: 3, q: "Prima di comprare un nuovo gioco o oggetto, qual è la domanda d'oro di Rico?", opts: ["'Mi serve davvero o posso scambiarlo/ripararlo?'", "'È nel pacco più grande?'", "'Posso prenderne due?'"], ans: 0, exp: "Acquistare consapevole comincia sempre da una riflessione prima della cassa." },
-      { diff: 3, q: "Come si collega il nostro territorio (5 Comuni) alla Settimana Europea?", opts: ["Le nostre azioni quotidiane a scuola e in paese si uniscono a migliaia di scuole in tutta Europa", "Riguarda solo le grandi città", "È solo una gara di velocità"], ans: 0, exp: "Ogni piccolo borgo contribuisce all'Obiettivo 12 dell'Agenda 2030!" }
+      { diff: 3, q: "In un negozio sfuso portiamo da casa contenitori puliti applicando 'Refuse & Reduce': che termine usiamo?", opts: ["Precycling / Prevenzione (evitiamo a monte il sacchetto o la vaschetta)", "Smaltimento", "Discarica"], ans: 0, exp: "Evitare l'imballaggio prima ancora di comprarlo è prevenzione pura." },
+      { diff: 3, q: "Cosa succede se gli imballaggi hanno molti materiali incollati insieme (es. C/PAP carta + plastica + alluminio)?", opts: ["È più difficile separarli e riciclarli rispetto a un imballaggio di un solo materiale", "Si riciclano tre volte più facilmente", "Diventano compost in un giorno"], ans: 0, exp: "I materiali monomateriale e semplici si recuperano molto meglio." },
+      { diff: 3, q: "Cosa impariamo guardando il cartellino obbligatorio di origine e prezzo al chilo al banco della frutta?", opts: ["Da dove viene davvero il frutto e quanto costa al kg senza lasciarci ingannare da piccole vaschette", "Solo il colore del cartellino", "Niente di utile"], ans: 0, exp: "Origine geografica + prezzo al kg aiutano a scegliere prodotti locali di stagione." },
+      { diff: 3, q: "Perché il vetro (GL 70) e le lattine di alluminio (ALU 41) sono campioni del riciclo?", opts: ["Perché se raccolti puliti si possono rifondere moltissime volte senza perdere qualità", "Perché spariscono con la pioggia", "Perché sono fatti di legno"], ans: 0, exp: "Sono materiali preziosi e permanenti." },
+      { diff: 3, q: "Che cosa significa la sigla 'EN 13432' su un sacchetto per la spesa ortofrutta?", opts: ["È davvero compostabile e può andare nell'umido/organico ('Rot')", "Si può buttare nel mare", "È fatto di acciaio"], ans: 0, exp: "Solo i sacchetti certificati EN 13432 si trasformano in compost." },
+      { diff: 3, q: "Cos'è il 'vuoto a rendere' usato a Villacolle?", opts: ["Restituire la bottiglia o cassetta al negoziante perché venga lavata e riusata tale e quale ('Reuse')", "Buttare la bottiglia nel fiume", "Tenere la bottiglia vuota sotto il letto"], ans: 0, exp: "Riutilizzare un contenitore risparmia perfino l'energia di rifusione!" },
+      { diff: 3, q: "Quanti imballaggi usa-e-getta può evitare un solo studente in 180 giorni di scuola portando borraccia e portamerenda?", opts: ["Circa 360 involucri/bottigliette in un intero anno scolastico", "Solo 2 in tutto l'anno", "Nessuno"], ans: 0, exp: "Due involucri al giorno per 180 giorni di scuola fanno 360 rifiuti risparmiati da ogni bambino!" },
+      { diff: 3, q: "Prima di comprare una merenda o un gioco, qual è la prima R inglese ('Refuse')?", opts: ["Saper dire no alle confezioni superflue e agli oggetti che non ci servono", "Prenderne tre pacchi", "Buttare lo scontrino per terra"], ans: 0, exp: "Acquistare consapevole comincia sempre dicendo no al superfluo prima della cassa." },
+      { diff: 3, q: "Se un cartone della pizza ha il coperchio pulito ma il fondo molto unto d'olio, cosa fai?", opts: ["Separi il coperchio nella carta e conferisci il fondo unto nell'organico/secco secondo le regole del Comune", "Metti tutto sporco nella campana del vetro", "Butti tutta la scatola pulita nell'indifferenziata"], ans: 0, exp: "Dividere la parte pulita salva la cellulosa buona!" }
     ];
 
     const QUIZ_SECONDARIA_A = [
       { diff: 1, q: "Che cosa misura l'Impronta Idrica (Water Footprint) di un alimento?", opts: ["Il volume totale di acqua dolce consumata e inquinata lungo tutta la filiera produttiva", "Solo i millilitri contenuti nel frutto", "La quantità di pioggia caduta in inverno"], ans: 0, exp: "Somma acqua verde (piovana), acqua blu (irrigazione) e acqua grigia (necessaria a diluire inquinanti)." },
-      { diff: 1, q: "Nella gerarchia europea dei rifiuti (Dir. 2008/98/CE), cosa sta sopra al riciclaggio?", opts: ["Prevenzione e Riutilizzo/Preparazione al riutilizzo", "Discarica controllata", "Termovalorizzazione"], ans: 0, exp: "Riciclare è importante, ma non produrre il rifiuto o riusarlo viene sempre prima." },
+      { diff: 1, q: "Nella gerarchia europea (Dir. 2008/98/CE) e nelle 5R inglesi, cosa sta sopra al riciclaggio ('Recycle')?", opts: ["Prevenzione (Refuse & Reduce) e Riutilizzo/Riparazione (Reuse & Repair)", "Discarica controllata", "Termovalorizzazione"], ans: 0, exp: "In italiano non tutte le parole iniziano con R, ma la regola originale inglese (Refuse, Reduce, Reuse, Recycle, Rot) mette prevenzione e riuso sempre al vertice." },
       { diff: 1, q: "Secondo stime medie globali del Water Footprint Network (indicative, da verificare), circa quanta acqua richiede 1 kg di pane?", opts: ["Circa 1.608 litri", "Circa 15 litri", "Circa 80.000 litri"], ans: 0, exp: "La coltivazione del grano spiega quasi tutta l'impronta idrica del pane." },
       { diff: 1, q: "Perché buttare il cibo avanzato danneggia sia le risorse idriche sia il clima?", opts: ["Spreca l'acqua virtuale investita e in discarica produce metano da decomposizione anaerobica", "Trasforma il cibo in vetro", "Non genera alcun effetto"], ans: 0, exp: "Lo spreco alimentare unisce spreco idrico, energetico ed emissioni climalteranti." },
       { diff: 1, q: "Quale cifra indicativa associa il Water Footprint Network a una t-shirt di cotone da 250 g?", opts: ["Circa 2.495 litri", "Circa 12 litri", "Circa 50 litri"], ans: 0, exp: "Il cotone richiede intensa irrigazione e lavorazione tessile (dato medio globale indicativo, da verificare)." },
@@ -3579,14 +3724,15 @@
 
     const QUIZ_SECONDARIA_B = [
       { diff: 1, q: "Che cosa promuove Villacolle con il tema 'Dal Campo alla Tavola'?", opts: ["Filiera corta, stagionalità locale, taglio degli imballaggi e scelte a impatto zero", "Aumento dei cibi in vaschetta di polistirolo", "Trasporti esclusivamente intercontinentali"], ans: 0, exp: "Valorizza il legame diretto tra produzioni del territorio, riduzione dei trasporti e packaging minimo." },
+      { diff: 1, q: "Che differenza c'è tra 'Filiera corta' e 'Km 0'?", opts: ["Filiera corta indica pochissimi passaggi commerciali; Km 0 indica la breve distanza geografica dal luogo di produzione", "Sono due modi per chiamare il trasporto aereo", "Il Km 0 è obbligatorio per la plastica"], ans: 0, exp: "La massima sostenibilità si raggiunge combinando pochi intermediari (filiera corta), vicinanza (Km 0) e stagione naturale." },
+      { diff: 1, q: "Perché si chiamano '5R' anche se nella traduzione italiana non iniziano tutte con R?", opts: ["Derivano dai 5 termini inglesi originali: Refuse (Rifiuta), Reduce (Riduci), Reuse (Riusa), Recycle (Ricicla), Rot (Composta)", "Perché in italiano Prevenzione inizia per R", "Sono un codice dei supermercati"], ans: 0, exp: "La 5ª R originale è Rot (= composta); in alcune liste viene sostituita con altre parole inglesi e in italiano perde la R iniziale, quindi conviene ricordare sempre i 5 termini originali." },
       { diff: 1, q: "Che differenza c'è tra imballaggio primario, secondario e terziario?", opts: ["Primario tocca il cibo, secondario raggruppa più pezzi, terziario serve per trasporto/pallet", "Sono tutti uguali", "Il primario è solo per i camion"], ans: 0, exp: "Spesso gli imballaggi secondari e le monoporzioni possono essere eliminati al momento dell'acquisto." },
-      { diff: 1, q: "Che cos'è il 'precycling'?", opts: ["Scegliere al supermercato o mercato prodotti senza involucri inutili prima di creare il rifiuto", "Bruciare i cartoni prima di entrare", "Riciclare solo di mattina"], ans: 0, exp: "È prevenzione attiva fatta direttamente davanti allo scaffale." },
+      { diff: 1, q: "Che cos'è il 'precycling' (Refuse & Reduce allo scaffale)?", opts: ["Scegliere al supermercato o mercato prodotti senza involucri inutili prima di creare il rifiuto", "Bruciare i cartoni prima di entrare", "Riciclare solo di mattina"], ans: 0, exp: "È prevenzione attiva fatta direttamente davanti allo scaffale." },
       { diff: 1, q: "Quale vantaggio offre la filiera corta (es. produttore delle valli intorno a Villacolle)?", opts: ["Meno chilometri, minore bisogno di imballaggi protettivi pesanti e conservazione prolungata", "Sempre più plastica spessa", "Prodotti meno freschi"], ans: 0, exp: "Trasporti brevi riducono combustibili, refrigerazione energivora e sprechi lungo la catena." },
-      { diff: 1, q: "Che cosa indica la sigla alfanumerica sugli imballaggi (es. PAP 21, PET 1, ALU 41, GL 70)?", opts: ["L'identificazione obbligatoria del materiale per orientare la raccolta differenziata", "Il numero civico del negozio", "La data di raccolta"], ans: 0, exp: "Aiuta a distinguere i materiali, sempre verificando le regole specifiche del proprio Comune." },
-      { diff: 1, q: "Quale caratteristica rende un prodotto davvero ispirato all'Ecodesign ('Progetta meglio')?", opts: ["Modularità, viti al posto di colle permanenti, ricambi disponibili e monomateriale", "Batteria saldata non apribile", "Sette strati di plastica mista"], ans: 0, exp: "L'ecodesign progetta pensando già alla riparazione e al recupero finale." },
-      { diff: 1, q: "Perché comprare frutta di serra riscaldata fuori stagione pesa sull'ambiente anche se coltivata vicino?", opts: ["Perché mantenere alte temperature in serra d'inverno consuma molta energia", "Perché la serra non usa sole", "Non consuma nulla"], ans: 0, exp: "Km 0 funziona al meglio quando si combina con la stagionalità naturale." },
-      { diff: 1, q: "Qual è l'effetto di scegliere prodotti monoporzione rispetto a formati sfusi o familiari?", opts: ["Aumenta nettamente il rapporto peso-imballaggio per ogni grammo di cibo", "Dimezza la plastica", "Azzerà i rifiuti"], ans: 0, exp: "Dieci pacchetti piccoli producono molto più scarto rispetto a un unico contenitore." },
-      { diff: 1, q: "Che cos'è un Repair Café a scuola o nel quartiere?", opts: ["Uno spazio collaborativo in cui studenti e adulti imparano a riparare beni, abiti e piccoli oggetti", "Un bar con sole lattine", "Un deposito di rifiuti"], ans: 0, exp: "Trasforma la riparazione in competenza pratica e comunità." },
+      { diff: 1, q: "Che cosa indica la sigla alfanumerica sugli imballaggi (es. PAP 21, PET 01, ALU 41, GL 70)?", opts: ["L'identificazione obbligatoria del materiale per orientare la raccolta differenziata", "Il numero civico del negozio", "La data di raccolta"], ans: 0, exp: "Aiuta a distinguere i materiali, sempre verificando le regole specifiche del proprio Comune." },
+      { diff: 1, q: "Perché comprare frutta di serra riscaldata fuori stagione pesa sull'ambiente anche se coltivata vicino?", opts: ["Perché mantenere alte temperature in serra d'inverno consuma molta energia termica", "Perché la serra non usa sole", "Non consuma nulla"], ans: 0, exp: "Km 0 funziona al meglio quando si combina con la stagionalità naturale di pieno campo." },
+      { diff: 1, q: "Qual è l'effetto di scegliere prodotti monoporzione rispetto a formati sfusi o familiari?", opts: ["Aumenta nettamente la tara (rapporto peso-imballaggio per grammo di cibo)", "Dimezza la plastica", "Azzera i rifiuti"], ans: 0, exp: "Dieci pacchetti piccoli producono molto più scarto rispetto a un unico contenitore." },
+      { diff: 1, q: "Perché la norma europea obbliga i banchi ortofrutta a mostrare Paese di origine e prezzo €/kg?", opts: ["Per permettere un confronto trasparente tra provenienza reale, stagionalità e convenienza tra sfuso e confezionato", "Solo per riempire il cartellino", "Per impedire la vendita di frutta locale"], ans: 0, exp: "Controllare sempre origine e prezzo al chilo aiuta a evitare trappole costose e molto imballate." },
       { diff: 1, q: "Perché il vetro e l'alluminio sono definiti 'materiali permanenti'?", opts: ["Perché possono essere fusi e riciclati ripetutamente senza perdere le proprietà principali", "Perché non si rompono mai", "Perché si compostano"], ans: 0, exp: "Ogni lattina o bottiglia recuperata risparmia energia rispetto all'estrazione mineraria." },
       { diff: 2, q: "Che differenza normativa esiste tra un oggetto 'biodegradabile' generico e uno certificato 'compostabile' (EN 13432)?", opts: ["Il compostabile si disgrega in impianti industriali entro tempi fissati senza residui tossici", "Si possono buttare entrambi per strada", "Sono identici per legge"], ans: 0, exp: "Anche le bioplastiche compostabili NON vanno abbandonate nell'ambiente e seguono le regole comunali." },
       { diff: 2, q: "Che cosa significa 'vuoto a rendere' in una filiera locale?", opts: ["Il consumatore restituisce il contenitore in vetro al venditore per lavaggio e riempimento diretto", "Si riceve una scatola vuota", "Il vetro viene gettato nell'indifferenziato"], ans: 0, exp: "È superiore al riciclo perché evita l'energia di frantumazione e fusione." },
@@ -3763,14 +3909,17 @@
     /* GLOSSARIO & CHECKLIST BASE */
 
     const GLOSSARY = [
-      { term: "Prevenzione", def: "L'insieme delle misure adottate prima che una sostanza o un oggetto diventi un rifiuto: progettare meglio, ridurre gli imballaggi, riparare." },
+      { term: "Le 5R Originali (Inglese)", def: "La regola originale Zero Waste (Bea Johnson) usa 5 verbi inglesi con la R: 1. Refuse (Rifiuta il superfluo), 2. Reduce (Riduci), 3. Reuse (Riusa), 4. Recycle (Ricicla), 5. Rot (Composta). Tradotte in italiano non restano 5 R (la 5ª diventa 'Composta'), e alcune fonti cambiano la 5ª R in Repurpose o Recover: usiamo quindi i termini originali inglesi." },
+      { term: "Prevenzione", def: "L'insieme delle misure adottate prima che una sostanza o un oggetto diventi un rifiuto: corrisponde a Refuse e Reduce a monte." },
       { term: "Ecodesign", def: "Progettazione sostenibile dei prodotti per renderli durevoli, smontabili, riparabili, privi di sostanze pericolose e facili da riciclare." },
       { term: "Impronta Idrica", def: "Volume totale di acqua dolce usata direttamente e indirettamente lungo l'intera filiera di un bene (fonte: Water Footprint Network)." },
       { term: "LCA (Ciclo di Vita)", def: "Analisi scientifica degli impatti ambientali di un prodotto dall'estrazione delle materie prime fino al suo fine vita." },
       { term: "Greenwashing", def: "Strategia di marketing che presenta come ecologico un prodotto o un'azienda attraverso slogan vaghi senza benefici reali verificabili." },
       { term: "RAEE", def: "Rifiuti di Apparecchiature Elettriche ed Elettroniche (telefoni, giocattoli a pile, lampadine LED, elettrodomestici): vanno ai centri di raccolta." },
-      { term: "Filiera Corta", def: "Sistema di produzione e vendita con pochissimi intermediari e distanza ridotta tra produttore agricolo/artigiano e consumatore." },
-      { term: "Compostaggio", def: "Trasformazione biologica controllata degli scarti organici e vegetali in compost, un fertilizzante naturale per il suolo." },
+      { term: "Filiera Corta", def: "Sistema di produzione e vendita con pochissimi intermediari (0–1) tra produttore agricolo/artigiano e consumatore; dà il meglio se abbinato alla stagionalità naturale." },
+      { term: "Tara degli Imballaggi (%)", def: "Peso dell'involucro espresso in percentuale sul peso lordo: Tara % = (Peso Imballaggio ÷ Peso Lordo) × 100. Più la porzione è piccola, più l'incidenza della tara cresce." },
+      { term: "Tethered Caps (Direttiva SUP)", def: "Tappi in plastica ancorati alla bottiglia (obbligatori nell'UE da luglio 2024) per evitare che si disperdano in spiagge, fiumi e boschi." },
+      { term: "Compostaggio", def: "Trasformazione biologica controllata degli scarti organici e vegetali in compost, un fertilizzante naturale per il suolo (in inglese 'Rot')." },
       { term: "Obsolescenza Prematura", def: "Fenomeno per cui un oggetto smette di funzionare o diventa inutilizzabile molto prima del dovuto per guasti non riparabili o pezzi incollati." },
       { term: "Economia Circolare", def: "Modello economico progettato per rigenerarsi: condivisione, manutenzione, riutilizzo, riparazione e riciclo al posto dell'usa e getta." }
     ];
@@ -3973,6 +4122,7 @@
     const navButtons = Array.from(document.querySelectorAll(".nav-btn"));
     const panels = Array.from(document.querySelectorAll(".section-panel"));
     const levelButtons = Array.from(document.querySelectorAll(".seg-btn[data-level]"));
+    const topbarAgeSelect = document.getElementById("topbar-age-select");
     const townFilterButtons = Array.from(document.querySelectorAll(".seg-btn[data-townfilter]"));
 
     const btnOpenProgettazioni = document.getElementById("btn-open-progettazioni");
@@ -4054,12 +4204,12 @@
     });
 
     function updateHeroContextText() {
-      const lvlMap = { primaria: "Primaria", secondaria: "Secondaria I grado", entrambi: "Primaria e Secondaria I grado" };
+      const lvlMap = { primaria: "Consigliati 6–10 anni (Primaria)", secondaria: "Consigliati 11–14 anni (Media)", entrambi: "Tutte le fasce d'età (6–14 anni)" };
       const townText = state.townFilter === "tutti"
-        ? "Tutti i Cinque Borghi"
+        ? "Tutte le 5 tematiche"
         : state.townFilter === "selected"
-          ? (state.selectedTowns.length ? `${state.selectedTowns.length} Borghi da Mappa` : "Nessun borgo selezionato")
-          : (TOWN_LABELS[state.townFilter] || "Tutti i Cinque Borghi");
+          ? (state.selectedTowns.length ? `${state.selectedTowns.length} Comuni da Mappa` : "Nessun Comune selezionato")
+          : `${TOPIC_LABELS[state.townFilter] || "Tematica"} (${TOWN_LABELS[state.townFilter] || ""})`;
       const heroLvl = document.getElementById("hero-level-text");
       if (heroLvl) heroLvl.textContent = `${lvlMap[state.level]} · ${townText}`;
     }
@@ -4069,18 +4219,43 @@
       state.catPage = 0;
       state.mapActPage = 0;
       levelButtons.forEach(b => b.setAttribute("aria-pressed", b.dataset.level === newLevel ? "true" : "false"));
+      if (topbarAgeSelect && topbarAgeSelect.value !== newLevel) {
+        topbarAgeSelect.value = newLevel;
+      }
       updateHeroContextText();
       document.querySelectorAll("[data-level-block]").forEach(el => {
         const blk = el.getAttribute("data-level-block");
-        el.style.display = (newLevel === "entrambi" || blk === newLevel) ? "" : "none";
+        const isMatch = newLevel !== "entrambi" && blk === newLevel;
+        el.style.display = "";
+        el.style.border = isMatch ? "2px solid var(--accent)" : "";
+        let badge = el.querySelector(".age-suggest-badge");
+        if (isMatch) {
+          if (!badge) {
+            badge = document.createElement("div");
+            badge.className = "age-suggest-badge";
+            badge.style.cssText = "font-size:0.75rem;font-weight:800;color:var(--accent);margin-bottom:4px;";
+            el.prepend(badge);
+          }
+          badge.textContent = blk === "primaria"
+            ? "★ Consigliato per 6–10 anni (Scuola Primaria)"
+            : "★ Consigliato per 11–14 anni (Scuola Media)";
+        } else if (badge) {
+          badge.remove();
+        }
       });
       renderCatalogActivities();
       renderInterdisciplinary();
       renderMapSelectionUI();
       initQuiz();
       initGame1();
+      if (window.__SERR_VIDEOS && typeof window.__SERR_VIDEOS.syncAgeBand === "function") {
+        window.__SERR_VIDEOS.syncAgeBand(newLevel);
+      }
     }
     levelButtons.forEach(b => b.addEventListener("click", () => setLevel(b.dataset.level)));
+    if (topbarAgeSelect) {
+      topbarAgeSelect.addEventListener("change", () => setLevel(topbarAgeSelect.value));
+    }
 
     function setTownFilter(newTown) {
       state.townFilter = newTown;
@@ -4414,7 +4589,7 @@
       if (count === 1) {
         d.topicTools.forEach(t => toolsList.push(t));
       } else {
-        toolsList.push({ label: `Studia Slide: ${d.name}`, kind: "lesson", lessonId: activeTownId, style: "primary" });
+        toolsList.push({ label: `Studia Slide: ${TOPIC_LABELS[activeTownId] || d.name}`, kind: "lesson", lessonId: activeTownId, style: "primary" });
         selected.forEach(tId => {
           TOWN_DATA[tId].topicTools.forEach(t => {
             if ((t.kind === "game" || t.kind === "section") && !toolsList.some(x => x.label === t.label)) {
@@ -4422,7 +4597,7 @@
             }
           });
         });
-        toolsList.push({ label: `Quiz borghi attivi (${count})`, kind: "quiz", town: "selected", style: "" });
+        toolsList.push({ label: `Quiz tematiche attive (${count})`, kind: "quiz", town: "selected", style: "" });
       }
 
       const lessonDone = state.completedLessons.includes(activeTownId) || state.teacherUnlockAllQuiz;
@@ -4431,19 +4606,19 @@
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;flex-shrink:0;">
           <div style="min-width:0;">
             <div class="meta-line" style="margin-bottom:2px;font-size:0.78rem;">
-              <span>${count === 1 ? escHtml(d.badgeLabel) : `${count} Borghi selezionati`}</span>
+              <span>Comune selezionato: ${escHtml(d.name)}</span>
               <span aria-hidden="true">·</span>
               <span>${lessonDone ? "Lezione completata ✓" : "Slide da completare"}</span>
             </div>
-            <h3 style="margin:0;font-size:1.05rem;">${count === 1 ? escHtml(d.name) + " — " + escHtml(d.theme) : "Percorsi & Missioni Combinate"}</h3>
+            <h3 style="margin:0;font-size:1.03rem;">Tematica: ${escHtml(TOPIC_LABELS[activeTownId] || d.theme)}</h3>
           </div>
-          <button type="button" class="btn no-print" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" id="btn-map-go-terr">I 5 Borghi</button>
+          <button type="button" class="btn no-print" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" id="btn-map-go-terr">I 5 Comuni</button>
         </div>
 
         <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px;flex-shrink:0;" class="no-print">
-          <div class="segmented" role="tablist" aria-label="Vista dettagli borgo">
-            <button type="button" class="seg-btn" style="min-height:30px;padding:4px 10px;font-size:0.8rem;" data-drawer-tab="sfide" aria-pressed="${drawerMode === "sfide"}">Sfida &amp; Azioni</button>
-            <button type="button" class="seg-btn" style="min-height:30px;padding:4px 10px;font-size:0.8rem;" data-drawer-tab="concetti" aria-pressed="${drawerMode === "concetti"}">Concetti &amp; Missioni (${combinedActs.length})</button>
+          <div class="segmented" role="tablist" aria-label="Vista dettagli tematica del comune">
+            <button type="button" class="seg-btn" style="min-height:30px;padding:4px 9px;font-size:0.79rem;" data-drawer-tab="sfide" aria-pressed="${drawerMode === "sfide"}">Video Intro &amp; Sfida</button>
+            <button type="button" class="seg-btn" style="min-height:30px;padding:4px 9px;font-size:0.79rem;" data-drawer-tab="concetti" aria-pressed="${drawerMode === "concetti"}">Materiali (${combinedActs.length})</button>
           </div>
           ${count > 1 ? `
             <div style="display:flex;flex-wrap:wrap;gap:4px;">
@@ -4452,17 +4627,20 @@
           ` : ""}
         </div>
 
-        <div style="flex:1 1 0;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:8px;">
+        <div style="flex:1 1 0;min-height:0;overflow-y:auto;scrollbar-width:thin;display:flex;flex-direction:column;gap:8px;padding-right:2px;">
           ${drawerMode === "sfide" ? `
-            <p style="margin:0;font-size:0.86rem;line-height:1.42;color:var(--text-muted);">${escHtml(d.desc)}</p>
+            <p style="margin:0;font-size:0.85rem;line-height:1.4;color:var(--text-muted);">${escHtml(d.desc)}</p>
+            <div id="map-video-embed-slot">
+              <div class="card-soft" style="padding:8px 10px;font-size:0.8rem;color:var(--text-muted);">Caricamento video introduttivo (3–5 min) per Primaria e Scuola Media…</div>
+            </div>
             <div class="card-soft" style="padding:10px 12px;">
-              <div class="meta-line" style="margin-bottom:3px;font-size:0.76rem;"><span>Sfida lampo interattiva</span><span aria-hidden="true">·</span><span>${escHtml(d.name)}</span></div>
+              <div class="meta-line" style="margin-bottom:3px;font-size:0.76rem;"><span>Sfida lampo interattiva</span><span aria-hidden="true">·</span><span>Tematica: ${escHtml(TOPIC_LABELS[activeTownId] || d.badgeLabel)}</span></div>
               <div style="font-weight:700;font-size:0.9rem;margin-bottom:3px;">${escHtml(qc.title)}</div>
               <p style="margin:0 0 8px 0;font-size:0.84rem;">${escHtml(qc.prompt)}</p>
               <div style="display:grid;gap:6px;" id="town-qc-options">
                 ${qc.options.map((opt, idx) => `<button type="button" class="btn" style="text-align:left;justify-content:flex-start;min-height:32px;padding:5px 10px;font-size:0.82rem;white-space:normal;" data-qc-idx="${idx}">${escHtml(opt)}</button>`).join("")}
               </div>
-              <div id="town-qc-feedback" style="margin-top:8px;">${alreadySolved ? `<div class="notice notice-ok" style="margin-bottom:0;padding:8px 10px;font-size:0.82rem;"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><div><strong>Sfida di ${escHtml(d.name)} completata!</strong> (+10 XP)</div></div>` : ""}</div>
+              <div id="town-qc-feedback" style="margin-top:8px;">${alreadySolved ? `<div class="notice notice-ok" style="margin-bottom:0;padding:8px 10px;font-size:0.82rem;"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><div><strong>Sfida completata!</strong> (+10 XP)</div></div>` : ""}</div>
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;" class="no-print" id="town-drawer-tools">
               ${toolsList.map((t, idx) => `<button type="button" class="btn ${t.style === "primary" ? "btn-primary" : t.style === "secondary" ? "btn-secondary" : ""}" style="min-height:34px;padding:5px 10px;font-size:0.8rem;" data-town-tool="${idx}">${escHtml(t.label)}</button>`).join("")}
@@ -4473,8 +4651,8 @@
                 <article class="card-soft" style="padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;gap:6px;">
                   <div>
                     <div class="meta-line" style="margin-bottom:3px;font-size:0.76rem;">
-                      <span>${escHtml(TOWN_LABELS[a.town] || "Cinque Borghi")}</span><span aria-hidden="true">·</span>
-                      <span>${a.level === "primaria" ? "Primaria" : "Secondaria"}</span><span aria-hidden="true">·</span>
+                      <span>Tematica: ${escHtml(TOPIC_LABELS[a.town] || "SERR 2026")}</span><span aria-hidden="true">·</span>
+                      <span>${a.level === "primaria" ? "Consigliato 6–10 anni (Primaria)" : "Consigliato 11–14 anni (Media)"}</span><span aria-hidden="true">·</span>
                       <span>${a.durationMin} min</span>
                     </div>
                     <h4 style="margin:0 0 3px 0;font-size:0.94rem;">${escHtml(a.title)}</h4>
@@ -4497,6 +4675,13 @@
       `;
 
       drawer.querySelector("#btn-map-go-terr").addEventListener("click", () => setActiveSection("territorio"));
+
+      if (drawerMode === "sfide") {
+        const slot = drawer.querySelector("#map-video-embed-slot");
+        if (slot && window.__SERR_VIDEOS && typeof window.__SERR_VIDEOS.renderMapVideo === "function") {
+          window.__SERR_VIDEOS.renderMapVideo(slot, activeTownId, state.level);
+        }
+      }
 
       drawer.querySelectorAll("[data-drawer-tab]").forEach(b => {
         b.addEventListener("click", () => {
@@ -4798,12 +4983,12 @@
     function buildWorksheetSpec(item, kind) {
       if (kind === "activity") {
         const townBadges = {
-          mezzovalle: "Mezzovalle · L'Impronta Nascosta",
-          villacolle: "Villacolle · Dal Campo alla Tavola",
-          cefalana: "Cefalana · Riparazione, Acqua & Ecodesign",
-          dragano: "Dragano · Bosco Pulito & Biodiversità",
-          campolieto: "Campolieto · RAEE, Digitale & Energia",
-          comuni: "Percorsi Condivisi · Cinque Borghi"
+          mezzovalle: "Acqua & Impronta Nascosta · Comune: Mezzovalle",
+          villacolle: "Filiera Corta & Km Zero · Comune: Villacolle",
+          cefalana: "Riparazione, Acqua & Ecodesign · Comune: Cefalana",
+          dragano: "Bosco Pulito & Biodiversità · Comune: Dragano",
+          campolieto: "RAEE, Digitale & Energia · Comune: Campolieto",
+          comuni: "Tematiche Condivise SERR · Rete Cinque Borghi"
         };
         const lvlLabel = item.level === "primaria" ? "Primaria" : "Secondaria di I grado";
         const t1 = Math.max(10, Math.round(item.durationMin * 0.22));
@@ -4854,7 +5039,7 @@
               ];
           cols = ["Prodotto / Confezione analizzata", "Origine e stagione", "Imballaggio / Codice materiale", "Alternativa Km 0 o sfusa"];
         } else if (item.town === "cefalana") {
-          objective = `${item.desc} Percorso di Cefalana (${lvlLabel}) centrato su diritto alla riparazione, ecodesign, tutela dell'acqua e materiali permanenti (${item.disciplines.join(", ")}).`;
+          objective = `${item.desc} Tematica di Riparazione, Acqua & Ecodesign (abbinata a Cefalana · ${lvlLabel}) centrata su diritto alla riparazione, ecodesign, tutela dell'acqua e materiali permanenti (${item.disciplines.join(", ")}).`;
           steps = [
             `1. Osservazione e diagnosi (${t1} min): analisi dell'oggetto, della struttura o della risorsa idrica per "${item.title}" (${item.materials}).`,
             `2. Progettazione / Riparazione (${t2} min): smontaggio sicuro, confronto viti vs colle permanenti o analisi storica dei materiali con compilazione della tabella.`,
@@ -4867,7 +5052,7 @@
           ];
           cols = ["Oggetto / Materiale", "Giunzioni o punti critici", "Soluzione di riparazione / ecodesign", "Esito atteso"];
         } else if (item.town === "dragano") {
-          objective = `${item.desc} Percorso naturalistico di Dragano (${lvlLabel}) dedicato a compostaggio scolastico, biodiversità, suolo e sentieri senza rifiuti (${item.disciplines.join(", ")}).`;
+          objective = `${item.desc} Tematica Bosco Pulito, Biodiversità & Compost (abbinata a Dragano · ${lvlLabel}) dedicata a compostaggio scolastico, biodiversità, suolo e sentieri senza rifiuti (${item.disciplines.join(", ")}).`;
           steps = [
             `1. Briefing naturalistico (${t1} min): introduzione a "${item.title}", osservazione dell'ambiente e regole di sicurezza (${item.materials}).`,
             `2. Esperimento / Rilievo (${t2} min): raccolta osservazioni su frazione organica, compost, tempi di degradazione o mappa dei sentieri.`,
@@ -4880,7 +5065,7 @@
           ];
           cols = ["Campione / Punto osservato", "Materiale o residuo", "Tempo / Destino nel suolo", "Azione di tutela proposta"];
         } else if (item.town === "campolieto") {
-          objective = `${item.desc} Percorso di Campolieto (${lvlLabel}) dedicato a prevenzione dei RAEE, risparmio energetico, coding per la raccolta differenziata e cittadinanza digitale (${item.disciplines.join(", ")}).`;
+          objective = `${item.desc} Tematica RAEE, Digitale & Energia (abbinata a Campolieto · ${lvlLabel}) dedicata a prevenzione dei RAEE, risparmio energetico, coding per la raccolta differenziata e cittadinanza digitale (${item.disciplines.join(", ")}).`;
           steps = [
             `1. Analisi digitale / energetica (${t1} min): presentazione del tema "${item.title}" e verifica delle fonti attendibili (${item.materials}).`,
             `2. Indagine STEM o comunicazione (${t2} min): censimento di dispositivi, consumi elettrici, verifiche su testi IA o produzione audio.`,
@@ -4901,7 +5086,7 @@
           ];
           prompts = item.level === "primaria"
             ? [
-                "Quale regola delle 5R (Riduci, Riusa, Ripara, Ricicla, Recupera) abbiamo messo in pratica oggi?",
+                "Quale tra le 5R originali inglesi (Refuse, Reduce, Reuse/Repair, Recycle, Rot) abbiamo messo in pratica oggi?",
                 "Che cosa ha funzionato meglio lavorando insieme nel nostro gruppo?",
                 "Quale messaggio vogliamo mostrare ai compagni e alle famiglie all'evento finale?"
               ]
@@ -5237,17 +5422,21 @@
         }
         if (fDisc !== "tutte" && !act.disciplines.includes(fDisc) && !act.disciplines.includes("Tutte le discipline")) return false;
         if (fDur !== "tutte" && act.durationCat !== fDur) return false;
-        if (effLvl !== "entrambi" && act.level !== effLvl) return false;
+        if (fLvlSel !== "tutti" && act.level !== fLvlSel) return false;
         return true;
       });
 
+      if (fLvlSel === "tutti" && state.level !== "entrambi") {
+        filtered.sort((a, b) => (a.level === state.level ? 0 : 1) - (b.level === state.level ? 0 : 1));
+      }
+
       const townCardLabels = {
-        mezzovalle: "Mezzovalle · Impronta Nascosta",
-        villacolle: "Villacolle · Dal Campo alla Tavola",
-        cefalana: "Cefalana · Riparazione & Ecodesign",
-        dragano: "Dragano · Bosco Pulito & Compost",
-        campolieto: "Campolieto · RAEE, Digitale & Energia",
-        comuni: "Percorsi condivisi 5 Borghi"
+        mezzovalle: "Tematica: Acqua & Impronta Nascosta",
+        villacolle: "Tematica: Filiera Corta, Km Zero & Imballi",
+        cefalana: "Tematica: Riparazione & Ecodesign",
+        dragano: "Tematica: Bosco Pulito & Compost",
+        campolieto: "Tematica: RAEE, Digitale & Energia",
+        comuni: "Tematica condivisa SERR 2026"
       };
 
       const PAGE_SIZE = 6;
@@ -5261,18 +5450,21 @@
       const pager = document.getElementById("cat-pager-bar");
       grid.innerHTML = "";
       if (filtered.length === 0) {
-        grid.innerHTML = `<div class="card-soft">${fTown === "selected" ? "Nessun borgo selezionato sulla Mappa. Apri la Mappa per selezionare uno o più borghi oppure scegli 'Tutti i borghi'." : "Nessuna attività corrisponde ai filtri scelti. Prova ad allargare durata, borgo o disciplina."}</div>`;
+        grid.innerHTML = `<div class="card-soft">${fTown === "selected" ? "Nessun Comune selezionato sulla Mappa. Apri la Mappa per selezionare uno o più Comuni oppure scegli 'Tutte le tematiche'." : "Nessuna attività corrisponde ai filtri scelti. Prova ad allargare durata, tematica o disciplina."}</div>`;
         if (pager) pager.innerHTML = "";
         return;
       }
       pageItems.forEach(a => {
         const spec = buildWorksheetSpec(a, "activity");
+        const isSuggested = state.level !== "entrambi" && a.level === state.level;
+        const ageText = a.level === "primaria" ? "6–10 anni (Primaria)" : "11–14 anni (Media)";
         const card = document.createElement("article");
         card.className = "card";
-        card.style.cssText = "padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;";
+        card.style.cssText = `padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;${isSuggested ? "border:1.5px solid var(--accent);" : ""}`;
         card.innerHTML = `
           <div>
-            <div class="meta-line" style="margin-bottom:4px;font-size:0.78rem;"><span>${escHtml(a.id)}</span><span aria-hidden="true">·</span><span>${escHtml(townCardLabels[a.town] || "Cinque Borghi")}</span><span aria-hidden="true">·</span><span>${a.level === "primaria" ? "Primaria" : "Secondaria"}</span><span aria-hidden="true">·</span><span>${a.durationMin} min</span></div>
+            <div class="meta-line" style="margin-bottom:4px;font-size:0.78rem;"><span>${escHtml(a.id)}</span><span aria-hidden="true">·</span><span>${escHtml(townCardLabels[a.town] || "SERR 2026")}</span><span aria-hidden="true">·</span><span>${ageText}</span><span aria-hidden="true">·</span><span>${a.durationMin} min</span></div>
+            ${isSuggested ? `<div style="font-size:0.73rem;font-weight:800;color:var(--accent);margin-bottom:3px;">★ Consigliato per la fascia scelta</div>` : ""}
             <h3 style="font-size:1rem;margin-bottom:4px;">${escHtml(a.title)}</h3>
             <p style="font-size:0.82rem;color:var(--accent);font-weight:700;margin-bottom:4px;">${escHtml(a.disciplines.join(", "))}</p>
             <p style="font-size:0.84rem;margin-bottom:0;line-height:1.38;" class="cat-desc">${escHtml(a.desc)}</p>
@@ -5379,14 +5571,21 @@
     function renderInterdisciplinary() {
       const grid = document.getElementById("inter-grid");
       grid.innerHTML = "";
-      INTERDISCIPLINARY.forEach(item => {
-        if (state.level !== "entrambi" && !item.levels.includes(state.level)) return;
+      const list = INTERDISCIPLINARY.slice().sort((a, b) => {
+        if (state.level === "entrambi") return 0;
+        const aHit = a.levels.includes(state.level) ? 0 : 1;
+        const bHit = b.levels.includes(state.level) ? 0 : 1;
+        return aHit - bHit;
+      });
+      list.forEach(item => {
+        const isSuggested = state.level !== "entrambi" && item.levels.includes(state.level);
         const card = document.createElement("article");
         card.className = "card";
-        card.style.cssText = "padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;";
+        card.style.cssText = `padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;${isSuggested ? "border:1.5px solid var(--accent);" : ""}`;
         card.innerHTML = `
           <div>
             <div class="meta-line" style="margin-bottom:4px;font-size:0.78rem;">${escHtml(item.subjects)}</div>
+            ${isSuggested ? `<div style="font-size:0.73rem;font-weight:800;color:var(--accent);margin-bottom:3px;">★ Consigliato per la fascia scelta</div>` : ""}
             <h3 style="font-size:0.98rem;margin-bottom:4px;">${escHtml(item.title)}</h3>
             <p style="font-size:0.83rem;margin-bottom:4px;line-height:1.38;" class="cat-desc">${escHtml(item.desc)}</p>
             <div style="font-size:0.8rem;color:var(--text-muted);"><strong>Prodotto:</strong> ${escHtml(item.prod)}</div>
@@ -5425,15 +5624,15 @@
           },
           {
             type: "slide",
-            eyebrow: "Slide 2 · La Piramide delle 5R",
-            title: "Prevenzione e Riutilizzo vengono sempre prima",
+            eyebrow: "Slide 2 · Le 5R Originali Inglesi",
+            title: "Perché in italiano non sono 5 R (e l'importanza della 5ª R: Rot)",
             visual: "pyramid_5r",
             points: [
-              "<strong>1. Riduci (Prevenzione):</strong> evitare imballaggi inutili e sprechi di cibo o energia prima ancora di acquistarli (Direttiva UE 2008/98/CE).",
-              "<strong>2. Riusa e Ripara:</strong> allungare la vita di borracce, zaini, libri, vestiti e giocattoli invece di sostituirli subito.",
-              "<strong>3. Ricicla & Recupera:</strong> separare correttamente i materiali puliti solo quando l'oggetto non può più essere usato."
+              "<strong>I 5 termini originali (Zero Waste):</strong> <strong>1. Refuse</strong> (Rifiuta il superfluo), <strong>2. Reduce</strong> (Riduci), <strong>3. Reuse</strong> (Riusa), <strong>4. Recycle</strong> (Ricicla), <strong>5. Rot</strong> (Composta gli scarti organici).",
+              "<strong>Attenzione alle traduzioni e alle varianti:</strong> in italiano <em>Rot</em> significa <em>composta</em> (non inizia per R!) e alcune liste sostituiscono la 5ª R con <em>Repurpose</em> o <em>Recover</em>: usiamo quindi il termine originale <strong>Rot</strong>.",
+              "<strong>Priorità dal largo allo stretto:</strong> <strong>Refuse</strong> e <strong>Reduce</strong> vengono sempre prima di tutto; <strong>Recycle</strong> e <strong>Rot</strong> arrivano solo alla fine."
             ],
-            ricoTip: "Nella gerarchia europea, Prevenzione e Riutilizzo stanno più in alto del riciclaggio!"
+            ricoTip: "Ricorda la sequenza originale in inglese: Refuse, Reduce, Reuse, Recycle, Rot!"
           },
           {
             type: "slide",
@@ -5519,9 +5718,9 @@
       },
       {
         id: "mezzovalle",
-        tabLabel: "1. Mezzovalle · Acqua",
-        title: "Mezzovalle · L'Impronta Nascosta",
-        subtitle: "Valore del cibo, acqua virtuale e stop agli sprechi",
+        tabLabel: "1. Acqua & Impronta",
+        title: "Acqua, Cibo & Impronta Nascosta",
+        subtitle: "Valore del cibo, acqua virtuale e stop agli sprechi · Comune abbinato: Mezzovalle",
         accent: "#0369a1",
         steps: [
           {
@@ -5663,143 +5862,223 @@
       },
       {
         id: "villacolle",
-        tabLabel: "2. Villacolle · Km 0",
-        title: "Villacolle · Dal Campo alla Tavola",
-        subtitle: "Filiera corta, stagionalità e imballaggi essenziali",
+        tabLabel: "2. Filiera Corta & Imballi",
+        title: "Filiera Corta, Stagionalità & Imballaggi",
+        subtitle: "Lezione completa con video a supporto, 5R originali e verifiche · Comune abbinato: Villacolle",
         accent: "#b45309",
         steps: [
           {
             type: "slide",
-            eyebrow: "Slide 1 · Filiera Corta & Km Zero",
-            title: "Meno passaggi tra chi coltiva e chi mangia",
+            eyebrow: "Slide 1 · Filiera Corta ≠ Km Zero",
+            title: "Meno intermediari e distanze reali lungo le 7 tappe del cibo",
             visual: "short_chain",
+            videoSupport: {
+              youtubeId: "AlRe5fH0UnE",
+              title: "Qual è la differenza tra filiera corta e Km 0?",
+              channel: "Altroconsumo",
+              durationLabel: "2 min 36 sec",
+              ageLabel: "Primaria V & Media (10–14 anni)",
+              offlineHint: "La filiera corta riduce i passaggi commerciali (dal contadino a chi mangia); il Km 0 indica la vicinanza geografica. Insieme riducono trasporti, celle frigorifere e plastica protettiva."
+            },
             points: [
-              "<strong>Filiera corta:</strong> il cibo passa direttamente (o con pochissimi passaggi) dal contadino e forno locale alla tavola della famiglia.",
-              "<strong>Trasporto aereo vs strada locale:</strong> la frutta esotica volata da altri continenti moltiplica le emissioni rispetto ai prodotti locali.",
-              "<strong>Beneficio doppio:</strong> cibi più freschi, sostegno ai borghi della valle e meno camion e celle frigorifere."
+              "<strong>Filiera corta vs Km Zero:</strong> la <em>filiera corta</em> taglia gli intermediari (es. vendita diretta, mercati contadini); il <em>Km Zero</em> misura i chilometri reali di viaggio.",
+              "<strong>Le 7 tappe dal campo alla scuola:</strong> raccolta → lavorazione → imballo → logistica → conservazione → negozio → tavola. Meno passaggi = meno imballaggi.",
+              "<strong>Trasporto aereo vs locale:</strong> frutta esotica arrivata in aereo moltiplica le emissioni rispetto alle filiere territoriali."
             ],
-            ricoTip: "A Villacolle i mercati contadini e i gruppi di acquisto uniscono famiglie e produttori vicini!"
+            ricoTip: "Guarda il video Altroconsumo qui a destra per chiarire subito filiera corta vs Km 0!"
           },
           {
             type: "slide",
-            eyebrow: "Slide 2 · La Ruota delle Stagioni",
-            title: "Perché il Km 0 ha bisogno della stagionalità",
+            eyebrow: "Slide 2 · Stagionalità & Paradosso delle Serre",
+            title: "Perché il Km 0 funziona solo con la stagione naturale",
             visual: "season_nov",
+            videoSupport: {
+              youtubeId: "jS4lMag3IoQ",
+              title: "La stagionalità di frutta e verdura",
+              channel: "CEMAD · Policlinico Gemelli (Primaria: vedi anche Zpe9JPGPb9U)",
+              durationLabel: "3 min 30 sec",
+              ageLabel: "Media 11–14 anni · Primaria: Zpe9JPGPb9U",
+              offlineHint: "A novembre in Sicilia maturano al sole arance, mandarini, cachi, mele e finocchi. Pomodori o fragole locali a gennaio richiedono serre riscaldate molto energivore."
+            },
             points: [
-              "<strong>Frutta di novembre in Sicilia:</strong> arance, mandarini, cachi, mele, pere e melograni maturano con il sole naturale.",
-              "<strong>Il trucco delle serre riscaldate:</strong> coltivare fragole o pomodori fuori stagione vicino a casa consuma molta energia per riscaldare le serre.",
-              "<strong>Regola combinata:</strong> vicino + di stagione = minima energia agricola, minimo trasporto e zero plastica protettiva."
+              "<strong>Frutta e ortaggi di novembre:</strong> arance, mandarini, cachi, mele dell'Etna, finocchi e broccoli crescono con sole e pioggia naturali.",
+              "<strong>Paradosso della serra riscaldata:</strong> un pomodoro coltivato a 5 km da casa a gennaio in serra a gasolio consuma spesso più energia di un trasporto regionale di pieno campo.",
+              "<strong>Regola combinata:</strong> vicino (Km 0) + filiera corta + stagione naturale = gusto, nutrienti e minimo impatto."
             ],
-            ricoTip: "In etichetta cerca sempre insieme Origine (luogo) e Stagione naturale!"
+            ricoTip: "Per la Primaria è disponibile anche il video 'W il cibo di stagione' (Cooperativa Il Cammino) nella Mappa e nella sezione Video!"
           },
           {
             type: "quiz_mid",
-            eyebrow: "Verifica Intermedia 1 · Filiera & Stagioni",
-            title: "Verifica cosa guida la spesa a Km Zero",
+            eyebrow: "Verifica Intermedia 1 · Filiera, Km 0 & Stagionalità",
+            title: "Verifica i concetti delle prime due slide",
             questions: [
               {
-                q: "A novembre, quale coppia unisce davvero Km Zero e stagionalità naturale?",
-                opts: ["Mandarini e cachi locali sfusi", "Fragole in vaschetta coltivate in serra riscaldata", "Mirtilli trasportati in aereo dal Sud America"],
+                q: "Qual è la differenza esatta tra 'Filiera corta' e 'Km 0'?",
+                opts: ["Filiera corta = pochissimi intermediari tra produttore e famiglia; Km 0 = vicinanza geografica dei luoghi di produzione", "Significano entrambe trasporto aereo veloce", "Sono la stessa identica parola legale per le serre"],
                 ans: 0,
-                exp: "Frutta autunnale locale evita sia i combustibili dei trasporti lunghi sia il riscaldamento artificiale delle serre."
+                exp: "Combinare pochi passaggi (filiera corta) e vicinanza (Km 0) taglia imballaggi secondari e chilometri."
               },
               {
-                q: "Se un cibo è coltivato a soli 5 km ma in serra a gasolio e avvolto in tre pellicole, come lo valutiamo?",
-                opts: ["In modo critico: il km zero da solo non basta se energia e packaging sono eccessivi", "È comunque perfetto al 100%", "Non consuma mai energia"],
+                q: "A novembre in Sicilia, quale scelta rispetta davvero stagione e territorio?",
+                opts: ["Arance, mandarini o cachi locali sfusi", "Fragole fresche di pieno campo", "Mirtilli arrivati in aereo dall'emisfero sud"],
                 ans: 0,
-                exp: "Occorre valutare insieme distanza, metodo di coltivazione e imballaggi."
+                exp: "Ogni frutto ha la propria finestra naturale in cui cresce senza serre riscaldate né voli intercontinentali."
+              },
+              {
+                q: "Se un ortaggio cresce a soli 10 km a gennaio ma in serra riscaldata a gasolio ed è avvolto in tre pellicole, come lo valutiamo?",
+                opts: ["Criticamente: l'energia termica della serra e l'imballaggio possono superare di molto i vantaggi dei pochi km", "È sempre perfetto al 100%", "Non consuma alcuna energia"],
+                ans: 0,
+                exp: "La valutazione scientifica considera insieme distanza, coltivazione e imballaggio."
               }
             ]
           },
           {
             type: "slide",
-            eyebrow: "Slide 3 · Precycling davanti agli scaffali",
-            title: "Tagliare i rifiuti prima ancora di arrivare alla cassa",
+            eyebrow: "Slide 3 · Le 5R Originali Inglesi & Precycling",
+            title: "Refuse e Reduce alla spesa prima ancora di arrivare alla cassa",
             visual: "precycling_cart",
+            videoSupport: {
+              youtubeId: "x9PJTzBj9n0",
+              title: "Educazione Alimentare Digitale: frutta e verdura",
+              channel: "Elior Group",
+              durationLabel: "3 min",
+              ageLabel: "Primaria & Media (6–14 anni)",
+              offlineHint: "Precycling significa applicare Refuse (lascia sullo scaffale banane in vaschetta o sacchetti doppi) e Reduce (preferisci formati familiari/sfusi alle monoporzioni)."
+            },
             points: [
-              "<strong>Che cos'è il Precycling:</strong> scegliere prodotti sfusi o con confezioni minime per non creare il rifiuto a casa.",
-              "<strong>Sfuso & Borsa di tela:</strong> portare sacchetti di rete o contenitori lavabili da casa elimina decine di vaschette e buste.",
-              "<strong>Formati grandi vs monoporzioni:</strong> 6 brick piccoli con cannuccia producono molta più plastica e cartone rispetto a una brocca o formato familiare."
+              "<strong>Le 5R inglesi alla spesa:</strong> <strong>Refuse</strong> (rifiuta la vaschetta sulle banane), <strong>Reduce</strong> (evita 6 brick con cannuccia), <strong>Reuse</strong> (borsa di tela), <strong>Recycle</strong>, <strong>Rot</strong> (compost!).",
+              "<strong>Che cos'è il Precycling:</strong> prevenire i rifiuti già davanti allo scaffale portando sacchetti riutilizzabili per frutta, verdura e pane del forno.",
+              "<strong>Formati sfusi vs monoporzioni:</strong> un'unica bottiglia o spremuta fatta in casa elimina decine di involucri multipli."
             ],
-            ricoTip: "Anche per coprire i quaderni a inizio anno, sostituisci la plastica con carta da pacchi riusata o disegni!"
+            ricoTip: "In italiano non tutte le 5R iniziano per R, ma applicare Refuse & Reduce allo scaffale taglia i rifiuti alla fonte!"
           },
           {
             type: "slide",
-            eyebrow: "Slide 4 · Anatomia e Tara degli Imballaggi",
-            title: "Primario, secondario, terziario e matematica della tara",
+            eyebrow: "Slide 4 · Anatomia & Matematica della Tara (%)",
+            title: "Primario, secondario, terziario e peso dell'imballaggio",
             visual: "packaging_layers",
             points: [
-              "<strong>Tre livelli:</strong> Primario (tocca l'alimento, es. busta), Secondario (scatola multipla esterna), Terziario (bancale per camion).",
-              "<strong>Calcolo della Tara:</strong> se 100 g di biscotti pesano 125 g con vaschetta e pellicola, il 20% del peso (25 g su 125 g) è pura spazzatura!",
-              "<strong>Poliaccoppiati difficili:</strong> carte plastificate con alluminio fusi insieme (es. C/PAP) richiedono impianti speciali ed è meglio evitarli."
+              "<strong>Tre strati:</strong> <em>Primario</em> (tocca l'alimento), <em>Secondario</em> (scatola esterna multipla), <em>Terziario</em> (cassette e bancali — meglio a rendere!).",
+              "<strong>Formula della Tara (%):</strong> <code>(Peso lordo − Peso netto) ÷ Peso lordo × 100</code>. Se 200 g di biscotti pesano 250 g con vassoio e pellicola, il <strong>20% è spazzatura</strong>!",
+              "<strong>Monomateriale vs Poliaccoppiati:</strong> un solo materiale si ricicla bene; strati incollati (es. <em>C/PAP</em>) richiedono impianti speciali."
             ],
-            ricoTip: "Preferisci sempre confezioni semplici e monomateriali rispetto ai tre strati incollati."
+            ricoTip: "Usa il nuovo Calcolatore della Tara nel laboratorio B4 di Villacolle per misurare merende reali!"
           },
           {
             type: "quiz_mid",
-            eyebrow: "Verifica Intermedia 2 · Precycling & Tara",
-            title: "Imballaggi sotto la lente STEM",
+            eyebrow: "Verifica Intermedia 2 · 5R Inglesi, Precycling & Tara",
+            title: "Metti alla prova calcolo della tara e prevenzione",
             questions: [
               {
-                q: "Qual è il significato pratico del termine 'Precycling'?",
-                opts: ["Scegliere in negozio alimenti sfusi o con pochissimo imballo prima di produrre rifiuti", "Bruciare le scatole di cartone", "Comprare sempre formati monoporzione"],
+                q: "Quale parola inglese delle 5R significa 'Rifiuta il superfluo' (es. niente vaschetta di plastica sulle banane)?",
+                opts: ["Refuse (alla base della Prevenzione europea)", "Recycle", "Rot"],
                 ans: 0,
-                exp: "È prevenzione attiva fatta direttamente davanti allo scaffale."
+                exp: "I 5 termini originali inglesi sono Refuse, Reduce, Reuse, Recycle, Rot."
               },
               {
-                q: "100 g di snack pesano 125 g con vaschetta, pellicola e cartone: qual è l'incidenza della tara?",
+                q: "Che cos'è il Precycling davanti agli scaffali?",
+                opts: ["Scegliere alimenti sfusi, ricaricabili o con meno involucri per evitare il rifiuto prima ancora di comprarlo", "Bruciare i cartoni di sera", "Comprare sempre tre strati di incarto"],
+                ans: 0,
+                exp: "Prevenire allo scaffale è più efficace di qualsiasi riciclo successivo."
+              },
+              {
+                q: "100 g di snack pesano 125 g in totale con scatola, vassoio e pellicola: qual è la percentuale di tara?",
                 opts: ["20% del peso totale è imballaggio (25 g su 125 g)", "5%", "80%"],
                 ans: 0,
-                exp: "25 ÷ 125 = 0,20 cioè il 20%!"
+                exp: "(125 − 100) ÷ 125 × 100 = 25 ÷ 125 × 100 = 20%."
               }
             ]
           },
           {
             type: "slide",
-            eyebrow: "Slide 5 · Codici Materiali & Tappi",
-            title: "Leggere le sigle ambientali in etichetta",
+            eyebrow: "Slide 5 · Codici CONAI & Tappi Legati (Direttiva SUP)",
+            title: "Come leggere i simboli sugli imballaggi e conferire senza errori",
             visual: "material_codes",
+            videoSupport: {
+              youtubeId: "uH04E_8dXjs",
+              title: "La straordinaria storia degli imballaggi e del riciclo",
+              channel: "CONAI",
+              durationLabel: "3 min 30 sec",
+              ageLabel: "Primaria & Media (6–14 anni)",
+              offlineHint: "I codici alfanumerici identificano il materiale (PAP 20–22 carta, PET 01 plastica, ALU 41 alluminio, GL 70 vetro, C/PAP 84 poliaccoppiato). Dal 2024 i tappi restano legati alla bottiglia (Tethered Caps)."
+            },
             points: [
-              "<strong>Sigle principali:</strong> PAP 20–22 (Carta/Cartone), PET 1 (Plastica bottiglie), ALU 41 (Alluminio), GL 70 (Vetro).",
-              "<strong>Tappo attaccato (Tethered Caps):</strong> la Direttiva europea SUP lega il tappo alla bottiglia (schiaccia per lungo e riavvita!) così non si disperde in mare.",
-              "<strong>Regola d'oro comunale:</strong> verifica sempre il calendario del tuo Comune per conferire compositi (es. C/PAP 84) senza errori."
+              "<strong>Codici principali:</strong> <strong>PAP 20–22</strong> (Carta), <strong>PET 01</strong> (Bottiglie/vaschette), <strong>ALU 41</strong> (Alluminio), <strong>GL 70–72</strong> (Vetro), <strong>C/PAP 84</strong> (Poliaccoppiato).",
+              "<strong>Tappo attaccato (Tethered Caps SUP 2024):</strong> resta unito alla bottiglia per evitare che finisca in spiagge e boschi; schiaccia per lungo e riavvita!",
+              "<strong>Pulizia intelligente:</strong> svuota bene il vasetto di yogurt; per il cartone della pizza, separa il coperchio pulito (carta) dal fondo unto (organico/secco comunale)."
             ],
-            ricoTip: "Schiacciare le bottiglie per lungo risparmia spazio nei bidoni e facilita la raccolta!"
+            ricoTip: "Guarda il video ufficiale CONAI qui accanto e controlla sempre le regole del tuo Comune per C/PAP 84!"
           },
           {
             type: "slide",
-            eyebrow: "Slide 6 · Feste & Merende Scolastiche",
-            title: "Progettare eventi scolastici a impatto zero",
+            eyebrow: "Slide 6 · Etichette UE, EN 13432 & Anti-Greenwashing",
+            title: "Leggere Paese d'origine, prezzo al kg e marchi verificabili",
+            visual: "labels_greenwashing",
+            points: [
+              "<strong>Origine & €/kg obbligatori (UE):</strong> sul banco ortofrutta controlla sempre il Paese di origine e confronta il prezzo al kg tra sfuso e confezionato.",
+              "<strong>Sacchetti compostabili EN 13432:</strong> solo i marchi certificati <em>OK Compost / CIC</em> possono andare nell'organico ('Rot'), mai abbandonati nei campi!",
+              "<strong>Smaschera il Greenwashing:</strong> diffida di slogan vaghi (“100% amico della natura”) e cerca certificazioni verificate come <strong>Ecolabel UE</strong>."
+            ],
+            ricoTip: "Uno studente critico cerca sigle e numeri ufficiali, mai solo una foglia verde disegnata sulla scatola!"
+          },
+          {
+            type: "slide",
+            eyebrow: "Slide 7 · Spesa Consapevole & Vuoto a Rendere",
+            title: "5 scelte pratiche dal mercato contadino al supermercato",
+            visual: "shopping_5steps",
+            points: [
+              "<strong>Lista dopo controllo frigo:</strong> evita doppioni inutili a casa.",
+              "<strong>Vuoto a rendere (Reuse):</strong> cassette agricole riutilizzabili e bottiglie di vetro lavate e riempite di nuovo risparmiano persino l'energia di rifusione!",
+              "<strong>Materiali permanenti (GL 70, ALU 41):</strong> quando il vetro o l'alluminio non sono a rendere, possono essere rifusi infinite volte se puliti."
+            ],
+            ricoTip: "Il vuoto a rendere batte anche il riciclo perché riutilizza il contenitore tal quale!"
+          },
+          {
+            type: "slide",
+            eyebrow: "Slide 8 · Merende & Eventi Scolastici a Impatto Zero",
+            title: "Dall'aula alla festa di classe: i numeri su 180 giorni di scuola",
             visual: "zero_waste_party",
             points: [
-              "<strong>Feste di classe pulite:</strong> piatti e bicchieri lavabili + caraffe d'acqua del rubinetto invece di tre piatti usa e getta a testa.",
-              "<strong>Matite di legno e penne ricaricabili:</strong> sostituiscono decine di pennarelli e penne usa-e-getta difficili da riciclare.",
-              "<strong>Vasetti del miele locale:</strong> il vetro lavato diventa portapenne o contenitore di semi in aula."
+              "<strong>Accoppiata anti-rifiuto:</strong> frutta di stagione sfusa + pane/focaccia locale in portamerenda lavabile + acqua in borraccia.",
+              "<strong>Calcolo 180 giorni × 1 classe:</strong> 1 alunno evita <strong>~360 involucri/anno</strong> (1 merendina + 1 brick al giorno); una classe da 22 evita <strong>~7.920 rifiuti/anno</strong>!",
+              "<strong>Feste e cancelleria:</strong> stoviglie lavabili, caraffe d'acqua, matite in legno, penne ricaricabili e vasetti di miele riusati in aula."
             ],
-            ricoTip: "Completa il quiz finale di Villacolle per sbloccare tutte le domande su Km Zero e imballaggi!"
+            ricoTip: "Completa la Verifica Finale da 5 domande per sbloccare tutto Villacolle nel Quiz Principale!"
           },
           {
             type: "quiz_final",
-            eyebrow: "Verifica Finale Modulo 2 · Villacolle",
-            title: "Completa per sbloccare Villacolle nel Quiz",
+            eyebrow: "Verifica Finale Modulo 2 · Villacolle Completa",
+            title: "Supera le 5 domande per sbloccare Villacolle nel Quiz",
             questions: [
               {
-                q: "Che differenza passa tra imballaggio primario e secondario?",
-                opts: ["Il primario avvolge il cibo; il secondario raggruppa più confezioni ed è spesso evitabile", "Il primario serve per i camion", "Sono identici"],
+                q: "Perché i termini delle 5R iniziano tutti con R in inglese e non nella traduzione italiana?",
+                opts: ["Perché in inglese i 5 termini originali sono Refuse, Reduce, Reuse, Recycle, Rot (tradotto in italiano 'Rot' diventa 'Composta', che non inizia per R)", "Perché l'inglese ha un alfabeto senza vocali", "È un codice inventato per il vetro"],
                 ans: 0,
-                exp: "Riconoscere gli strati superflui permette di eliminarli già al momento dell'acquisto."
+                exp: "Usare i 5 termini originali inglesi (Refuse, Reduce, Reuse, Recycle, Rot) evita ambiguità rispetto ad altre varianti."
               },
               {
-                q: "Perché i tappi fissati alle bottiglie (tethered caps) proteggono boschi e spiagge?",
-                opts: ["Evitano la dispersione di milioni di piccoli tappi e garantiscono che arrivino al riciclo con la bottiglia", "Servono solo a decorare", "Trasformano la plastica in carta"],
+                q: "Che differenza c'è tra imballaggio primario, secondario e terziario?",
+                opts: ["Primario tocca l'alimento, secondario raggruppa più pezzi, terziario serve al trasporto/bancali", "Sono identici tra loro", "Il primario è solo il camion"],
                 ans: 0,
-                exp: "Piccoli dettagli di ecodesign fanno una grande differenza sull'ambiente."
+                exp: "Riconoscere gli strati superflui permette di eliminarli già al momento dell'acquisto (Precycling)."
               },
               {
-                q: "Un vasetto di vetro vuoto del miele locale o un imballaggio C/PAP 84 come vanno gestiti?",
-                opts: ["Il vasetto si può riusare in aula o mettere nel vetro; per C/PAP 84 si verifica la regola comunale", "Vanno entrambi nell'umido", "Vanno lasciati nei sentieri"],
+                q: "Perché i tappi fissati alle bottiglie (Tethered Caps, Direttiva SUP) aiutano l'ambiente?",
+                opts: ["Evitano che milioni di tappi vengano dispersi su spiagge e sentieri e ne garantiscono il riciclo con la bottiglia", "Servono solo a decorare la bottiglia", "Trasformano la plastica in carta"],
                 ans: 0,
-                exp: "Riuso prima di tutto, e attenzione alle regole locali sui compositi!"
+                exp: "Schiacciando la bottiglia per lungo e riavvitando il tappo legato si recupera l'intero imballo."
+              },
+              {
+                q: "Cosa garantiscono rispettivamente EN 13432 ed Ecolabel UE rispetto a una frase generica come 'Prodotto Eco 100%'?",
+                opts: ["EN 13432 certifica la compostabilità nell'umido ed Ecolabel UE garantisce verifica indipendente LCA contro il greenwashing", "Sono frasi pubblicitarie inventate senza controlli", "Permettono di buttare i sacchetti nei boschi"],
+                ans: 0,
+                exp: "Solo le norme e i marchi ufficiali proteggono dal greenwashing."
+              },
+              {
+                q: "Circa quanti imballaggi monouso evita in 180 giorni scolastici una classe da 22 alunni sostituendo merendina incartata + brick con portamerenda e borraccia?",
+                opts: ["Oltre 7.900 imballaggi evitati all'anno (~360 a studente)", "Circa 20 in tutto l'anno", "Nessuno"],
+                ans: 0,
+                exp: "2 imballi × 180 giorni × 22 alunni = ~7.920 imballaggi risparmiati ogni anno!"
               }
             ]
           }
@@ -5807,9 +6086,9 @@
       },
       {
         id: "cefalana",
-        tabLabel: "3. Cefalana · Ripara",
-        title: "Cefalana · Riparazione & Ecodesign",
-        subtitle: "Diritto alla riparazione, materiali permanenti e anti-greenwashing",
+        tabLabel: "3. Riparazione & Ecodesign",
+        title: "Riparazione, Acqua Storica & Ecodesign",
+        subtitle: "Diritto alla riparazione, materiali permanenti e anti-greenwashing · Comune abbinato: Cefalana",
         accent: "#7c2d12",
         steps: [
           {
@@ -5920,9 +6199,9 @@
       },
       {
         id: "dragano",
-        tabLabel: "4. Dragano · Bosco",
-        title: "Dragano · Bosco Pulito & Compost",
-        subtitle: "Compostaggio scolastico, bioplastiche EN 13432 e sentieri senza tracce",
+        tabLabel: "4. Bosco & Compost",
+        title: "Bosco Pulito, Natura & Compostaggio",
+        subtitle: "Compostaggio scolastico, bioplastiche EN 13432 e sentieri senza tracce · Comune abbinato: Dragano",
         accent: "#166534",
         steps: [
           {
@@ -6033,9 +6312,9 @@
       },
       {
         id: "campolieto",
-        tabLabel: "5. Campolieto · RAEE & IA",
-        title: "Campolieto · RAEE, Energia, Coding & IA",
-        subtitle: "Rifiuti elettronici, risparmio energetico e cittadinanza digitale critica",
+        tabLabel: "5. RAEE, Energia & IA",
+        title: "RAEE, Digitale Sostenibile & Energia",
+        subtitle: "Rifiuti elettronici, risparmio energetico e cittadinanza digitale · Comune abbinato: Campolieto",
         accent: "#4338ca",
         steps: [
           {
@@ -6195,15 +6474,17 @@
           <text x="220" y="153" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">3. Riduci gli sprechi</text>
         </svg>`,
         pyramid_5r: `<svg viewBox="0 0 320 200" aria-hidden="true">
-          <polygon points="160,16 286,184 34,184" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
-          <polygon points="160,18 206,66 114,66" fill="#14532d"/>
-          <text x="160" y="54" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">1. PREVIENI</text>
-          <polygon points="111,70 209,70 232,102 88,102" fill="#15803d"/>
-          <text x="160" y="90" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">2. RIUSA &amp; RIPARA</text>
-          <polygon points="85,106 235,106 257,138 63,138" fill="#0369a1"/>
-          <text x="160" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">3. RICICLA PULITO</text>
-          <polygon points="59,142 261,142 282,182 38,182" fill="#64748b"/>
-          <text x="160" y="166" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">4. RECUPERO · 5. DISCARICA (ULTIMA)</text>
+          <rect x="2" y="2" width="316" height="196" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+          <polygon points="18,14 302,14 282,46 38,46" fill="#14532d"/>
+          <text x="160" y="34.5" text-anchor="middle" font-size="13" font-weight="800" fill="#ffffff">1. Refuse</text>
+          <polygon points="41,50 279,50 259,82 61,82" fill="#15803d"/>
+          <text x="160" y="70.5" text-anchor="middle" font-size="13" font-weight="800" fill="#ffffff">2. Reduce</text>
+          <polygon points="64,86 256,86 236,118 84,118" fill="#0369a1"/>
+          <text x="160" y="106.5" text-anchor="middle" font-size="13" font-weight="800" fill="#ffffff">3. Reuse</text>
+          <polygon points="87,122 233,122 213,154 107,154" fill="#475569"/>
+          <text x="160" y="142.5" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffffff">4. Recycle</text>
+          <polygon points="110,158 210,158 194,190 126,190" fill="#92400e"/>
+          <text x="160" y="178.5" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffffff">5. Rot</text>
         </svg>`,
         circular_loop: `<svg viewBox="0 0 320 200" aria-hidden="true">
           <rect x="12" y="14" width="296" height="54" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
@@ -6342,8 +6623,30 @@
           <rect x="20" y="24" width="280" height="152" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
           <text x="160" y="56" text-anchor="middle" font-size="13" font-weight="800" fill="#14532d">FESTA &amp; AULA SENZA MONOUSO</text>
           <text x="160" y="92" text-anchor="middle" font-size="12" fill="#1e293b">Piatti lavabili + Caraffe d'acqua</text>
-          <text x="160" y="120" text-anchor="middle" font-size="12" fill="#1e293b">Matite legno + Penne ricaricabili</text>
+          <text x="160" y="120" text-anchor="middle" font-size="12" fill="#1e293b">1 classe (22) = ~7.920 rifiuti/anno evitati</text>
           <text x="160" y="148" text-anchor="middle" font-size="12" font-weight="700" fill="#b45309">Vasetti di vetro del miele riusati!</text>
+        </svg>`,
+        labels_greenwashing: `<svg viewBox="0 0 320 200" aria-hidden="true">
+          <rect x="14" y="18" width="140" height="164" rx="10" fill="#ecfdf5" stroke="#16a34a" stroke-width="2"/>
+          <text x="84" y="44" text-anchor="middle" font-size="11.5" font-weight="800" fill="#14532d">VERIFICATO ✓</text>
+          <text x="84" y="72" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e293b">• Paese origine UE</text>
+          <text x="84" y="96" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e293b">• Prezzo €/kg</text>
+          <text x="84" y="120" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0369a1">• EN 13432 (umido)</text>
+          <text x="84" y="144" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803d">• Ecolabel UE</text>
+          <rect x="166" y="18" width="140" height="164" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+          <text x="236" y="44" text-anchor="middle" font-size="11.5" font-weight="800" fill="#991b1b">GREENWASHING ✗</text>
+          <text x="236" y="84" text-anchor="middle" font-size="10.5" fill="#7f1d1d">“100% Naturale”</text>
+          <text x="236" y="110" text-anchor="middle" font-size="10.5" fill="#7f1d1d">senza numeri</text>
+          <text x="236" y="136" text-anchor="middle" font-size="10.5" fill="#7f1d1d">né ente terzo!</text>
+        </svg>`,
+        shopping_5steps: `<svg viewBox="0 0 320 200" aria-hidden="true">
+          <rect x="14" y="16" width="292" height="168" rx="12" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
+          <text x="160" y="42" text-anchor="middle" font-size="12" font-weight="800" fill="#b45309">SPESA CONSAPEVOLE IN 5 MOSSE</text>
+          <text x="160" y="68" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">1. Controlla frigo + lista anti-spreco</text>
+          <text x="160" y="92" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">2. Scegli sfuso &amp; borsa di tela (Refuse)</text>
+          <text x="160" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">3. Leggi origine + stagione reale</text>
+          <text x="160" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">4. Preferisci vuoto a rendere (Reuse)</text>
+          <text x="160" y="164" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">5. Scegli monomateriale pulito (Recycle)</text>
         </svg>`,
         screw_vs_glue: `<svg viewBox="0 0 320 200" aria-hidden="true">
           <rect x="14" y="20" width="138" height="160" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
@@ -6516,6 +6819,21 @@
           : `Moduli completati: ${state.completedLessons.length} / ${PRES_MODULES.length}`;
       }
 
+      const comuneSel = document.getElementById("pres-comune-select");
+      if (comuneSel) {
+        comuneSel.value = mod.id === "serr" ? "" : mod.id;
+        if (!comuneSel.dataset.bound) {
+          comuneSel.dataset.bound = "1";
+          comuneSel.addEventListener("change", () => {
+            if (comuneSel.value) {
+              state.presPrereqNotice = "";
+              state.activePresentation = comuneSel.value;
+              renderPresentation();
+            }
+          });
+        }
+      }
+
       deckTabs.innerHTML = "";
       PRES_MODULES.forEach(m => {
         const b = document.createElement("button");
@@ -6573,6 +6891,10 @@
       if (step.type === "slide") {
         const nextIsBlockedBySelf = false;
         const canGoNext = prog.stepIdx < mod.steps.length - 1;
+        const hasVideo = Boolean(step.videoSupport && step.videoSupport.youtubeId);
+        if (!prog.visualMode) prog.visualMode = {};
+        const visMode = hasVideo && prog.visualMode[prog.stepIdx] === "video" ? "video" : "svg";
+        const vs = step.videoSupport;
         card.innerHTML = `
           ${noticeHtml}
           <div class="pres-slide-grid">
@@ -6588,8 +6910,38 @@
               </div>
             </div>
             <div class="pres-visual-col">
-              <div class="pres-svg-slot">${renderSlideSvg(step.visual, mod.accent)}</div>
-              <div class="pres-rico-tip"><strong>Rico ricorda:</strong> ${escHtml(step.ricoTip)}</div>
+              ${hasVideo ? `
+                <div class="pres-vis-toggle no-print">
+                  <div style="display:flex;gap:6px;">
+                    <button type="button" class="btn ${visMode === "svg" ? "btn-primary" : ""}" style="min-height:30px;padding:3px 10px;font-size:0.78rem;" data-pres-vismode="svg">Schema visivo</button>
+                    <button type="button" class="btn ${visMode === "video" ? "btn-primary" : ""}" style="min-height:30px;padding:3px 10px;font-size:0.78rem;" data-pres-vismode="video">Video a supporto</button>
+                  </div>
+                  <span style="font-size:0.74rem;color:var(--text-muted);font-weight:700;">${escHtml(vs.durationLabel)}</span>
+                </div>
+              ` : ""}
+              ${visMode === "video" && hasVideo ? `
+                <div class="pres-video-slot">
+                  <div class="pres-video-frame">
+                    <iframe
+                      title="${escHtml(vs.title)}"
+                      src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(vs.youtubeId)}?rel=0&cc_load_policy=1&cc_lang_pref=it"
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;font-size:0.76rem;color:var(--text-muted);">
+                    <span><strong>${escHtml(vs.channel)}</strong> · ${escHtml(vs.ageLabel)}</span>
+                    <a href="https://www.youtube.com/watch?v=${encodeURIComponent(vs.youtubeId)}" target="_blank" rel="noopener noreferrer" class="btn" style="min-height:26px;padding:2px 8px;font-size:0.74rem;text-decoration:none;">Apri YouTube ↗</a>
+                  </div>
+                  <div style="font-size:0.77rem;background:#eef6fc;border:1px solid #bfdcf0;border-radius:7px;padding:5px 8px;color:#0f3c5c;">
+                    <strong>Modalità Offline / Sintesi:</strong> ${escHtml(vs.offlineHint)}
+                  </div>
+                </div>
+              ` : `
+                <div class="pres-svg-slot">${renderSlideSvg(step.visual, mod.accent)}</div>
+                <div class="pres-rico-tip"><strong>Rico ricorda:</strong> ${escHtml(step.ricoTip)}</div>
+              `}
             </div>
           </div>
           <div class="pres-footer-bar no-print">
@@ -6602,6 +6954,12 @@
           </div>
         `;
 
+        card.querySelectorAll("[data-pres-vismode]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            prog.visualMode[prog.stepIdx] = btn.getAttribute("data-pres-vismode") || "svg";
+            renderPresentation();
+          });
+        });
         card.querySelector("#btn-pres-prev").addEventListener("click", () => {
           if (prog.stepIdx > 0) {
             prog.stepIdx -= 1;
@@ -6616,21 +6974,29 @@
             renderPresentation();
           }
         });
-        card.querySelector("#btn-pres-tts").addEventListener("click", () => {
+        const presBtnTts = card.querySelector("#btn-pres-tts");
+        presBtnTts.addEventListener("click", () => {
           if (!("speechSynthesis" in window)) return;
           if (state.ttsActive) {
             stopSpeech();
+            presBtnTts.setAttribute("aria-pressed", "false");
+            presBtnTts.textContent = "Leggi slide";
             return;
           }
           const plain = `${step.title}. ${step.points.map(p => p.replace(/<[^>]+>/g, "")).join(" ")} Rico ricorda: ${step.ricoTip}`;
           const utt = new SpeechSynthesisUtterance(plain);
           utt.lang = "it-IT";
           utt.rate = state.besMode ? 0.9 : 1.0;
-          utt.onend = stopSpeech;
-          utt.onerror = stopSpeech;
+          const resetPresBtn = () => {
+            stopSpeech();
+            presBtnTts.setAttribute("aria-pressed", "false");
+            presBtnTts.textContent = "Leggi slide";
+          };
+          utt.onend = resetPresBtn;
+          utt.onerror = resetPresBtn;
           state.ttsActive = true;
-          btnTts.setAttribute("aria-pressed", "true");
-          btnTts.textContent = "Ferma lettura";
+          presBtnTts.setAttribute("aria-pressed", "true");
+          presBtnTts.textContent = "Ferma lettura";
           window.speechSynthesis.speak(utt);
         });
         return;
@@ -6877,8 +7243,8 @@
       const filterLabel = state.townFilter === "tutti"
         ? "Nessuna lezione completata finora"
         : state.townFilter === "selected"
-          ? "Lezioni dei borghi selezionati sulla mappa non ancora completate"
-          : `Prima completa la presentazione di ${TOWN_LABELS[state.townFilter] || state.townFilter}`;
+          ? "Lezioni delle tematiche selezionate sulla mappa non ancora completate"
+          : `Prima completa la presentazione: ${TOPIC_LABELS[state.townFilter] || state.townFilter}`;
 
       gateEl.innerHTML = `
         <div>
@@ -6888,7 +7254,7 @@
           </div>
           <h3 style="margin:0 0 6px 0;font-size:1.2rem;">Prima impara i concetti nelle Slide, poi sblocchi il Quiz!</h3>
           <p style="margin:0;font-size:0.9rem;color:var(--text-muted);">
-            Per rispondere alle 120 domande devi prima completare almeno una presentazione interattiva (con i relativi quiz intermedi). Scegli qui sotto da quale modulo iniziare:
+            Per rispondere alle 120 domande devi prima completare almeno una presentazione interattiva (con i relativi quiz intermedi). Scegli qui sotto da quale tematica iniziare:
           </p>
         </div>
         <div class="quiz-gate-grid">
@@ -6924,9 +7290,10 @@
     function initQuiz() {
       const reqCount = parseInt(document.getElementById("quiz-count-select").value, 10) || 30;
       const unlockedMods = getUnlockedModules();
-      let bank = [];
+      const preferredBank = [];
+      const extraBank = [];
 
-      const addBank = (arr, lvlLabel, fallbackTown) => arr.forEach(q => {
+      const addBank = (arr, lvlKey, lvlLabel, fallbackTown) => arr.forEach(q => {
         const modKey = inferQuizModule(q, fallbackTown);
         if (!unlockedMods.includes(modKey)) return;
         if (state.townFilter === "selected") {
@@ -6934,19 +7301,19 @@
         } else if (state.townFilter !== "tutti" && modKey !== state.townFilter) {
           return;
         }
-        const labelTown = modKey === "serr" ? "SERR & 5R" : (TOWN_LABELS[modKey] || "Cinque Borghi");
-        bank.push({ ...q, town: modKey, tag: `${lvlLabel} · ${labelTown}` });
+        const labelTopic = modKey === "serr" ? "SERR & 5R" : (TOPIC_LABELS[modKey] || "SERR 2026");
+        const isSuggested = state.level !== "entrambi" && lvlKey === state.level;
+        const entry = { ...q, town: modKey, tag: `${isSuggested ? "★ Consigliato · " : ""}${lvlLabel} · Tematica: ${labelTopic}` };
+        if (state.level === "entrambi" || lvlKey === state.level) preferredBank.push(entry);
+        else extraBank.push(entry);
       });
 
-      if (state.level !== "secondaria") {
-        addBank(QUIZ_PRIMARIA_A, "Primaria", "mezzovalle");
-        addBank(QUIZ_PRIMARIA_B, "Primaria", "villacolle");
-      }
-      if (state.level !== "primaria") {
-        addBank(QUIZ_SECONDARIA_A, "Secondaria", "mezzovalle");
-        addBank(QUIZ_SECONDARIA_B, "Secondaria", "villacolle");
-      }
+      addBank(QUIZ_PRIMARIA_A, "primaria", "6–10 anni (Primaria)", "mezzovalle");
+      addBank(QUIZ_PRIMARIA_B, "primaria", "6–10 anni (Primaria)", "villacolle");
+      addBank(QUIZ_SECONDARIA_A, "secondaria", "11–14 anni (Media)", "mezzovalle");
+      addBank(QUIZ_SECONDARIA_B, "secondaria", "11–14 anni (Media)", "villacolle");
 
+      const bank = preferredBank.length > 0 ? preferredBank.concat(extraBank) : extraBank;
       if (bank.length === 0) {
         renderQuizGate(unlockedMods);
         return;
@@ -6957,13 +7324,18 @@
       const bannerEl = document.getElementById("quiz-unlocked-banner");
       if (gateEl) gateEl.style.display = "none";
       if (activeWrap) activeWrap.style.display = "flex";
+      const ageHint = state.level === "primaria"
+        ? " · Priorità fascia 6–10 anni (Primaria)"
+        : state.level === "secondaria"
+          ? " · Priorità fascia 11–14 anni (Media)"
+          : "";
       if (bannerEl) {
         bannerEl.innerHTML = state.teacherUnlockAllQuiz
-          ? `<span><strong>Modalità Torneo LIM attiva:</strong> tutti i 6 moduli sbloccati (${bank.length} domande disponibili).</span>`
-          : `<span><strong>Argomenti sbloccati:</strong> ${unlockedMods.length} / ${PRES_MODULES.length} moduli (${bank.length} domande disponibili · studia le altre Slide per aggiungerle!).</span>`;
+          ? `<span><strong>Modalità Torneo LIM attiva:</strong> tutte le 6 tematiche sbloccate (${bank.length} domande${ageHint}).</span>`
+          : `<span><strong>Tematiche sbloccate:</strong> ${unlockedMods.length} / ${PRES_MODULES.length} moduli (${bank.length} domande${ageHint} · studia le altre Slide per aggiungerle!).</span>`;
       }
 
-      let prepared = shuffleArray(bank).slice(0, Math.min(reqCount, bank.length));
+      let prepared = shuffleArray(preferredBank).concat(shuffleArray(extraBank)).slice(0, Math.min(reqCount, bank.length));
       if (state.quizProgressive) prepared.sort((a, b) => a.diff - b.diff);
       state.quiz.pool = prepared;
       state.quiz.index = 0;
@@ -7022,10 +7394,10 @@
         nextBtn.disabled = true;
 
         const townScope = state.townFilter === "tutti"
-          ? "Tutti i 5 Borghi"
+          ? "Tutte le 5 tematiche"
           : state.townFilter === "selected"
-            ? (state.selectedTowns.map(t => TOWN_LABELS[t]).join(", ") || "Tutti i 5 Borghi")
-            : (TOWN_LABELS[state.townFilter] || "Cinque Borghi");
+            ? (state.selectedTowns.map(t => TOPIC_LABELS[t] || TOWN_LABELS[t]).join(", ") || "Tutte le 5 tematiche")
+            : (TOPIC_LABELS[state.townFilter] || "SERR 2026");
         state.quizHistory.unshift({
           time: new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }),
           scope: `${state.level} / ${townScope}`,
@@ -7118,8 +7490,9 @@
 
     /* ==================== GAME 1 ENGINE ==================== */
     function initGame1() {
-      const filtered = state.level === "entrambi" ? G1_ITEMS : G1_ITEMS.filter(x => x.level === state.level);
-      state.g1.items = shuffleArray(filtered);
+      const preferred = state.level === "entrambi" ? G1_ITEMS : G1_ITEMS.filter(x => x.level === state.level);
+      const secondary = state.level === "entrambi" ? [] : G1_ITEMS.filter(x => x.level !== state.level);
+      state.g1.items = shuffleArray(preferred).concat(shuffleArray(secondary));
       state.g1.index = 0; state.g1.score = 0; state.g1.answered = false;
       renderGame1();
     }
@@ -7147,7 +7520,9 @@
       const item = state.g1.items[state.g1.index];
       state.g1.answered = false;
       nextBtn.disabled = true;
-      progEl.innerHTML = `<span>Elemento <span class="num">${state.g1.index + 1}</span> di <span class="num">${state.g1.items.length}</span></span><span aria-hidden="true">·</span><span>${item.level === "primaria" ? "Primaria" : "Secondaria"}</span>`;
+      const ageLabel = item.level === "primaria" ? "6–10 anni (Primaria)" : "11–14 anni (Media)";
+      const isMatch = state.level !== "entrambi" && item.level === state.level;
+      progEl.innerHTML = `<span>Elemento <span class="num">${state.g1.index + 1}</span> di <span class="num">${state.g1.items.length}</span></span><span aria-hidden="true">·</span><span>${isMatch ? "★ Consigliato · " : ""}${ageLabel}</span>`;
       titleEl.textContent = item.title;
       descEl.textContent = item.desc;
       scoreEl.textContent = `Punteggio: ${state.g1.score} / ${state.g1.index}`;
@@ -8646,7 +9021,13 @@
     renderGame7Board();
     initGame8();
     renderGamification();
-    window.__SERR_BRIDGE = { setActiveSection, addXp, escHtml };
+    function refreshMapVideo() {
+      const slot = document.getElementById("map-video-embed-slot");
+      if (slot && state.activeTown && window.__SERR_VIDEOS && typeof window.__SERR_VIDEOS.renderMapVideo === "function") {
+        window.__SERR_VIDEOS.renderMapVideo(slot, state.activeTown, state.level);
+      }
+    }
+    window.__SERR_BRIDGE = { setActiveSection, addXp, escHtml, setLevel, getLevel: () => state.level, refreshMapVideo };
   })();
   </script>
   <script type="module" src="/src/serrLabs.ts"></script>

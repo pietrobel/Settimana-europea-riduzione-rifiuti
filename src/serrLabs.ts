@@ -23,7 +23,16 @@ import {
   renderWorksheetsHub,
   type CommonHubContext
 } from "./serr/render_common_and_hub.ts";
-import { renderPortalView } from "./serr/render_portal.ts";
+import {
+  renderPortalView,
+  setPortalAgeSuggestion
+} from "./serr/render_portal.ts";
+import {
+  renderMapTownVideoBox,
+  renderVideoEmbedPage,
+  setVideoAgeSuggestion
+} from "./serr/render_videos.ts";
+import type { SerrTopicId } from "./serr/data_intro_videos.ts";
 
 declare global {
   interface Window {
@@ -31,6 +40,13 @@ declare global {
       setActiveSection?: (id: string) => void;
       addXp?: (pts: number, badgeId?: string | null, tag?: string) => void;
       escHtml?: (str: string) => string;
+      setLevel?: (lvl: "primaria" | "secondaria" | "entrambi") => void;
+      getLevel?: () => string;
+      refreshMapVideo?: () => void;
+    };
+    __SERR_VIDEOS?: {
+      renderMapVideo: (container: HTMLElement, topicId: string, preferredLevel: string) => void;
+      syncAgeBand: (lvl: "primaria" | "secondaria" | "entrambi") => void;
     };
     openSerrModule?: (tab: string, subTab?: string) => void;
   }
@@ -98,8 +114,8 @@ function renderRoot(): void {
 
   const navItems: Array<{ id: MainLabTab; label: string }> = [
     { id: "overview", label: "Hub SERR" },
-    { id: "mezzovalle", label: "Percorso A · Mezzovalle" },
-    { id: "villacolle", label: "Percorso B · Villacolle" },
+    { id: "mezzovalle", label: "Tematica A · Acqua & Cibo (Mezzovalle)" },
+    { id: "villacolle", label: "Tematica B · Km Zero & Imballi (Villacolle)" },
     { id: "att6", label: "6 · Supermercato" },
     { id: "att7", label: "7 · Sfida & Decalogo" },
     { id: "att8", label: "8 · Scuola & Manifesto" },
@@ -193,9 +209,45 @@ async function bootSerrLabs(): Promise<void> {
   labState = loaded.state;
   storageBackendLabel = loaded.backend;
 
+  const refreshExternalViews = () => {
+    const initialLvl = window.__SERR_BRIDGE?.getLevel?.();
+    const ageBand = initialLvl === "primaria" ? "primaria" : initialLvl === "secondaria" ? "media" : "tutte";
+    const syncLevelCb = (lvl: "primaria" | "secondaria" | "entrambi") => {
+      setPortalAgeSuggestion(lvl);
+      setVideoAgeSuggestion(lvl);
+      window.__SERR_BRIDGE?.setLevel?.(lvl);
+    };
+
+    const portaleMount = document.getElementById("portale-root");
+    if (portaleMount) {
+      renderPortalView(portaleMount, {
+        esc: getEsc(),
+        initialAgeBand: ageBand,
+        onSyncLevel: syncLevelCb,
+        onJumpSection: (sec: string) => window.__SERR_BRIDGE?.setActiveSection?.(sec),
+        onOpenLab: (tab: string) => window.openSerrModule?.(tab)
+      });
+    }
+
+    const videoMount = document.getElementById("video-intro-root");
+    if (videoMount) {
+      renderVideoEmbedPage(videoMount, {
+        esc: getEsc(),
+        initialAgeBand: ageBand,
+        onSyncLevel: syncLevelCb,
+        onJumpSection: (sec: string) => window.__SERR_BRIDGE?.setActiveSection?.(sec),
+        onOpenLab: (tab: string) => window.openSerrModule?.(tab)
+      });
+    }
+  };
+
   window.openSerrModule = (tab: string, subTab?: string) => {
     if (tab === "portale") {
       window.__SERR_BRIDGE?.setActiveSection?.("portale");
+      return;
+    }
+    if (tab === "video") {
+      window.__SERR_BRIDGE?.setActiveSection?.("video");
       return;
     }
     if (tab === "mezzovalle" && subTab) {
@@ -208,16 +260,26 @@ async function bootSerrLabs(): Promise<void> {
     renderRoot();
   };
 
-  renderRoot();
+  window.__SERR_VIDEOS = {
+    renderMapVideo: (container: HTMLElement, topicId: string, preferredLevel: string) => {
+      const validIds: SerrTopicId[] = ["mezzovalle", "villacolle", "cefalana", "dragano", "campolieto"];
+      const safeId: SerrTopicId = validIds.includes(topicId as SerrTopicId)
+        ? (topicId as SerrTopicId)
+        : "mezzovalle";
+      renderMapTownVideoBox(container, safeId, preferredLevel, getEsc(), () => {
+        window.__SERR_BRIDGE?.setActiveSection?.("video");
+      });
+    },
+    syncAgeBand: (lvl: "primaria" | "secondaria" | "entrambi") => {
+      setPortalAgeSuggestion(lvl);
+      setVideoAgeSuggestion(lvl);
+      refreshExternalViews();
+    }
+  };
 
-  const portaleMount = document.getElementById("portale-root");
-  if (portaleMount) {
-    renderPortalView(portaleMount, {
-      esc: getEsc(),
-      onJumpSection: (sec: string) => window.__SERR_BRIDGE?.setActiveSection?.(sec),
-      onOpenLab: (tab: string) => window.openSerrModule?.(tab)
-    });
-  }
+  renderRoot();
+  refreshExternalViews();
+  window.__SERR_BRIDGE?.refreshMapVideo?.();
 }
 
 if (document.readyState === "loading") {

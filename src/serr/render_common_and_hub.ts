@@ -21,7 +21,7 @@ export interface CommonHubContext {
   markActivityDone: (id: string, xp?: number) => void;
   navigateTo: (tab: string) => void;
   openMezzSub: (sub: "home" | "a1" | "a2" | "a3" | "a4" | "a5" | "giochi") => void;
-  openVillaSub: (sub: "home" | "b1" | "b2" | "b3" | "b4" | "b5" | "giochi") => void;
+  openVillaSub: (sub: "home" | "lezione" | "b1" | "b2" | "b3" | "b4" | "b5" | "giochi") => void;
   esc: (s: string) => string;
 }
 
@@ -77,11 +77,13 @@ export function renderLabOverview(container: HTMLElement, ctx: CommonHubContext)
       <div class="serr-card serr-border-villa">
         <div class="serr-badge-small">PERCORSO B · VILLACOLLE</div>
         <h4 style="margin:6px 0 4px;">Dal Campo alla Scuola: filiera corta e scelte a impatto zero</h4>
-        <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:10px;">Viaggio del cibo in 7 tappe (con analisi critica serre/km zero), calendario mensile di 22 ortofrutticoli, spesa a km zero, caccia ai 15 imballaggi con Drag &amp; Drop e merenda sostenibile.</p>
+        <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:10px;">Lezione completa con le 5R originali (<em>Refuse, Reduce, Reuse, Recycle, Rot</em>) e video a supporto, viaggio del cibo in 7 tappe, calendario di 22 ortofrutticoli, calcolo della Tara % con 15 imballaggi D&amp;D, 20 quiz e 8 codici.</p>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <button type="button" class="btn btn-primary btn-sm" data-open-villa="home">Apri Percorso Villacolle →</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-open-villa="lezione">Lezione &amp; Video</button>
           <button type="button" class="btn btn-sm" data-open-villa="b2">B2 Stagionalità</button>
-          <button type="button" class="btn btn-sm" data-open-villa="b4">B4 Imballaggi D&amp;D</button>
+          <button type="button" class="btn btn-sm" data-open-villa="b4">B4 Imballaggi &amp; Tara</button>
+          <button type="button" class="btn btn-sm" data-open-villa="giochi">20 Quiz &amp; Codici</button>
         </div>
       </div>
     </div>
@@ -97,6 +99,7 @@ export function renderLabOverview(container: HTMLElement, ctx: CommonHubContext)
         <button type="button" class="serr-action-tile" data-hub-nav="diario"><strong>Il Mio Diario (${ctx.state.diaryEntries.length})</strong><span>Salvataggio offline persistente (${e(ctx.storageBackend)})</span></button>
         <button type="button" class="serr-action-tile" data-hub-nav="missioni"><strong>Missioni Finali &amp; Attestati</strong><span>3 missioni con attestato personalizzato scaricabile</span></button>
         <button type="button" class="serr-action-tile" data-hub-nav="monitoraggio"><strong>Monitoraggio &amp; Fonti (${totalDone} att.)</strong><span>Risultati senza classifiche + trasparenza scientifica</span></button>
+        <button type="button" class="serr-action-tile" data-open-video="1"><strong>Video Intro (3–5 min) per Tematica</strong><span>Embed brevi per Primaria e Media + voce offline</span></button>
         <button type="button" class="serr-action-tile" data-open-portale="1"><strong>Portale, App &amp; Film Consigliati</strong><span>Link esterni, calcolatori, video e film gratuiti</span></button>
       </div>
     </div>
@@ -111,6 +114,9 @@ export function renderLabOverview(container: HTMLElement, ctx: CommonHubContext)
   container.querySelectorAll<HTMLButtonElement>("[data-hub-nav]").forEach((b) =>
     b.addEventListener("click", () => ctx.navigateTo(b.dataset.hubNav || "overview"))
   );
+  container.querySelector<HTMLButtonElement>("[data-open-video]")?.addEventListener("click", () => {
+    window.openSerrModule?.("video");
+  });
   container.querySelector<HTMLButtonElement>("[data-open-portale]")?.addEventListener("click", () => {
     window.openSerrModule?.("portale");
   });
@@ -449,17 +455,33 @@ export function renderActivity8(container: HTMLElement, ctx: CommonHubContext): 
 /* ================= SEZIONE 5: IMPARIAMO PRIMA DI GIOCARE ================= */
 export function renderStudyHub(container: HTMLElement, ctx: CommonHubContext): void {
   const e = ctx.esc;
+  const pathToTopicLabel = (p: string) =>
+    p === "mezzovalle"
+      ? "Tematica A · Acqua, Cibo & Impronta Nascosta"
+      : p === "villacolle"
+      ? "Tematica B · Filiera Corta, Stagionalità & Imballaggi"
+      : "Tematica condivisa SERR 2026";
   const filtered = uiState.studyPathFilter === "Tutti"
     ? STUDY_UNITS
     : STUDY_UNITS.filter((u) => u.pathway === uiState.studyPathFilter);
   const unit = filtered.find((u) => u.id === uiState.studyUnitId) || filtered[0];
 
   container.innerHTML = `
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
-      <strong>Percorso:</strong>
-      <button type="button" class="serr-chip ${uiState.studyPathFilter === "Tutti" ? "active" : ""}" data-st-pf="Tutti">Tutte (${STUDY_UNITS.length} unità)</button>
-      <button type="button" class="serr-chip ${uiState.studyPathFilter === "mezzovalle" ? "active" : ""}" data-st-pf="mezzovalle">Mezzovalle (7)</button>
-      <button type="button" class="serr-chip ${uiState.studyPathFilter === "villacolle" ? "active" : ""}" data-st-pf="villacolle">Villacolle (7)</button>
+    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+        <strong>Tematica:</strong>
+        <button type="button" class="serr-chip ${uiState.studyPathFilter === "Tutti" ? "active" : ""}" data-st-pf="Tutti">Tutte (${STUDY_UNITS.length} unità)</button>
+        <button type="button" class="serr-chip ${uiState.studyPathFilter === "mezzovalle" ? "active" : ""}" data-st-pf="mezzovalle">Acqua &amp; Impronta Nascosta (7)</button>
+        <button type="button" class="serr-chip ${uiState.studyPathFilter === "villacolle" ? "active" : ""}" data-st-pf="villacolle">Filiera Corta &amp; Imballaggi (7)</button>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <label for="st-comune-sel" style="font-size:0.78rem;font-weight:700;">Comune:</label>
+        <select id="st-comune-sel" class="serr-select">
+          <option value="Tutti" ${uiState.studyPathFilter === "Tutti" ? "selected" : ""}>Tutti i Comuni</option>
+          <option value="mezzovalle" ${uiState.studyPathFilter === "mezzovalle" ? "selected" : ""}>Mezzovalle → Acqua &amp; Cibo</option>
+          <option value="villacolle" ${uiState.studyPathFilter === "villacolle" ? "selected" : ""}>Villacolle → Km Zero &amp; Imballi</option>
+        </select>
+      </div>
     </div>
 
     <div class="serr-grid-study">
@@ -468,9 +490,10 @@ export function renderStudyHub(container: HTMLElement, ctx: CommonHubContext): v
         <div style="display:flex;flex-direction:column;gap:6px;">
           ${filtered.map((u) => {
             const read = ctx.state.studiedUnits.includes(u.id);
+            const tShort = u.pathway === "mezzovalle" ? "Acqua & Impronta" : "Km Zero & Imballi";
             return `
               <button type="button" class="serr-opt-btn ${u.id === unit.id ? "is-sel" : ""}" data-st-unit="${u.id}">
-                <div style="font-size:0.74rem;color:var(--text-muted);text-transform:uppercase;">${e(u.pathway)} ${read ? "· Studiato ✓" : ""}</div>
+                <div style="font-size:0.74rem;color:var(--text-muted);">${e(tShort)} ${read ? "· Studiato ✓" : ""}</div>
                 <strong>${e(u.title)}</strong>
               </button>
             `;
@@ -479,7 +502,7 @@ export function renderStudyHub(container: HTMLElement, ctx: CommonHubContext): v
       </div>
 
       <div class="serr-card">
-        <div class="serr-badge-small">${e(unit.pathway.toUpperCase())}</div>
+        <div class="serr-badge-small">${e(pathToTopicLabel(unit.pathway))}</div>
         <h4 style="margin:4px 0 8px;">${e(unit.title)}</h4>
         <div class="serr-subnav" style="margin-bottom:10px;">
           <button type="button" class="serr-pill ${uiState.studyViewTab === "teoria" ? "active" : ""}" data-st-v="teoria">1. Testo approfondito</button>
@@ -528,6 +551,10 @@ export function renderStudyHub(container: HTMLElement, ctx: CommonHubContext): v
       renderStudyHub(container, ctx);
     })
   );
+  container.querySelector<HTMLSelectElement>("#st-comune-sel")?.addEventListener("change", (ev) => {
+    uiState.studyPathFilter = ((ev.target as HTMLSelectElement).value || "Tutti") as typeof uiState.studyPathFilter;
+    renderStudyHub(container, ctx);
+  });
   container.querySelectorAll<HTMLButtonElement>("[data-st-unit]").forEach((b) =>
     b.addEventListener("click", () => {
       uiState.studyUnitId = b.dataset.stUnit || STUDY_UNITS[0].id;
@@ -567,10 +594,34 @@ export function renderWorksheetsHub(container: HTMLElement, ctx: CommonHubContex
     : PRINTABLE_WORKSHEETS;
   const ws = list.find((w) => w.id === uiState.wsSelectedId) || list[0];
 
+  const wsTopicLabel = (p: string) =>
+    p === "mezzovalle"
+      ? "Tematica: Acqua, Cibo & Impronta Nascosta"
+      : p === "villacolle"
+      ? "Tematica: Filiera Corta, Stagionalità & Imballaggi"
+      : "Tematica condivisa SERR 2026";
+  const wsFilterDisplay: Record<"Tutti" | "Mezzovalle" | "Villacolle" | "Comuni", string> = {
+    Tutti: "Tutte le tematiche",
+    Mezzovalle: "Acqua & Impronta Nascosta",
+    Villacolle: "Filiera Corta & Imballaggi",
+    Comuni: "Percorsi Condivisi"
+  };
+
   container.innerHTML = `
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
-      <strong>Filtra schede:</strong>
-      ${(["Tutti", "Mezzovalle", "Villacolle", "Comuni"] as const).map((f) => `<button type="button" class="serr-chip ${uiState.wsFilter === f ? "active" : ""}" data-ws-f="${f}">${f}</button>`).join("")}
+    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+        <strong>Tematica:</strong>
+        ${(["Tutti", "Mezzovalle", "Villacolle", "Comuni"] as const).map((f) => `<button type="button" class="serr-chip ${uiState.wsFilter === f ? "active" : ""}" data-ws-f="${f}">${wsFilterDisplay[f]}</button>`).join("")}
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <label for="ws-comune-sel" style="font-size:0.78rem;font-weight:700;">Comune:</label>
+        <select id="ws-comune-sel" class="serr-select">
+          <option value="Tutti" ${uiState.wsFilter === "Tutti" ? "selected" : ""}>Tutti i Comuni</option>
+          <option value="Mezzovalle" ${uiState.wsFilter === "Mezzovalle" ? "selected" : ""}>Mezzovalle → Acqua &amp; Cibo</option>
+          <option value="Villacolle" ${uiState.wsFilter === "Villacolle" ? "selected" : ""}>Villacolle → Km Zero &amp; Imballi</option>
+          <option value="Comuni" ${uiState.wsFilter === "Comuni" ? "selected" : ""}>Comuni in rete → Scelte condivise</option>
+        </select>
+      </div>
     </div>
     <div class="serr-grid-study">
       <div class="serr-card" style="max-height:430px;overflow-y:auto;">
@@ -578,7 +629,7 @@ export function renderWorksheetsHub(container: HTMLElement, ctx: CommonHubContex
         <div style="display:flex;flex-direction:column;gap:6px;">
           ${list.map((w) => `
             <button type="button" class="serr-opt-btn ${w.id === ws.id ? "is-sel" : ""}" data-ws-id="${w.id}">
-              <small style="color:var(--text-muted);">${e(w.code)} · ${e(w.pathway)}</small><br/>
+              <small style="color:var(--text-muted);">${e(w.code)} · ${e(wsTopicLabel(w.pathway))}</small><br/>
               <strong>${e(w.title)}</strong>
             </button>
           `).join("")}
@@ -588,7 +639,7 @@ export function renderWorksheetsHub(container: HTMLElement, ctx: CommonHubContex
       <div class="serr-card">
         <div class="serr-sheet-preview">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
-            <span class="serr-badge-small">${e(ws.code)} · ${e(ws.pathway)} · FORMATO A4</span>
+            <span class="serr-badge-small">${e(ws.code)} · ${e(wsTopicLabel(ws.pathway))} · FORMATO A4</span>
             <button type="button" class="btn btn-primary btn-sm" id="btn-ws-print">Stampa Scheda A4</button>
           </div>
           <h4 style="margin:6px 0;">${e(ws.title)}</h4>
@@ -627,6 +678,10 @@ export function renderWorksheetsHub(container: HTMLElement, ctx: CommonHubContex
       renderWorksheetsHub(container, ctx);
     })
   );
+  container.querySelector<HTMLSelectElement>("#ws-comune-sel")?.addEventListener("change", (ev) => {
+    uiState.wsFilter = ((ev.target as HTMLSelectElement).value || "Tutti") as typeof uiState.wsFilter;
+    renderWorksheetsHub(container, ctx);
+  });
   container.querySelectorAll<HTMLButtonElement>("[data-ws-id]").forEach((b) =>
     b.addEventListener("click", () => {
       uiState.wsSelectedId = b.dataset.wsId || PRINTABLE_WORKSHEETS[0].id;

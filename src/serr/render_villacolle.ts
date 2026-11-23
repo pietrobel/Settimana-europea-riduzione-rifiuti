@@ -7,8 +7,10 @@ import {
 import {
   VILLACOLLE_SUPPLY_CHAINS,
   VILLA_MATCH_PAIRS,
-  VILLA_QUIZ_15
+  VILLA_QUIZ_20
 } from "./data_games_quizzes.ts";
+import { INTRO_VIDEOS } from "./data_intro_videos.ts";
+import { renderSupportVideoWidget } from "./render_videos.ts";
 import type { SerrLabPersistedState } from "./persistence.ts";
 
 export interface VillacolleContext {
@@ -27,8 +29,13 @@ const MONTHS_IT = [
   { m: 10, name: "Ottobre" }, { m: 11, name: "Novembre" }, { m: 12, name: "Dicembre" }
 ];
 
+const VILLA_VIDEOS = INTRO_VIDEOS.filter((v) => v.topicId === "villacolle");
+
 const uiState = {
-  subTab: "home" as "home" | "b1" | "b2" | "b3" | "b4" | "b5" | "giochi",
+  subTab: "home" as "home" | "lezione" | "b1" | "b2" | "b3" | "b4" | "b5" | "giochi",
+  lessonVideoIdx: 0,
+  lessonVideoMode: "embed" as "embed" | "offline",
+  lessonVideoSceneIdx: 0,
   b1ChainId: "short_seasonal",
   b2Month: 11,
   b2GameAnswers: {} as Record<string, string>,
@@ -36,14 +43,17 @@ const uiState = {
   b3CartIds: ["mele_locali", "pane_forno"] as string[],
   b3Budget: 18,
   b4SelectedId: PACKAGING_HUNT_ITEMS[0].id,
-  b4DragQueueIdx: 0,
+  b4DragSet: "set1" as "set1" | "set2" | "all",
   b4DragPlacements: {} as Record<string, PackagingItem["disposalBucket"]>,
   b4SelectedBucketItem: "" as string,
+  b4TareNetG: 200,
+  b4TareGrossG: 250,
   b5SnackFood: "Mela locale sfusa o arancia di stagione",
   b5SnackCarb: "Pane o focaccia del forno locale (no incarti)",
   b5SnackDrink: "Acqua del rubinetto in borraccia lavabile",
   b5Container: "Portamerenda rigido riutilizzabile + tovagliolo in stoffa",
   b5Note: "Avanzi eventuali riportati a casa nel portamerenda",
+  quizAgeFilter: "tutte" as "tutte" | "primaria" | "media",
   quizAnswers: {} as Record<string, number>,
   quizSubmitted: false,
   matchLeftSelected: "" as string,
@@ -58,18 +68,20 @@ export function setVillacolleSubTab(tab: typeof uiState.subTab): void {
 export function renderVillacolleView(container: HTMLElement, ctx: VillacolleContext): void {
   const subNav = `
     <div class="serr-subnav" role="tablist" aria-label="Attività Percorso Villacolle">
-      <button type="button" class="serr-pill ${uiState.subTab === "home" ? "active" : ""}" data-v-tab="home">Panoramica Percorso B</button>
+      <button type="button" class="serr-pill ${uiState.subTab === "home" ? "active" : ""}" data-v-tab="home">Panoramica</button>
+      <button type="button" class="serr-pill ${uiState.subTab === "lezione" ? "active" : ""}" data-v-tab="lezione">Lezione Completa &amp; Video</button>
       <button type="button" class="serr-pill ${uiState.subTab === "b1" ? "active" : ""}" data-v-tab="b1">B1 · Viaggio del Cibo (7 tappe)</button>
       <button type="button" class="serr-pill ${uiState.subTab === "b2" ? "active" : ""}" data-v-tab="b2">B2 · Calendario Stagionalità (22)</button>
       <button type="button" class="serr-pill ${uiState.subTab === "b3" ? "active" : ""}" data-v-tab="b3">B3 · Spesa a Km Zero</button>
-      <button type="button" class="serr-pill ${uiState.subTab === "b4" ? "active" : ""}" data-v-tab="b4">B4 · Caccia Imballaggi (15 + D&amp;D)</button>
-      <button type="button" class="serr-pill ${uiState.subTab === "b5" ? "active" : ""}" data-v-tab="b5">B5 · Merenda Sostenibile</button>
-      <button type="button" class="serr-pill ${uiState.subTab === "giochi" ? "active" : ""}" data-v-tab="giochi">Giochi e Verifiche (15 quiz)</button>
+      <button type="button" class="serr-pill ${uiState.subTab === "b4" ? "active" : ""}" data-v-tab="b4">B4 · Imballaggi &amp; Tara (15)</button>
+      <button type="button" class="serr-pill ${uiState.subTab === "b5" ? "active" : ""}" data-v-tab="b5">B5 · Merenda Zero Rifiuti</button>
+      <button type="button" class="serr-pill ${uiState.subTab === "giochi" ? "active" : ""}" data-v-tab="giochi">Quiz &amp; Verifiche (20 + 8)</button>
     </div>
   `;
 
   let bodyHtml = "";
   if (uiState.subTab === "home") bodyHtml = renderHome(ctx);
+  else if (uiState.subTab === "lezione") bodyHtml = renderLessonAndVideo(ctx);
   else if (uiState.subTab === "b1") bodyHtml = renderB1(ctx);
   else if (uiState.subTab === "b2") bodyHtml = renderB2(ctx);
   else if (uiState.subTab === "b3") bodyHtml = renderB3(ctx);
@@ -80,14 +92,14 @@ export function renderVillacolleView(container: HTMLElement, ctx: VillacolleCont
   container.innerHTML = `
     <div class="serr-path-banner serr-path-villa">
       <div>
-        <div class="serr-kicker">PERCORSO B · VILLACOLLE</div>
-        <h3 style="margin:2px 0 4px;">Dal Campo alla Scuola: filiera corta e scelte a impatto zero</h3>
-        <p style="margin:0;font-size:0.86rem;opacity:0.94;">Iniziativa dedicata all'analisi dei percorsi del cibo, della stagionalità reale e degli imballaggi alimentari, per promuovere acquisti locali consapevoli e ridurre i rifiuti alla fonte.</p>
+        <div class="serr-kicker">TEMATICA B: FILIERA CORTA, STAGIONALITÀ &amp; IMBALLAGGI · COMUNE ABBINATO: VILLACOLLE</div>
+        <h3 style="margin:2px 0 4px;">Dal Campo alla Scuola: filiera corta, 5R originali e scelte a impatto zero</h3>
+        <p style="margin:0;font-size:0.86rem;opacity:0.94;">Percorso completo tra lezione teorica, video a supporto, analisi della filiera in 7 tappe, calendario stagionale reale, matematica della tara e quiz per Primaria e Scuola Media.</p>
       </div>
       <div class="serr-path-actions">
+        <button type="button" class="btn btn-sm" data-v-jump="presentazioni">Slide LIM</button>
         <button type="button" class="btn btn-sm" data-v-jump="studio">Materiali di studio</button>
         <button type="button" class="btn btn-sm" data-v-jump="schede">Schede A4</button>
-        <button type="button" class="btn btn-sm" data-v-jump="diario">Diario</button>
         <button type="button" class="btn btn-sm" data-v-jump="missioni">Missione finale</button>
       </div>
     </div>
@@ -118,26 +130,91 @@ function renderHome(ctx: VillacolleContext): string {
   return `
     <div class="serr-grid-2">
       <div class="serr-card">
-        <h4 style="margin-top:0;">Obiettivi didattici di Villacolle</h4>
+        <h4 style="margin-top:0;">Obiettivi didattici completi di Villacolle</h4>
         <ul class="serr-list">
-          <li>Confrontare le 7 tappe della filiera corta e della filiera lunga, evitando il pregiudizio che "locale" sia sempre automaticamente meno impattante (caso serre riscaldate).</li>
-          <li>Padroneggiare il calendario mensile di oltre 20 prodotti ortofrutticoli italiani e siciliani.</li>
-          <li>Costruire una spesa consapevole con indicatori trasparenti su origine, stagione, distanza e imballaggio.</li>
-          <li>Riconoscere codici CONAI/EN 13432, progettare alternative riutilizzabili e creare una merenda scolastica quasi a zero rifiuti.</li>
+          <li><strong>Le 5R originali (inglese) e la spesa:</strong> capire perché in italiano non sono 5 parole con la R — <em>Refuse, Reduce, Reuse, Recycle, Rot</em> — e applicarle prima della cassa (Precycling).</li>
+          <li><strong>Filiera corta vs Km 0 e paradosso delle serre:</strong> confrontare le 7 tappe dal campo alla scuola distinguendo intermediari, chilometri, trasporto aereo e serre riscaldate fuori stagione.</li>
+          <li><strong>Stagionalità reale &amp; Etichette UE:</strong> calendario mensile di 22 ortofrutticoli italiani, etichetta obbligatoria di origine, prezzo al kg e differenze tra Ecolabel UE e greenwashing.</li>
+          <li><strong>Anatomia imballaggi, Tara (%) e Codici CONAI/SUP:</strong> calcolare la percentuale di tara, riconoscere PAP/PET/ALU/GL/C-PAP 84, EN 13432 e tappi legati (<em>Tethered Caps</em>).</li>
         </ul>
-        <div class="serr-progress-note">Attività Villacolle completate: <strong>${doneCount} / 6</strong></div>
+        <div class="serr-progress-note">Attività Villacolle completate: <strong>${doneCount} / 7</strong></div>
       </div>
       <div class="serr-card">
-        <h4 style="margin-top:0;">Accedi ai laboratori</h4>
+        <h4 style="margin-top:0;">Accedi alla lezione e ai laboratori</h4>
         <div class="serr-mini-cards">
+          <button type="button" class="serr-action-tile" data-v-tab="lezione"><strong>Lezione Completa &amp; Video</strong><span>Sintesi guidata + 4 video brevi Primaria/Media</span></button>
           <button type="button" class="serr-action-tile" data-v-tab="b1"><strong>B1 · Il Viaggio del Cibo</strong><span>Filiera corta vs lunga vs serra invernale in 7 tappe</span></button>
-          <button type="button" class="serr-action-tile" data-v-tab="b2"><strong>B2 · Calendario Stagionalità</strong><span>22 ortofrutticoli mese per mese + gioco di verifica</span></button>
-          <button type="button" class="serr-action-tile" data-v-tab="b3"><strong>B3 · Spesa a Km Zero</strong><span>4 provenienze, budget €18 e indicatori trasparenti</span></button>
-          <button type="button" class="serr-action-tile" data-v-tab="b4"><strong>B4 · Caccia agli Imballaggi</strong><span>15 prodotti + classificazione Drag &amp; Drop</span></button>
-          <button type="button" class="serr-action-tile" data-v-tab="b5"><strong>B5 · Merenda Sostenibile</strong><span>Progetta la tua merenda con scheda stampabile</span></button>
-          <button type="button" class="serr-action-tile" data-v-tab="giochi"><strong>Verifiche &amp; Missione</strong><span>Quiz 15 domande, associazione codici e Ambasciatore</span></button>
+          <button type="button" class="serr-action-tile" data-v-tab="b2"><strong>B2 · Calendario Stagionalità</strong><span>22 ortofrutticoli mese per mese + verifica</span></button>
+          <button type="button" class="serr-action-tile" data-v-tab="b3"><strong>B3 · Spesa a Km Zero</strong><span>4 provenienze, budget €18 e indicatori</span></button>
+          <button type="button" class="serr-action-tile" data-v-tab="b4"><strong>B4 · Imballaggi &amp; Tara (%)</strong><span>Calcolatore tara, 15 prodotti e Drag &amp; Drop</span></button>
+          <button type="button" class="serr-action-tile" data-v-tab="b5"><strong>B5 · Merenda Zero Rifiuti</strong><span>Impatto 180 giorni/classe e scheda stampabile</span></button>
+          <button type="button" class="serr-action-tile" data-v-tab="giochi"><strong>Quiz 20 Domande &amp; 8 Codici</strong><span>Verifica filtrabile per età + associazione codici</span></button>
         </div>
       </div>
+    </div>
+  `;
+}
+
+function renderLessonAndVideo(ctx: VillacolleContext): string {
+  const e = ctx.esc;
+  const isLezDone = ctx.state.completedActivities.includes("V_LEZ");
+  const curIdx = Math.max(0, Math.min(uiState.lessonVideoIdx, VILLA_VIDEOS.length - 1));
+
+  return `
+    <div class="serr-info-strip">
+      <strong>Nota linguistica sulle 5R originali:</strong> la formula nasce in inglese con 5 parole che iniziano tutte per <strong>R</strong> (<em>Refuse, Reduce, Reuse, Recycle, Rot</em>). Traducendole in italiano non restano 5 R (la 5ª, <em>Rot</em>, diventa <em>Composta</em>), e alcune liste cambiano la 5ª R in <em>Repurpose</em> o <em>Recover</em>: per chiarezza usiamo sempre i <strong>5 termini originali</strong>.
+    </div>
+
+    <div class="serr-grid-2">
+      <div class="serr-card">
+        <div class="serr-badge-small">Unità 1 · Le 5R originali applicate a Villacolle</div>
+        <h4 style="margin:6px 0 8px;">Dalle 5R inglesi alla spesa quotidiana</h4>
+        <table class="serr-table">
+          <thead>
+            <tr><th>Inglese originale</th><th>Significato in italiano</th><th>Esempio concreto a Villacolle</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>1. Refuse</strong></td><td>Rifiuta il superfluo</td><td>Lascia sullo scaffale banane in vaschetta e sacchetti doppi.</td></tr>
+            <tr><td><strong>2. Reduce</strong></td><td>Riduci alla fonte</td><td>Scegli formati familiari invece di 6 brick piccoli + cannuccia.</td></tr>
+            <tr><td><strong>3. Reuse</strong></td><td>Riusa (e ripara)</td><td>Borraccia, portamerenda lavabile, cassette agricole a rendere, vasetti di vetro.</td></tr>
+            <tr><td><strong>4. Recycle</strong></td><td>Ricicla pulito</td><td>Svuota vasetti yogurt, separa coperchio pulito della pizza e leggi PAP/PET/ALU/GL.</td></tr>
+            <tr><td><strong>5. Rot</strong></td><td>Composta l'organico</td><td>Bucce e sacchetti <strong>EN 13432</strong> nell'umido per fare compost per l'orto scolastico.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="serr-card">
+        <div class="serr-badge-small">Unità 2 &amp; 3 · Filiera, Stagionalità, Tara &amp; Etichette</div>
+        <h4 style="margin:6px 0 8px;">Concetti chiave della lezione completa</h4>
+        <ul class="serr-list">
+          <li><strong>Filiera corta ≠ Km 0:</strong> la <em>filiera corta</em> riduce il numero di intermediari commerciali (dal produttore alla scuola); il <em>Km 0</em> misura la vicinanza geografica. Servono entrambi insieme alla <strong>stagionalità naturale</strong>.</li>
+          <li><strong>Paradosso della serra riscaldata:</strong> un pomodoro locale a gennaio coltivato in serra a gasolio può avere impronta energetica molto superiore a un ortaggio autunnale di pieno campo.</li>
+          <li><strong>Origine &amp; Prezzo al kg (UE):</strong> al banco ortofrutta controlla sempre il <em>Paese d'origine obbligatorio</em> e il <em>prezzo €/kg</em> (non solo il prezzo della singola vaschetta).</li>
+          <li><strong>Tara (%) &amp; Greenwashing:</strong> pesa alimento netto vs lordo (<em>tara % = (lordo − netto) ÷ lordo × 100</em>). Diffida di frasi vaghe (“100% green”); cerca sigle verificabili (<strong>Ecolabel UE</strong>, <strong>EN 13432</strong>, codici materiali CONAI e tappo legato <strong>Tethered Cap SUP</strong>).</li>
+        </ul>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+          <button type="button" class="btn btn-primary btn-sm" id="btn-lez-done">${isLezDone ? "Lezione completata ✓ (+20 XP)" : "Segna lezione completa studiata (+20 XP)"}</button>
+          <button type="button" class="btn btn-sm" data-v-jump="presentazioni">Apri Slide LIM complete →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="serr-card" style="margin-top:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+        <div>
+          <div class="serr-badge-small">Video a supporto verificati (Primaria 6–10 e Media 11–14)</div>
+          <h4 style="margin:4px 0 0;">Videoteca integrata dell'esperienza Villacolle</h4>
+        </div>
+        <a href="https://www.youtube.com/watch?v=x9PJTzBj9n0" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="text-decoration:none;">Extra: Elior Frutta e Verdura ↗</a>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+        ${VILLA_VIDEOS.map((vid, idx) => `
+          <button type="button" class="serr-chip ${idx === curIdx ? "active" : ""}" data-v-vid-pick="${idx}">
+            ${idx + 1}. ${vid.ageBand === "primaria" ? "Primaria" : "Media"} · ${e(vid.channel)}
+          </button>
+        `).join("")}
+      </div>
+      <div id="villa-support-video-slot"></div>
     </div>
   `;
 }
@@ -290,12 +367,18 @@ function renderB3(ctx: VillacolleContext): string {
         </div>
         <h5 style="margin:10px 0 6px;">Prodotti nel carrello (${chosen.length})</h5>
         <ul class="serr-list">
-          ${chosen.map((c) => `<li><strong>${e(c.name)}</strong> (${e(c.originLabel)}, ${c.packagingGrams} g imballo) — <em>${e(c.ruleReason)}</em></li>`).join("") || "<li>Carrello vuoto: seleziona almeno 4 articoli.</li>"}
+          ${chosen.map((c) => `<li><strong>${e(c.name)}</strong> (${e(c.originLabel)}, ${c.packagingGrams} g imballo) — <em>${e(c.ruleReason)}</em></li>`).join("") || "<li>Carrello vuoto: seleziona almeno 3 articoli.</li>"}
         </ul>
         <button type="button" class="btn btn-primary btn-sm" style="margin-top:8px;" id="btn-b3-confirm" ${chosen.length < 3 || overBudget ? "disabled" : ""}>Conferma Spesa Km Zero</button>
       </div>
     </div>
   `;
+}
+
+function getB4DragItems(): PackagingItem[] {
+  if (uiState.b4DragSet === "set2") return PACKAGING_HUNT_ITEMS.slice(8);
+  if (uiState.b4DragSet === "all") return PACKAGING_HUNT_ITEMS;
+  return PACKAGING_HUNT_ITEMS.slice(0, 8);
 }
 
 function renderB4(ctx: VillacolleContext): string {
@@ -309,8 +392,8 @@ function renderB4(ctx: VillacolleContext): string {
     { id: "indifferenziato", label: "Indifferenziato / Regole Comune", color: "#5e6870" }
   ];
 
-  const gameItems = PACKAGING_HUNT_ITEMS.slice(0, 8);
-  const placedCount = Object.keys(uiState.b4DragPlacements).length;
+  const gameItems = getB4DragItems();
+  const placedCount = gameItems.filter((it) => Boolean(uiState.b4DragPlacements[it.id])).length;
   const correctPlaced = gameItems.filter((it) => uiState.b4DragPlacements[it.id] === it.disposalBucket).length;
   const bucketLabelMap: Record<PackagingItem["disposalBucket"], string> = {
     plastica_metalli: "Plastica & Metalli",
@@ -320,7 +403,36 @@ function renderB4(ctx: VillacolleContext): string {
     indifferenziato: "Indifferenziato"
   };
 
+  const netG = Math.max(1, uiState.b4TareNetG);
+  const grossG = Math.max(netG, uiState.b4TareGrossG);
+  const tareG = grossG - netG;
+  const tarePct = ((tareG / grossG) * 100).toFixed(1);
+
   return `
+    <div class="serr-card" style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+        <h4 style="margin:0;">Laboratorio STEM · Calcolatore della Tara (%) sugli Imballaggi</h4>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="serr-chip" data-b4-preset="200:250">Biscotti triplo incarto (200/250 g)</button>
+          <button type="button" class="serr-chip" data-b4-preset="600:645">Banane in vaschetta (600/645 g)</button>
+          <button type="button" class="serr-chip" data-b4-preset="200:218">Brick succo monouso (200/218 g)</button>
+          <button type="button" class="serr-chip" data-b4-preset="500:500">Frutta sfusa in tela (500/500 g)</button>
+        </div>
+      </div>
+      <div class="serr-grid-3" style="align-items:end;">
+        <label class="serr-label">Peso netto alimento (g)
+          <input id="b4-tare-net" type="number" min="10" max="5000" class="serr-input" value="${netG}" />
+        </label>
+        <label class="serr-label">Peso lordo totale con imballo (g)
+          <input id="b4-tare-gross" type="number" min="10" max="6000" class="serr-input" value="${grossG}" />
+        </label>
+        <div class="serr-comp-box" style="margin:0;">
+          <div>Tara (imballaggio): <strong>${tareG} g</strong> su ${grossG} g</div>
+          <div>Incidenza tara: <strong style="color:${Number(tarePct) >= 12 ? "#b42b23" : "#1a683c"};">${tarePct}%</strong> · Su 100 acquisti = <strong>${((tareG * 100) / 1000).toFixed(1)} kg</strong> di rifiuti!</div>
+        </div>
+      </div>
+    </div>
+
     <div class="serr-grid-2">
       <div class="serr-card">
         <h4 style="margin-top:0;">Catalogo 15 prodotti con imballaggio</h4>
@@ -342,18 +454,25 @@ function renderB4(ctx: VillacolleContext): string {
         <h4 style="margin:4px 0;">${e(sel.product)}</h4>
         <p style="font-size:0.84rem;margin:4px 0;"><strong>Materiale:</strong> ${e(sel.material)}</p>
         <p style="font-size:0.84rem;margin:4px 0;"><strong>È necessario?</strong> ${e(sel.necessity)}</p>
-        <p style="font-size:0.84rem;margin:4px 0;"><strong>Alternativa riutilizzabile/leggera:</strong> ${e(sel.alternative)}</p>
+        <p style="font-size:0.84rem;margin:4px 0;"><strong>Alternativa riutilizzabile/leggera (Refuse/Reduce/Reuse):</strong> ${e(sel.alternative)}</p>
         <div class="serr-feedback ok" style="margin-top:6px;"><strong>Conferimento corretto:</strong> ${e(sel.disposalLabel)}</div>
 
         <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;" />
-        <h4 style="margin:0 0 4px;">Gioco Trascina e Rilascia (o Clicca e Assegna)</h4>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px;">
+          <h4 style="margin:0;">Gioco Trascina e Rilascia (${gameItems.length} prodotti)</h4>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;">
+            <button type="button" class="serr-chip ${uiState.b4DragSet === "set1" ? "active" : ""}" data-b4-set="set1">Set 1 (8)</button>
+            <button type="button" class="serr-chip ${uiState.b4DragSet === "set2" ? "active" : ""}" data-b4-set="set2">Set 2 (7)</button>
+            <button type="button" class="serr-chip ${uiState.b4DragSet === "all" ? "active" : ""}" data-b4-set="all">Tutti (15)</button>
+          </div>
+        </div>
         <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 8px;">Trascina ogni prodotto nel bidone giusto (oppure clicca un cartellino e poi il bidone su touch/tastiera).</p>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
           ${gameItems.map((it) => {
             const placed = uiState.b4DragPlacements[it.id];
             const isOk = placed === it.disposalBucket;
             const isSel = uiState.b4SelectedBucketItem === it.id;
-            return `<button type="button" draggable="true" class="serr-drag-chip ${placed ? (isOk ? "is-ok" : "is-err") : isSel ? "is-sel" : ""}" data-b4-drag="${it.id}">${e(it.product)}${placed ? ` → ${placed}` : ""}</button>`;
+            return `<button type="button" draggable="true" class="serr-drag-chip ${placed ? (isOk ? "is-ok" : "is-err") : isSel ? "is-sel" : ""}" data-b4-drag="${it.id}">${e(it.product)}${placed ? ` → ${bucketLabelMap[placed]}` : ""}</button>`;
           }).join("")}
         </div>
         <div class="serr-bins-grid">
@@ -365,7 +484,7 @@ function renderB4(ctx: VillacolleContext): string {
           `).join("")}
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
-          <span style="font-size:0.82rem;">Classificati correttamente: <strong>${correctPlaced}/${placedCount}</strong> (totale ${gameItems.length})</span>
+          <span style="font-size:0.82rem;">Classificati correttamente: <strong>${correctPlaced}/${placedCount}</strong> (nel set: ${gameItems.length})</span>
           <button type="button" class="btn btn-sm" id="btn-b4-reset">Svuota bidoni</button>
         </div>
       </div>
@@ -386,7 +505,11 @@ function renderB5(ctx: VillacolleContext): string {
         <tr><th>Contenitori riutilizzabili</th><td>${e(uiState.b5Container)}</td></tr>
         <tr><th>Regola anti-spreco</th><td>${e(uiState.b5Note)}</td></tr>
       </table>
-      <p style="font-size:0.78rem;margin-bottom:0;"><strong>Stima imballaggi monouso evitati:</strong> ~180 involucri all'anno per studente (1 merenda × ~180 giorni scolastici) usando borraccia e portamerenda lavabile.</p>
+      <div class="serr-comp-box" style="margin:8px 0 0;">
+        <div><strong>Confronto su 180 giorni di scuola (rispetto a merendina triplo incarto + brick):</strong></div>
+        <div>• <strong>1 alunno:</strong> evita <strong>~360 involucri/anno</strong> (180 incarti merenda + 180 brick/cannucce)</div>
+        <div>• <strong>1 classe (22 alunni):</strong> evita <strong>~7.920 imballaggi monouso all'anno</strong> (circa 35–40 kg di plastica, poliaccoppiati e carta!)</div>
+      </div>
     </div>
   `;
   return `
@@ -435,16 +558,28 @@ function renderB5(ctx: VillacolleContext): string {
   `;
 }
 
+function getFilteredVillaQuiz() {
+  if (uiState.quizAgeFilter === "primaria") {
+    return VILLA_QUIZ_20.filter((q) => q.ageBand === "primaria" || q.ageBand === "entrambi");
+  }
+  if (uiState.quizAgeFilter === "media") {
+    return VILLA_QUIZ_20.filter((q) => q.ageBand === "media" || q.ageBand === "entrambi");
+  }
+  return VILLA_QUIZ_20;
+}
+
 function renderGames(ctx: VillacolleContext): string {
   const e = ctx.esc;
-  const quizScore = VILLA_QUIZ_15.reduce((acc, q) => acc + (uiState.quizAnswers[q.id] === q.correctIdx ? 1 : 0), 0);
-  const allAnswered = VILLA_QUIZ_15.every((q) => typeof uiState.quizAnswers[q.id] === "number");
+  const questions = getFilteredVillaQuiz();
+  const quizScore = questions.reduce((acc, q) => acc + (uiState.quizAnswers[q.id] === q.correctIdx ? 1 : 0), 0);
+  const answeredCount = questions.filter((q) => typeof uiState.quizAnswers[q.id] === "number").length;
+  const allAnswered = questions.length > 0 && answeredCount === questions.length;
 
   return `
     <div class="serr-grid-2">
       <div class="serr-card">
-        <h4 style="margin-top:0;">Gioco di associazione · Codici e Filiera</h4>
-        <p style="font-size:0.83rem;margin-top:0;">Associa sigle e concetti di Villacolle al significato corretto.</p>
+        <h4 style="margin-top:0;">Gioco di associazione · 8 Codici, 5R e Filiera</h4>
+        <p style="font-size:0.83rem;margin-top:0;">Associa sigle CONAI, Direttiva SUP e concetti 5R di Villacolle al significato corretto.</p>
         <div class="serr-grid-2">
           <div style="display:flex;flex-direction:column;gap:6px;">
             ${VILLA_MATCH_PAIRS.map((p) => {
@@ -461,21 +596,26 @@ function renderGames(ctx: VillacolleContext): string {
           </div>
         </div>
         ${uiState.matchError ? `<div class="serr-feedback warn" style="margin-top:8px;">${e(uiState.matchError)}</div>` : ""}
-        ${uiState.matchPairsSolved.length === VILLA_MATCH_PAIRS.length ? `<div class="serr-feedback ok" style="margin-top:8px;"><strong>Tutte le 6 associazioni completate!</strong></div>` : ""}
+        ${uiState.matchPairsSolved.length === VILLA_MATCH_PAIRS.length ? `<div class="serr-feedback ok" style="margin-top:8px;"><strong>Tutte le ${VILLA_MATCH_PAIRS.length} associazioni completate!</strong></div>` : ""}
         <button type="button" class="btn btn-sm" style="margin-top:8px;" id="btn-vm-reset">Ricomincia associazione</button>
       </div>
 
       <div class="serr-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
-          <h4 style="margin:0;">Verifica Villacolle · ${VILLA_QUIZ_15.length} Domande</h4>
-          <span class="serr-badge-small">Ripetibile senza limiti</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <h4 style="margin:0;">Verifica Villacolle · ${questions.length} Domande</h4>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;">
+            <button type="button" class="serr-chip ${uiState.quizAgeFilter === "tutte" ? "active" : ""}" data-vq-age="tutte">Tutte (20)</button>
+            <button type="button" class="serr-chip ${uiState.quizAgeFilter === "primaria" ? "active" : ""}" data-vq-age="primaria">Primaria (6–10)</button>
+            <button type="button" class="serr-chip ${uiState.quizAgeFilter === "media" ? "active" : ""}" data-vq-age="media">Media (11–14)</button>
+          </div>
         </div>
         <div class="serr-quiz-scroll">
-          ${VILLA_QUIZ_15.map((q, qi) => {
+          ${questions.map((q, qi) => {
             const ans = uiState.quizAnswers[q.id];
+            const ageLabel = q.ageBand === "primaria" ? "Primaria" : q.ageBand === "media" ? "Media" : "Comune";
             return `
               <div class="serr-q-block">
-                <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">${qi + 1}. ${e(q.question)}</div>
+                <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">${qi + 1}. ${e(q.question)} <span class="serr-badge-small" style="font-size:0.68rem;">${ageLabel}</span></div>
                 <div style="display:flex;flex-direction:column;gap:4px;">
                   ${q.options.map((opt, oi) => {
                     let cls = "";
@@ -492,9 +632,9 @@ function renderGames(ctx: VillacolleContext): string {
           }).join("")}
         </div>
         <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;">
-          <button type="button" class="btn btn-primary btn-sm" id="btn-vq-submit" ${!allAnswered ? "disabled" : ""}>Verifica punteggio (${Object.keys(uiState.quizAnswers).length}/${VILLA_QUIZ_15.length})</button>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-vq-submit" ${!allAnswered ? "disabled" : ""}>Verifica punteggio (${answeredCount}/${questions.length})</button>
           <button type="button" class="btn btn-sm" id="btn-vq-retry">Ripeti quiz</button>
-          ${uiState.quizSubmitted ? `<strong>Risultato: ${quizScore}/${VILLA_QUIZ_15.length}</strong>` : ""}
+          ${uiState.quizSubmitted ? `<strong>Risultato: ${quizScore}/${questions.length}</strong>` : ""}
         </div>
       </div>
     </div>
@@ -502,6 +642,38 @@ function renderGames(ctx: VillacolleContext): string {
 }
 
 function bindEvents(container: HTMLElement, ctx: VillacolleContext): void {
+  // Lesson & Support Video
+  const vidSlot = container.querySelector<HTMLElement>("#villa-support-video-slot");
+  if (vidSlot && VILLA_VIDEOS.length > 0) {
+    const curVid = VILLA_VIDEOS[Math.max(0, Math.min(uiState.lessonVideoIdx, VILLA_VIDEOS.length - 1))];
+    renderSupportVideoWidget(
+      vidSlot,
+      curVid,
+      uiState.lessonVideoMode,
+      uiState.lessonVideoSceneIdx,
+      ctx.esc,
+      (nextMode) => {
+        uiState.lessonVideoMode = nextMode;
+        renderVillacolleView(container, ctx);
+      },
+      (nextScene) => {
+        uiState.lessonVideoSceneIdx = nextScene;
+        renderVillacolleView(container, ctx);
+      }
+    );
+  }
+  container.querySelectorAll<HTMLButtonElement>("[data-v-vid-pick]").forEach((b) =>
+    b.addEventListener("click", () => {
+      uiState.lessonVideoIdx = Number(b.dataset.vVidPick) || 0;
+      uiState.lessonVideoSceneIdx = 0;
+      renderVillacolleView(container, ctx);
+    })
+  );
+  container.querySelector("#btn-lez-done")?.addEventListener("click", () => {
+    ctx.markActivityDone("V_LEZ", 20);
+    renderVillacolleView(container, ctx);
+  });
+
   container.querySelectorAll<HTMLButtonElement>("[data-b1-chain]").forEach((b) =>
     b.addEventListener("click", () => {
       uiState.b1ChainId = b.dataset.b1Chain || "short_seasonal";
@@ -547,9 +719,35 @@ function bindEvents(container: HTMLElement, ctx: VillacolleContext): void {
     renderVillacolleView(container, ctx);
   });
 
+  // B4 Tare calculator & dataset switcher
+  container.querySelectorAll<HTMLButtonElement>("[data-b4-preset]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const [n, g] = (b.dataset.b4Preset || "200:250").split(":").map(Number);
+      uiState.b4TareNetG = n || 200;
+      uiState.b4TareGrossG = Math.max(uiState.b4TareNetG, g || 250);
+      renderVillacolleView(container, ctx);
+    })
+  );
+  container.querySelector<HTMLInputElement>("#b4-tare-net")?.addEventListener("change", (ev) => {
+    uiState.b4TareNetG = Math.max(1, Number((ev.target as HTMLInputElement).value) || 1);
+    if (uiState.b4TareGrossG < uiState.b4TareNetG) uiState.b4TareGrossG = uiState.b4TareNetG;
+    renderVillacolleView(container, ctx);
+  });
+  container.querySelector<HTMLInputElement>("#b4-tare-gross")?.addEventListener("change", (ev) => {
+    uiState.b4TareGrossG = Math.max(uiState.b4TareNetG, Number((ev.target as HTMLInputElement).value) || uiState.b4TareNetG);
+    renderVillacolleView(container, ctx);
+  });
+
   container.querySelectorAll<HTMLButtonElement>("[data-b4-sel]").forEach((b) =>
     b.addEventListener("click", () => {
       uiState.b4SelectedId = b.dataset.b4Sel || PACKAGING_HUNT_ITEMS[0].id;
+      renderVillacolleView(container, ctx);
+    })
+  );
+  container.querySelectorAll<HTMLButtonElement>("[data-b4-set]").forEach((b) =>
+    b.addEventListener("click", () => {
+      uiState.b4DragSet = (b.dataset.b4Set || "set1") as "set1" | "set2" | "all";
+      uiState.b4SelectedBucketItem = "";
       renderVillacolleView(container, ctx);
     })
   );
@@ -569,9 +767,9 @@ function bindEvents(container: HTMLElement, ctx: VillacolleContext): void {
     if (!itemId) return;
     uiState.b4DragPlacements[itemId] = bucket;
     uiState.b4SelectedBucketItem = "";
-    const gameItems = PACKAGING_HUNT_ITEMS.slice(0, 8);
+    const gameItems = getB4DragItems();
     const correctPlaced = gameItems.filter((it) => uiState.b4DragPlacements[it.id] === it.disposalBucket).length;
-    if (correctPlaced >= 6) {
+    if (correctPlaced >= Math.min(6, gameItems.length)) {
       ctx.markActivityDone("V_B4", 20);
       ctx.recordGameScore("villa_packaging_dd", correctPlaced, gameItems.length);
     }
@@ -663,6 +861,13 @@ function bindEvents(container: HTMLElement, ctx: VillacolleContext): void {
     uiState.matchError = "";
     renderVillacolleView(container, ctx);
   });
+  container.querySelectorAll<HTMLButtonElement>("[data-vq-age]").forEach((b) =>
+    b.addEventListener("click", () => {
+      uiState.quizAgeFilter = (b.dataset.vqAge || "tutte") as "tutte" | "primaria" | "media";
+      uiState.quizSubmitted = false;
+      renderVillacolleView(container, ctx);
+    })
+  );
   container.querySelectorAll<HTMLButtonElement>("[data-vq-pick]").forEach((b) =>
     b.addEventListener("click", () => {
       if (uiState.quizSubmitted) return;
@@ -673,8 +878,9 @@ function bindEvents(container: HTMLElement, ctx: VillacolleContext): void {
   );
   container.querySelector("#btn-vq-submit")?.addEventListener("click", () => {
     uiState.quizSubmitted = true;
-    const score = VILLA_QUIZ_15.reduce((acc, q) => acc + (uiState.quizAnswers[q.id] === q.correctIdx ? 1 : 0), 0);
-    ctx.recordGameScore("villa_quiz_15", score, VILLA_QUIZ_15.length);
+    const questions = getFilteredVillaQuiz();
+    const score = questions.reduce((acc, q) => acc + (uiState.quizAnswers[q.id] === q.correctIdx ? 1 : 0), 0);
+    ctx.recordGameScore("villa_quiz_20", score, questions.length);
     ctx.markActivityDone("V_QUIZ", 25);
     renderVillacolleView(container, ctx);
   });

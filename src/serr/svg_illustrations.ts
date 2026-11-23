@@ -181,12 +181,12 @@ export function renderStudyInfographicSvg(type: string): string {
     case "packaging_three_tiers":
     case "material_codes_bins":
     case "smart_shopping_steps":
-      return `<svg viewBox="0 0 560 190" width="100%" style="max-width:560px;height:auto;border-radius:12px;background:#f8fbfa;border:1px solid #d5e2dd;" role="img" aria-label="Gerarchia europea dei rifiuti SERR">
-        <rect x="30" y="16" width="500" height="32" rx="8" fill="#1e7a52"/><text x="280" y="36" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">1. PREVENZIONE E RIDUZIONE (Precycling, sfuso, borracce, porzioni giuste)</text>
-        <rect x="65" y="54" width="430" height="30" rx="8" fill="#2f9468"/><text x="280" y="73" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">2. RIUTILIZZO (Portamerenda lavabili, vuoto a rendere, recupero cibo)</text>
-        <rect x="100" y="90" width="360" height="28" rx="8" fill="#3a86a8"/><text x="280" y="108" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">3. RICICLO DI QUALITÀ (Differenziata pulita senza frazioni estranee)</text>
-        <rect x="145" y="124" width="270" height="26" rx="8" fill="#c9852b"/><text x="280" y="141" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">4. RECUPERO ENERGETICO</text>
-        <rect x="190" y="155" width="180" height="24" rx="8" fill="#7c878e"/><text x="280" y="171" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">5. SMALTIMENTO (Ultima scelta)</text>
+      return `<svg viewBox="0 0 560 205" width="100%" style="max-width:560px;height:auto;border-radius:12px;background:#f8fbfa;border:1px solid #d5e2dd;" role="img" aria-label="Le 5R originali in inglese: Refuse, Reduce, Reuse, Recycle, Rot">
+        <rect x="20" y="12" width="520" height="32" rx="8" fill="#1e7a52"/><text x="280" y="33" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">1. Refuse</text>
+        <rect x="60" y="50" width="440" height="32" rx="8" fill="#2f9468"/><text x="280" y="71" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">2. Reduce</text>
+        <rect x="100" y="88" width="360" height="32" rx="8" fill="#3a86a8"/><text x="280" y="109" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">3. Reuse</text>
+        <rect x="140" y="126" width="280" height="32" rx="8" fill="#475569"/><text x="280" y="147" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">4. Recycle</text>
+        <rect x="180" y="164" width="200" height="32" rx="8" fill="#92400e"/><text x="280" y="185" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">5. Rot</text>
       </svg>`;
     default:
       return `<svg viewBox="0 0 560 170" width="100%" style="max-width:560px;height:auto;border-radius:12px;background:#f5f9f6;border:1px solid #d6e4da;" role="img" aria-label="Schema concettuale filiera e risorse">
