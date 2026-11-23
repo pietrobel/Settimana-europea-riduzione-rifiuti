@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SERR 2026 · Rete dei Cinque Borghi | Piattaforma Didattica</title>
   <meta name="description" content="Piattaforma educativa SERR 2026 dei cinque borghi (Mezzovalle, Villacolle, Cefalana, Dragano, Campolieto) con 80 attività, 120 quiz, 8 giochi incluso coding raccolta differenziata, calcolatori e mappa interattiva." />
   <meta property="og:title" content="SERR 2026 · Rete dei Cinque Borghi" />
@@ -44,7 +44,7 @@
       --base-size: 20px;
     }
     html.font-xl {
-      --base-size: 22px;
+      --base-size: 22.5px;
     }
     html.bes-mode body {
       letter-spacing: 0.03em;
@@ -74,6 +74,7 @@
       height: 100%;
       width: 100%;
       overflow: hidden;
+      -webkit-text-size-adjust: 100%;
     }
     body {
       margin: 0;
@@ -88,6 +89,26 @@
       align-items: center;
       justify-content: center;
       -webkit-font-smoothing: antialiased;
+      overscroll-behavior: none;
+    }
+
+    /* Samsung LIM Touch & Passive Stylus Hardening */
+    button, .btn, .seg-btn, .nav-btn, .icon-btn, .quiz-opt, .choice-pick,
+    .bin-btn, .match-card, .map-hotspot, .glossary-btn, .pres-step-dot,
+    .pres-tab-btn, .serr-tab-btn, .serr-pill, .serr-chip, .serr-action-tile,
+    .serr-opt-btn, .serr-step-btn, .serr-drag-chip, .serr-bin-drop,
+    .coding-blk-btn, .ws-block, summary {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(20, 83, 45, 0.16);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    select, input, textarea, [contenteditable] {
+      touch-action: manipulation;
+    }
+    input, textarea, [contenteditable] {
+      user-select: text;
+      -webkit-user-select: text;
     }
 
     .app-shell {
@@ -157,7 +178,7 @@
     }
     .topbar-inner {
       width: 100%;
-      padding: 6px 14px;
+      padding: 6px max(14px, env(safe-area-inset-right)) 6px max(14px, env(safe-area-inset-left));
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -191,6 +212,8 @@
       position: relative;
       z-index: 1;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-x;
+      overscroll-behavior-x: contain;
     }
     .primary-nav::-webkit-scrollbar { height: 5px; }
     .primary-nav::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 999px; }
@@ -370,6 +393,9 @@
       flex-direction: column;
       gap: 10px;
       padding-right: 4px;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior-y: contain;
     }
     .stage-body::-webkit-scrollbar { width: 7px; }
     .stage-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
@@ -384,6 +410,9 @@
       flex-direction: column;
       gap: 10px;
       padding-right: 4px;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior-y: contain;
     }
     .subpanel-fit::-webkit-scrollbar { width: 7px; }
     .subpanel-fit::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
@@ -801,32 +830,36 @@
     .map-hotspot {
       position: absolute;
       transform: translate(-50%, -50%);
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       min-height: 0;
       padding: 0;
       border-radius: 50%;
-      background: transparent;
+      background: rgba(255, 255, 255, 0.14);
       color: transparent;
-      border: 2.5px solid var(--accent);
+      border: 3px solid var(--accent);
       cursor: pointer;
       transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.16s ease, box-shadow 0.16s ease;
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 2px 6px rgba(15, 23, 42, 0.28);
+      box-shadow: 0 0 0 2.5px rgba(255, 255, 255, 0.94), 0 2px 8px rgba(15, 23, 42, 0.3);
     }
     .map-hotspot:hover {
       background: rgba(20, 83, 45, 0.24);
       transform: translate(-50%, -50%) scale(1.14);
     }
     .map-hotspot[aria-pressed="true"] {
-      background: rgba(20, 83, 45, 0.42);
+      background: rgba(20, 83, 45, 0.44);
       border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.96), 0 0 0 4.5px rgba(20, 83, 45, 0.38);
+      box-shadow: 0 0 0 2.5px rgba(255, 255, 255, 0.98), 0 0 0 5.5px rgba(20, 83, 45, 0.42);
       transform: translate(-50%, -50%) scale(1.16);
     }
     html.lim-screen .map-hotspot {
-      width: 28px;
-      height: 28px;
-      border-width: 3px;
+      width: 42px;
+      height: 42px;
+      border-width: 3.5px;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.96), 0 4px 12px rgba(15, 23, 42, 0.35);
+    }
+    html.lim-screen .map-hotspot[aria-pressed="true"] {
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.98), 0 0 0 8px rgba(20, 83, 45, 0.44);
     }
 
     /* Filter Bar & Data Charts */
@@ -904,26 +937,178 @@
     .qr-vote-grid { display: grid; grid-template-columns: 150px 1fr; gap: 16px; align-items: center; margin-bottom: 12px; }
     .print-header-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; font-size: 10pt; }
 
-    /* LIM Adaptive Classroom Mode (16:9 Stage Ergonomics) */
+    /* Samsung LIM Adaptive Classroom Mode (55"-85" UHD/FHD Touch & Passive Stylus) */
     html.lim-screen {
-      --base-size: clamp(16px, 1.05vw + 4px, 19.5px);
+      --base-size: clamp(17.5px, 0.88vw + 7px, 22px);
+      --border: #94a3b8;
     }
     html.lim-screen.lim-large {
-      --base-size: clamp(17.5px, 1.18vw + 5px, 21.5px);
+      --base-size: clamp(19px, 1vw + 8px, 24.5px);
     }
     html.lim-screen.font-xl {
-      --base-size: clamp(19px, 1.3vw + 6px, 23px);
+      --base-size: clamp(20.5px, 1.15vw + 9px, 26.5px);
+    }
+    html.lim-screen :focus-visible {
+      outline: 4px solid var(--focus);
+      outline-offset: 2px;
+    }
+    html.lim-screen .topbar-inner {
+      padding: 8px max(18px, env(safe-area-inset-right)) 8px max(18px, env(safe-area-inset-left));
+    }
+    html.lim-screen .nav-btn {
+      min-height: 44px;
+      padding: 8px 11px;
+      font-size: 0.88rem;
+      border-bottom-width: 3.5px;
+    }
+    html.lim-screen .icon-btn,
+    html.lim-screen .age-cta-select {
+      min-height: 44px;
+      padding: 7px 12px;
+      font-size: 0.86rem;
+      border-width: 2px;
     }
     html.lim-screen .btn,
     html.lim-screen .seg-btn,
-    html.lim-screen .nav-btn,
+    html.lim-screen .serr-tab-btn,
+    html.lim-screen .serr-pill,
+    html.lim-screen .serr-chip,
+    html.lim-screen .glossary-btn,
+    html.lim-screen .pres-tab-btn,
+    html.lim-screen .serr-opt-btn {
+      min-height: 48px;
+      padding: 9px 15px;
+      border-width: 2px;
+      font-size: 0.92rem;
+    }
+    html.lim-screen .btn-sm {
+      min-height: 42px !important;
+      padding: 7px 13px !important;
+      font-size: 0.88rem !important;
+    }
     html.lim-screen .quiz-opt {
+      min-height: 58px;
+      padding: 13px 18px;
+      border-width: 2.5px;
+      font-size: 1.04rem;
+    }
+    html.lim-screen .opt-key {
+      width: 36px;
+      height: 36px;
+      font-size: 0.96rem;
+    }
+    html.lim-screen .choice-pick,
+    html.lim-screen .serr-action-tile,
+    html.lim-screen .serr-step-btn {
+      min-height: 58px;
+      padding: 12px 16px;
+      border-width: 2px;
+    }
+    html.lim-screen .pres-step-dot {
+      min-width: 38px;
+      height: 38px;
+      padding: 0 10px;
+      font-size: 0.84rem;
+      border-width: 2px;
+    }
+    html.lim-screen .coding-blk-btn {
       min-height: 44px;
-      padding: 8px 14px;
+      padding: 8px 11px;
+      font-size: 0.88rem;
+    }
+    html.lim-screen .ws-block {
+      padding: 9px 11px;
+      font-size: 0.88rem;
+    }
+    html.lim-screen .ws-block-controls button {
+      min-width: 36px;
+      min-height: 36px;
+      font-size: 0.9rem;
+      padding: 4px 8px;
+    }
+    html.lim-screen .team-box {
+      padding: 14px 20px;
+      border-width: 3px;
+      font-size: 1.08rem;
+    }
+    html.lim-screen .team-box.active-turn {
+      box-shadow: 0 0 0 3px rgba(20, 83, 45, 0.25);
+    }
+    html.lim-screen .field-input,
+    html.lim-screen .field-select,
+    html.lim-screen .serr-select,
+    html.lim-screen .serr-input {
+      min-height: 48px;
+      font-size: 0.96rem;
       border-width: 2px;
     }
     html.lim-screen .grid-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    /* Overlay Penna & Evidenziatore LIM Samsung (Canvas trasparente live) */
+    .lim-annot-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      z-index: 160;
+      pointer-events: none;
+    }
+    .lim-annot-canvas.drawing {
+      pointer-events: auto;
+      touch-action: none;
+      cursor: crosshair;
+    }
+    .lim-pen-toolbar {
+      position: fixed;
+      bottom: max(14px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 170;
+      background: rgba(15, 23, 42, 0.94);
+      color: #f8fafc;
+      border: 2px solid #22c55e;
+      border-radius: 14px;
+      padding: 8px 12px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      max-width: calc(100vw - 24px);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.45);
+    }
+    .lim-pen-toolbar.open {
+      display: flex;
+    }
+    .lim-pen-btn {
+      min-height: 40px;
+      padding: 6px 12px;
+      border-radius: 9px;
+      border: 1.5px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .lim-pen-btn[aria-pressed="true"] {
+      background: #16a34a;
+      border-color: #bbf7d0;
+      box-shadow: 0 0 0 2px rgba(187, 247, 208, 0.4);
+    }
+    .lim-pen-swatch {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      border: 1.5px solid #ffffff;
+      display: inline-block;
+      flex-shrink: 0;
     }
 
     /* Activity Operational Details & Card Actions */
@@ -1908,6 +2093,14 @@
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             <span>Progettazioni Docenti</span>
           </button>
+          <button type="button" class="icon-btn" id="btn-lim-toggle" aria-pressed="false" title="Ottimizza tasti, testo e contrasto per display interattivo LIM Samsung">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span>LIM Samsung</span>
+          </button>
+          <button type="button" class="icon-btn" id="btn-lim-pen" aria-pressed="false" title="Attiva o nascondi Penna ed Evidenziatore LIM sopra la schermata">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            <span>Penna LIM</span>
+          </button>
           <button type="button" class="icon-btn" id="btn-fullscreen-lim" aria-pressed="false" title="Apri a schermo intero">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
             <span id="fs-btn-label">Schermo intero</span>
@@ -1919,6 +2112,17 @@
         </div>
       </div>
     </header>
+    <canvas id="lim-annot-canvas" class="lim-annot-canvas no-print" aria-hidden="true"></canvas>
+    <div id="lim-pen-toolbar" class="lim-pen-toolbar no-print" role="toolbar" aria-label="Strumenti Penna ed Evidenziatore LIM Samsung">
+      <span style="font-size:0.78rem;font-weight:800;color:#86efac;">Penna LIM:</span>
+      <button type="button" class="lim-pen-btn" data-pen-tool="green" aria-pressed="true"><span class="lim-pen-swatch" style="background:#16a34a;"></span>Verde</button>
+      <button type="button" class="lim-pen-btn" data-pen-tool="blue" aria-pressed="false"><span class="lim-pen-swatch" style="background:#0284c7;"></span>Blu</button>
+      <button type="button" class="lim-pen-btn" data-pen-tool="red" aria-pressed="false"><span class="lim-pen-swatch" style="background:#dc2626;"></span>Rosso</button>
+      <button type="button" class="lim-pen-btn" data-pen-tool="highlight" aria-pressed="false"><span class="lim-pen-swatch" style="background:#facc15;"></span>Evidenziatore</button>
+      <button type="button" class="lim-pen-btn" id="btn-lim-pen-clear">Cancella</button>
+      <button type="button" class="lim-pen-btn" id="btn-lim-pen-interact" aria-pressed="false" title="Sospendi momentaneamente il tratto per cliccare sulla pagina tenendo i segni visibili">Usa schermo</button>
+      <button type="button" class="lim-pen-btn" id="btn-lim-pen-close">Chiudi ✕</button>
+    </div>
 
     <main id="main-content" class="main-wrap" tabindex="-1">
       <div class="print-header-box">
@@ -3212,14 +3416,17 @@
 
       <div style="display:grid;gap:14px;">
         <div class="card-soft">
-          <div class="toolbar-label" id="screen-label" style="display:block;margin-bottom:6px;">Modalità Dispositivo / Schermo:</div>
+          <div class="toolbar-label" id="screen-label" style="display:block;margin-bottom:6px;">Modalità Dispositivo / LIM Samsung:</div>
           <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
             <div class="segmented" role="group" aria-labelledby="screen-label">
-              <button type="button" class="seg-btn" data-screen="auto" aria-pressed="true">Dispositivo (PC / Tablet / Cellulare)</button>
-              <button type="button" class="seg-btn" data-screen="lim" aria-pressed="false">LIM Classe (Tasti grandi)</button>
+              <button type="button" class="seg-btn" data-screen="auto" aria-pressed="true">PC / Tablet</button>
+              <button type="button" class="seg-btn" data-screen="lim" aria-pressed="false">LIM Samsung (Tasti grandi 16:9)</button>
             </div>
             <button type="button" class="btn" id="btn-lim-size" aria-pressed="false">Testo: Normale</button>
           </div>
+          <p style="margin:8px 0 0;font-size:0.8rem;color:var(--text-muted);">
+            Su <strong>LIM Samsung</strong> puoi usare i pulsanti rapidi in alto (<em>LIM Samsung</em> e <em>Penna LIM</em>) e cambiare slide con swipe touch o frecce ◀ ▶ del telecomando.
+          </p>
         </div>
 
         <div class="card-soft">
@@ -4270,35 +4477,67 @@
     townFilterButtons.forEach(b => b.addEventListener("click", () => setTownFilter(b.dataset.townfilter)));
 
     const screenButtons = Array.from(document.querySelectorAll(".seg-btn[data-screen]"));
-    function setScreenMode(mode) {
+    const btnLimToggle = document.getElementById("btn-lim-toggle");
+    const LIM_STORAGE_KEY = "serr2026_lim_mode";
+
+    function setScreenMode(mode, persist = true) {
       state.screenMode = mode;
-      document.documentElement.classList.toggle("lim-screen", mode === "lim");
-      screenButtons.forEach(b => b.setAttribute("aria-pressed", b.dataset.screen === mode ? "true" : "false"));
+      const isLim = mode === "lim";
+      document.documentElement.classList.toggle("lim-screen", isLim);
+      screenButtons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.screen === mode)));
+      if (btnLimToggle) btnLimToggle.setAttribute("aria-pressed", String(isLim));
+      if (persist) {
+        try { window.localStorage.setItem(LIM_STORAGE_KEY, mode); } catch (_e) {}
+      }
     }
-    screenButtons.forEach(b => b.addEventListener("click", () => setScreenMode(b.dataset.screen)));
+    screenButtons.forEach(b => b.addEventListener("click", () => setScreenMode(b.dataset.screen, true)));
+    if (btnLimToggle) {
+      btnLimToggle.addEventListener("click", () => {
+        setScreenMode(state.screenMode === "lim" ? "auto" : "lim", true);
+      });
+    }
+    (function initSamsungLimAutoDetect() {
+      let savedMode = "";
+      try { savedMode = window.localStorage.getItem(LIM_STORAGE_KEY) || ""; } catch (_e) {}
+      if (savedMode === "lim" || savedMode === "auto") {
+        setScreenMode(savedMode, false);
+        return;
+      }
+      const ua = navigator.userAgent || "";
+      const isLargeTouchBoard =
+        (window.matchMedia && window.matchMedia("(pointer: coarse) and (min-width: 1180px)").matches) ||
+        (/SamsungBrowser|Tizen|WAF|Interactive/i.test(ua) && window.innerWidth >= 1180);
+      if (isLargeTouchBoard) setScreenMode("lim", false);
+    })();
 
     const btnFullscreen = document.getElementById("btn-fullscreen-lim");
     const fsBtnLabel = document.getElementById("fs-btn-label");
     const btnMobileFullscreen = document.getElementById("btn-mobile-fullscreen");
 
+    function getNativeFsElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
+    }
+
     function syncFullscreenButtons() {
-      const isAppFs = document.documentElement.classList.contains("app-fullscreen") || document.fullscreenElement === document.documentElement;
+      const isAppFs = document.documentElement.classList.contains("app-fullscreen") || getNativeFsElement() === document.documentElement;
       if (btnFullscreen) btnFullscreen.setAttribute("aria-pressed", String(isAppFs));
       if (fsBtnLabel) fsBtnLabel.textContent = isAppFs ? "Esci schermo intero" : "Schermo intero";
       if (btnMobileFullscreen) btnMobileFullscreen.textContent = isAppFs ? "Esci schermo intero" : "Schermo intero";
     }
 
     async function toggleFullscreenMode() {
-      const currentlyFs = document.documentElement.classList.contains("app-fullscreen") || document.fullscreenElement === document.documentElement;
+      const currentlyFs = document.documentElement.classList.contains("app-fullscreen") || getNativeFsElement() === document.documentElement;
+      const rootEl = document.documentElement;
       if (!currentlyFs) {
-        document.documentElement.classList.add("app-fullscreen");
+        rootEl.classList.add("app-fullscreen");
         try {
-          if (document.documentElement.requestFullscreen) {
-            await document.documentElement.requestFullscreen();
-            document.documentElement.dataset.nativeFs = "1";
+          const reqFs = rootEl.requestFullscreen || rootEl.webkitRequestFullscreen || rootEl.msRequestFullscreen;
+          if (reqFs) {
+            await reqFs.call(rootEl);
+            rootEl.dataset.nativeFs = "1";
           }
         } catch (_err) {
-          document.documentElement.dataset.nativeFs = "0";
+          rootEl.dataset.nativeFs = "0";
         }
         try {
           if (screen.orientation && screen.orientation.lock) {
@@ -4306,11 +4545,12 @@
           }
         } catch (_err2) {}
       } else {
-        document.documentElement.classList.remove("app-fullscreen");
-        document.documentElement.dataset.nativeFs = "0";
+        rootEl.classList.remove("app-fullscreen");
+        rootEl.dataset.nativeFs = "0";
         try {
-          if (document.fullscreenElement === document.documentElement && document.exitFullscreen) {
-            await document.exitFullscreen();
+          const exitFs = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+          if (getNativeFsElement() && exitFs) {
+            await exitFs.call(document);
           }
         } catch (_err3) {}
         try {
@@ -4324,12 +4564,14 @@
 
     if (btnFullscreen) btnFullscreen.addEventListener("click", toggleFullscreenMode);
     if (btnMobileFullscreen) btnMobileFullscreen.addEventListener("click", toggleFullscreenMode);
-    document.addEventListener("fullscreenchange", () => {
-      if (!document.fullscreenElement && document.documentElement.dataset.nativeFs === "1") {
-        document.documentElement.classList.remove("app-fullscreen");
-        document.documentElement.dataset.nativeFs = "0";
-      }
-      syncFullscreenButtons();
+    ["fullscreenchange", "webkitfullscreenchange"].forEach(evName => {
+      document.addEventListener(evName, () => {
+        if (!getNativeFsElement() && document.documentElement.dataset.nativeFs === "1") {
+          document.documentElement.classList.remove("app-fullscreen");
+          document.documentElement.dataset.nativeFs = "0";
+        }
+        syncFullscreenButtons();
+      });
     });
 
     const btnLim = document.getElementById("btn-lim-size");
@@ -9021,6 +9263,190 @@
     renderGame7Board();
     initGame8();
     renderGamification();
+    /* ==================== SAMSUNG LIM: PENNA LIVE, SWIPE & TELECOMANDO ==================== */
+    (function initLimSamsungTools() {
+      const canvas = document.getElementById("lim-annot-canvas");
+      const toolbar = document.getElementById("lim-pen-toolbar");
+      const btnPenToggle = document.getElementById("btn-lim-pen");
+      const btnPenClear = document.getElementById("btn-lim-pen-clear");
+      const btnPenInteract = document.getElementById("btn-lim-pen-interact");
+      const btnPenClose = document.getElementById("btn-lim-pen-close");
+      if (canvas && toolbar && btnPenToggle) {
+        const ctx2d = canvas.getContext("2d");
+        let penOpen = false;
+        let drawingMode = true;
+        let currentTool = "green";
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        function resizeAnnotCanvas() {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          let snap = null;
+          if (canvas.width > 0 && canvas.height > 0 && ctx2d) {
+            try { snap = ctx2d.getImageData(0, 0, canvas.width, canvas.height); } catch (_e) {}
+          }
+          canvas.width = Math.round(w * dpr);
+          canvas.height = Math.round(h * dpr);
+          canvas.style.width = w + "px";
+          canvas.style.height = h + "px";
+          if (ctx2d) {
+            ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+            if (snap) {
+              try { ctx2d.putImageData(snap, 0, 0); } catch (_e) {}
+            }
+          }
+        }
+        resizeAnnotCanvas();
+        window.addEventListener("resize", resizeAnnotCanvas);
+
+        function syncPenUi() {
+          btnPenToggle.setAttribute("aria-pressed", String(penOpen));
+          toolbar.classList.toggle("open", penOpen);
+          canvas.classList.toggle("drawing", penOpen && drawingMode);
+          if (btnPenInteract) {
+            btnPenInteract.setAttribute("aria-pressed", String(!drawingMode));
+            btnPenInteract.textContent = drawingMode ? "Usa schermo" : "Riprendi penna";
+          }
+        }
+
+        btnPenToggle.addEventListener("click", () => {
+          penOpen = !penOpen;
+          if (penOpen) drawingMode = true;
+          syncPenUi();
+        });
+        if (btnPenClose) {
+          btnPenClose.addEventListener("click", () => {
+            penOpen = false;
+            syncPenUi();
+          });
+        }
+        if (btnPenInteract) {
+          btnPenInteract.addEventListener("click", () => {
+            drawingMode = !drawingMode;
+            syncPenUi();
+          });
+        }
+        if (btnPenClear) {
+          btnPenClear.addEventListener("click", () => {
+            if (ctx2d) ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+          });
+        }
+        toolbar.querySelectorAll("[data-pen-tool]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            currentTool = btn.getAttribute("data-pen-tool") || "green";
+            drawingMode = true;
+            toolbar.querySelectorAll("[data-pen-tool]").forEach(b => {
+              b.setAttribute("aria-pressed", String(b === btn));
+            });
+            syncPenUi();
+          });
+        });
+
+        function applyStrokeStyle() {
+          if (!ctx2d) return;
+          ctx2d.lineCap = "round";
+          ctx2d.lineJoin = "round";
+          if (currentTool === "highlight") {
+            ctx2d.globalAlpha = 0.34;
+            ctx2d.strokeStyle = "#fde047";
+            ctx2d.lineWidth = 24;
+          } else if (currentTool === "blue") {
+            ctx2d.globalAlpha = 0.94;
+            ctx2d.strokeStyle = "#0284c7";
+            ctx2d.lineWidth = 4.5;
+          } else if (currentTool === "red") {
+            ctx2d.globalAlpha = 0.94;
+            ctx2d.strokeStyle = "#dc2626";
+            ctx2d.lineWidth = 4.5;
+          } else {
+            ctx2d.globalAlpha = 0.94;
+            ctx2d.strokeStyle = "#16a34a";
+            ctx2d.lineWidth = 4.5;
+          }
+        }
+
+        canvas.addEventListener("pointerdown", (ev) => {
+          if (!penOpen || !drawingMode || !ctx2d) return;
+          isDrawing = true;
+          lastX = ev.clientX;
+          lastY = ev.clientY;
+          if (canvas.setPointerCapture) {
+            try { canvas.setPointerCapture(ev.pointerId); } catch (_e) {}
+          }
+          applyStrokeStyle();
+          ctx2d.beginPath();
+          ctx2d.moveTo(lastX, lastY);
+          ctx2d.lineTo(lastX + 0.1, lastY + 0.1);
+          ctx2d.stroke();
+        });
+        canvas.addEventListener("pointermove", (ev) => {
+          if (!isDrawing || !ctx2d) return;
+          applyStrokeStyle();
+          ctx2d.beginPath();
+          ctx2d.moveTo(lastX, lastY);
+          ctx2d.lineTo(ev.clientX, ev.clientY);
+          ctx2d.stroke();
+          lastX = ev.clientX;
+          lastY = ev.clientY;
+        });
+        ["pointerup", "pointercancel"].forEach(evName => {
+          canvas.addEventListener(evName, () => { isDrawing = false; });
+        });
+      }
+
+      /* Navigazione Slide con telecomando LIM (Frecce / Pagina) e swipe touch */
+      document.addEventListener("keydown", (ev) => {
+        if (state.activeTab !== "presentazioni") return;
+        const tag = ev.target && ev.target.tagName ? ev.target.tagName.toUpperCase() : "";
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (ev.target && ev.target.isContentEditable)) return;
+        if (ev.key === "ArrowRight" || ev.key === "PageDown") {
+          const nextBtn = document.getElementById("btn-pres-next") || document.getElementById("btn-pres-next-foot");
+          if (nextBtn && !nextBtn.disabled) {
+            ev.preventDefault();
+            nextBtn.click();
+          }
+        } else if (ev.key === "ArrowLeft" || ev.key === "PageUp") {
+          const prevBtn = document.getElementById("btn-pres-prev");
+          if (prevBtn && !prevBtn.disabled) {
+            ev.preventDefault();
+            prevBtn.click();
+          }
+        }
+      });
+
+      const presCard = document.getElementById("pres-slide-card");
+      if (presCard) {
+        let swipeX = 0;
+        let swipeY = 0;
+        let swipeValid = false;
+        presCard.addEventListener("touchstart", (ev) => {
+          if (!ev.touches || ev.touches.length !== 1) { swipeValid = false; return; }
+          const t = ev.target;
+          if (t && t.closest && t.closest("button, a, select, input, iframe")) { swipeValid = false; return; }
+          swipeX = ev.touches[0].clientX;
+          swipeY = ev.touches[0].clientY;
+          swipeValid = true;
+        }, { passive: true });
+        presCard.addEventListener("touchend", (ev) => {
+          if (!swipeValid || !ev.changedTouches || ev.changedTouches.length !== 1) return;
+          swipeValid = false;
+          const dx = ev.changedTouches[0].clientX - swipeX;
+          const dy = ev.changedTouches[0].clientY - swipeY;
+          if (Math.abs(dx) < 64 || Math.abs(dx) < Math.abs(dy) * 1.4) return;
+          if (dx < 0) {
+            const nextBtn = document.getElementById("btn-pres-next") || document.getElementById("btn-pres-next-foot");
+            if (nextBtn && !nextBtn.disabled) nextBtn.click();
+          } else {
+            const prevBtn = document.getElementById("btn-pres-prev");
+            if (prevBtn && !prevBtn.disabled) prevBtn.click();
+          }
+        }, { passive: true });
+      }
+    })();
+
     function refreshMapVideo() {
       const slot = document.getElementById("map-video-embed-slot");
       if (slot && state.activeTown && window.__SERR_VIDEOS && typeof window.__SERR_VIDEOS.renderMapVideo === "function") {
