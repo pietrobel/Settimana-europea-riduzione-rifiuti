@@ -2270,10 +2270,16 @@
                 <button type="button" class="btn btn-secondary btn-sm" data-jump="tema">2. Mappa &amp; Video</button>
                 <button type="button" class="btn btn-sm" data-jump="presentazioni">3. Lezioni &amp; Slide</button>
                 <button type="button" class="btn btn-primary btn-sm" data-jump="serr-lab">4. Laboratori SERR →</button>
-                <button type="button" class="btn btn-sm" data-jump="portale">5. Portale, App &amp; Film</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-jump="giochi">5. Giochi &amp; App Integrate</button>
+                <button type="button" class="btn btn-sm" data-jump="portale">6. Portale, App &amp; Film</button>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px;" class="no-print">
+                <span style="font-size:0.78rem;font-weight:700;color:var(--accent-text);">App integrate:</span>
+                <button type="button" class="btn btn-sm" onclick="window.__SERR_BRIDGE && window.__SERR_BRIDGE.openGame(10)">♻️ Raccolta Vocale BES</button>
+                <button type="button" class="btn btn-sm" onclick="window.__SERR_BRIDGE && window.__SERR_BRIDGE.openGame(11)">💧 Impronte Eco &amp; Idrica</button>
               </div>
               <div style="margin-top:5px;font-size:0.78rem;color:var(--text-muted);">
-                <strong>Percorso consigliato:</strong> guarda il breve video introduttivo di ciascuna tematica, esplora le slide e sblocca i quiz. Le progettazioni docenti sono in alto.
+                <strong>Percorso consigliato:</strong> guarda il breve video introduttivo di ciascuna tematica, esplora le slide e prova giochi e app integrate. Le progettazioni docenti sono in alto.
               </div>
             </div>
             <div class="mascot-frame" style="height:100%;justify-content:space-between;">
@@ -2642,7 +2648,7 @@
     <!-- 5. GLI 8 GIOCHI INTERATTIVI (INCLUSO CODING RACCOLTA DIFFERENZIATA) & PASSAPORTO -->
     <section id="sec-giochi" class="section-panel" aria-labelledby="h-giochi">
       <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-shrink:0;">
-        <h2 id="h-giochi" style="margin:0;font-size:1.15rem;">9 Giochi, Coding, Raccolta Vocale &amp; Passaporto</h2>
+        <h2 id="h-giochi" style="margin:0;font-size:1.15rem;">10 Giochi, App Integrate, Coding &amp; Passaporto</h2>
         <div class="segmented no-print" role="tablist" aria-label="Scegli il gioco o il passaporto" style="flex-wrap:wrap;">
           <button type="button" class="seg-btn" role="tab" id="tab-game-1" aria-pressed="true" aria-selected="true">1. Dove lo butto?</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-2" aria-pressed="false" aria-selected="false">2. Azione → Effetto</button>
@@ -2653,7 +2659,15 @@
           <button type="button" class="seg-btn" role="tab" id="tab-game-7" aria-pressed="false" aria-selected="false">7. Stagioni 60s</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-8" aria-pressed="false" aria-selected="false">8. Coding Differenziata</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-10" aria-pressed="false" aria-selected="false">9. Raccolta Vocale BES</button>
+          <button type="button" class="seg-btn" role="tab" id="tab-game-11" aria-pressed="false" aria-selected="false">10. Impronte Eco &amp; Idrica</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-9" aria-pressed="false" aria-selected="false">Passaporto</button>
+        </div>
+      </div>
+      <div class="no-print" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:7px 12px;margin-bottom:8px;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:10px;flex-shrink:0;">
+        <span style="font-size:0.84rem;font-weight:700;color:var(--accent-text);">App interattive integrate pronte all'uso (anche in Percorsi SERR → Mezzovalle):</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-primary btn-sm" id="btn-quick-app-raccolta">9. Apri Raccolta Vocale BES ♻️</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-quick-app-impronte">10. Apri Impronte Eco &amp; Idrica 💧</button>
         </div>
       </div>
       <div class="stage-body">
@@ -2911,6 +2925,27 @@
           src="/assets/aistudio/Raccolta_differenziata_a4a8af6d.html"
           title="Gioco interattivo accessibile: Raccolta differenziata"
           style="width:100%;height:clamp(560px, 70dvh, 780px);border:1.5px solid var(--border);border-radius:12px;background:#fffdf5;display:block;"
+          loading="lazy"
+        ></iframe>
+      </div>
+
+      <!-- GIOCO 10 / APP INTEGRATA: IMPRONTE ECOLOGICA, IDRICA E ACQUA VERDE, BLU E GRIGIA -->
+      <div id="panel-game-11" class="card" style="display:none;padding:14px 16px;">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
+          <div>
+            <h3 style="margin:0 0 2px;">Gioco 10 / App: “Impronte: ecologica, idrica e acqua verde, blu e grigia”</h3>
+            <p style="margin:0;font-size:0.86rem;color:var(--text-muted);">5 schede interattive: impronta ecologica (gha e biocapacità), impronta idrica, acqua verde/blu/grigia, verifica rapida e azioni.</p>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;" class="no-print">
+            <button type="button" class="btn btn-sm" id="btn-g11-tall">Espandi vista LIM</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-g11-xp">Segna completato (+15 XP)</button>
+          </div>
+        </div>
+        <iframe
+          id="g11-impronte-frame"
+          src="/assets/aistudio/Impronte__ecologica__idrica_e_acqua_verde__blu_e_grigia_a67eff9e.html"
+          title="Modulo interattivo: Impronte ecologica, idrica e acqua verde, blu e grigia"
+          style="width:100%;height:clamp(560px, 70dvh, 780px);border:1.5px solid var(--border);border-radius:12px;background:#f6f8f5;display:block;"
           loading="lazy"
         ></iframe>
       </div>
@@ -7846,9 +7881,9 @@
     document.getElementById("btn-quiz-restart").addEventListener("click", initQuiz);
     document.getElementById("quiz-count-select").addEventListener("change", initQuiz);
 
-    /* ==================== GAME TABS (1..10) ==================== */
-    const gameTabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => document.getElementById("tab-game-" + n));
-    const gamePanels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => document.getElementById("panel-game-" + n));
+    /* ==================== GAME TABS (1..11) ==================== */
+    const gameTabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(n => document.getElementById("tab-game-" + n));
+    const gamePanels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(n => document.getElementById("panel-game-" + n));
     function switchGame(num) {
       gameTabs.forEach((t, i) => {
         if (!t || !gamePanels[i]) return;
@@ -7861,6 +7896,9 @@
       });
     }
     gameTabs.forEach((t, i) => { if (t) t.addEventListener("click", () => switchGame(i + 1)); });
+
+    document.getElementById("btn-quick-app-raccolta")?.addEventListener("click", () => switchGame(10));
+    document.getElementById("btn-quick-app-impronte")?.addEventListener("click", () => switchGame(11));
 
     const btnG10Tall = document.getElementById("btn-g10-tall");
     const g10Frame = document.getElementById("g10-raccolta-frame");
@@ -7877,6 +7915,24 @@
       btnG10Xp.addEventListener("click", () => {
         addXp(15, "b_g1", "raccolta_bes");
         btnG10Xp.textContent = "Completamento registrato (+15 XP) ✓";
+      });
+    }
+
+    const btnG11Tall = document.getElementById("btn-g11-tall");
+    const g11Frame = document.getElementById("g11-impronte-frame");
+    if (btnG11Tall && g11Frame) {
+      let g11Expanded = false;
+      btnG11Tall.addEventListener("click", () => {
+        g11Expanded = !g11Expanded;
+        g11Frame.style.height = g11Expanded ? "860px" : "clamp(560px, 70dvh, 780px)";
+        btnG11Tall.textContent = g11Expanded ? "Altezza compatta" : "Espandi vista LIM";
+      });
+    }
+    const btnG11Xp = document.getElementById("btn-g11-xp");
+    if (btnG11Xp) {
+      btnG11Xp.addEventListener("click", () => {
+        addXp(15, "b_g6", "impronte_app");
+        btnG11Xp.textContent = "Completamento registrato (+15 XP) ✓";
       });
     }
 
