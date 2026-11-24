@@ -117,6 +117,31 @@
   .feedback { margin-top: .35rem; min-height: 1.2rem; font-size: .92rem; }
   .check li { margin: .35rem 0; }
   ul { padding-left: 1.2rem; }
+  .deep-grid { display: grid; gap: .65rem; grid-template-columns: 1fr; margin: .65rem 0; }
+  @media (min-width: 560px) { .deep-grid { grid-template-columns: repeat(2, 1fr); } }
+  .mini-box {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: .7rem .85rem;
+  }
+  .mini-box strong { color: var(--accent); }
+  .cmp-table { width: 100%; border-collapse: collapse; font-size: .9rem; margin-top: .5rem; }
+  .cmp-table th, .cmp-table td { border: 1px solid var(--border); padding: .5rem .65rem; text-align: left; vertical-align: top; }
+  .cmp-table th { background: var(--bg); font-weight: 700; }
+  .q-class-list { display: grid; gap: .7rem; margin-top: .5rem; }
+  .q-class-item {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 11px; padding: .75rem .9rem;
+  }
+  .q-class-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .6rem; }
+  .q-class-title { font-weight: 600; flex: 1 1 260px; }
+  .btn-reveal {
+    border: 1.5px solid var(--accent); background: var(--surface); color: var(--accent);
+    padding: .45rem .85rem; border-radius: 8px; cursor: pointer; font-size: .88rem; font-weight: 600;
+    min-height: 40px; flex-shrink: 0;
+  }
+  .btn-reveal[aria-expanded="true"] { background: var(--accent); color: #fff; }
+  .q-answer {
+    margin-top: .6rem; padding: .65rem .8rem; border-radius: 9px;
+    border-left: 4px solid var(--accent); background: var(--surface); font-size: .92rem;
+  }
   footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 1.5rem 1rem 2.5rem; }
 </style>
 </head>
@@ -140,106 +165,180 @@
   <!-- 1. IMPRONTA ECOLOGICA -->
   <section id="eco">
     <div class="card">
-      <h2>Che cos'è l'impronta ecologica</h2>
-      <p>L'impronta ecologica misura quanta superficie biologicamente produttiva (terra e mare) serve a una persona, a una città o a un intero Paese per produrre ciò che consuma e per assorbire i rifiuti che produce, in particolare l'anidride carbonica.</p>
-      <p>L'unità di misura è l'<strong>ettaro globale</strong> (gha): un ettaro con la produttività media della Terra.</p>
-      <div class="formula">Impronta ecologica = consumi di risorse + assorbimento dei rifiuti</div>
-      <p class="note">Il confronto fondamentale è con la <strong>biocapacità</strong>: la quantità di superficie che la Terra può rigenerare ogni anno.</p>
+      <h2>Che cos'è l'impronta ecologica (approfondimento)</h2>
+      <p>L'<strong>impronta ecologica</strong> (<em>Ecological Footprint</em>, ideata da Mathis Wackernagel e William Rees negli anni '90) misura la quantità totale di <strong>superficie biologicamente produttiva di terra e mare</strong> necessaria per sostenere i consumi di una persona, di una città o di un intero Paese e per assorbire i rifiuti generati, soprattutto l'anidride carbonica (CO₂).</p>
+      <p>Si esprime in <strong>ettari globali (gha)</strong>: 1 gha equivale a 1 ettaro di superficie con la produttività biologica media mondiale. Usare un'unità standard permette di sommare terreni molto diversi (un pascolo arido, un campo di grano fertile, una foresta boreale) su una scala comune.</p>
+      <div class="formula">Impronta ecologica (gha) = superficie per produrre risorse + superficie per assorbire la CO₂</div>
+      <h3>Le 6 categorie di superficie conteggiate</h3>
+      <div class="deep-grid">
+        <div class="mini-box"><strong>1. Terreni agricoli (Cropland)</strong><br><span class="note">Suolo per coltivare cibo umano, mangimi animali, fibre naturali (cotone, lino) e oli.</span></div>
+        <div class="mini-box"><strong>2. Pascoli (Grazing land)</strong><br><span class="note">Prati e pascoli destinati all'allevamento per carne, latte, formaggi e lana.</span></div>
+        <div class="mini-box"><strong>3. Foreste produttive (Forest products)</strong><br><span class="note">Superficie boschiva richiesta per legname da costruzione, mobili, carta e legna da ardere.</span></div>
+        <div class="mini-box"><strong>4. Zone di pesca (Fishing grounds)</strong><br><span class="note">Aree marine e d'acqua dolce necessarie a sostenere il pescato e l'acquacoltura.</span></div>
+        <div class="mini-box"><strong>5. Suolo edificato (Built-up land)</strong><br><span class="note">Terreno reso impermeabile da città, strade, fabbriche, scuole e infrastrutture.</span></div>
+        <div class="mini-box"><strong>6. Impronta di carbonio (Carbon uptake land)</strong><br><span class="note">Foreste e oceani necessari per assorbire la CO₂ fossile emessa (oggi è la quota maggiore: ~55–60% del totale globale!).</span></div>
+      </div>
+      <p class="note"><strong>Confronto chiave — Biocapacità &amp; Overshoot:</strong> la <strong>biocapacità</strong> è la capacità reale degli ecosistemi terrestri di rigenerare risorse rinnovabili e assorbire CO₂ in un anno (~1,5–1,6 gha per abitante del pianeta). Quando l'impronta supera la biocapacità entriamo in <strong>sovrasfruttamento ecologico (overshoot)</strong>: preleviamo più in fretta di quanto la natura riesca a rigenerarsi (es. tagliando alberi più rapidamente di quanto ricrescano o accumulando CO₂ in atmosfera). L'<em>Earth Overshoot Day</em> segna il giorno dell'anno in cui l'umanità esaurisce il "budget ecologico" annuale.</p>
     </div>
 
     <div class="card">
       <h3>Esempio: quanta superficie serve per persona?</h3>
-      <p class="note">Valori indicativi, pensati solo per la discussione in classe.</p>
+      <p class="note">Valori indicativi, pensati per la discussione in classe e per calcolare quanti "pianeti Terra" servirebbero.</p>
       <div class="bar-row"><span>Stile A (sobrio)</span><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div><span class="bar-value">1,4 gha</span></div>
       <div class="bar-row"><span>Stile B (medio)</span><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div><span class="bar-value">2,6 gha</span></div>
       <div class="bar-row"><span>Stile C (molto consumistico)</span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><span class="bar-value">4,8 gha</span></div>
       <div class="bar-row"><span>Biocapacità media</span><div class="bar-track"><div class="bar-fill" style="width:33%; background:var(--muted)"></div></div><span class="bar-value">~1,6 gha</span></div>
-      <p class="note">Quando la barra di un profilo supera la biocapacità media, si parla di <strong>sovrasfruttamento</strong>: consumiamo più di quanto il pianeta riesce a rigenerare.</p>
+      <p class="note">Formula rapida in classe: <strong>Numero di pianeti = Impronta (gha) ÷ 1,6 gha</strong>. Con 4,8 gha servirebbero circa <strong>3 pianeti Terra</strong> se tutti vivessero così!</p>
     </div>
 
     <div class="card">
-      <h3>Impronte pesanti e impronte leggere</h3>
-      <p>Il Paese con il consumo di energia più alto ha generalmente l'impronta più grande, ma l'impronta dipende anche dalla dieta, dai trasporti e dal modo in cui si producono i beni. Non tutti pesano allo stesso modo: il 10% più ricco della popolazione mondiale produce una quota molto più alta delle emissioni rispetto al 50% più povero.</p>
+      <h3>Impronte pesanti, impronte leggere e differenze tra impronte</h3>
+      <p>L'impronta ecologica dipende soprattutto dai consumi energetici (trasporti, riscaldamento, elettricità fossile), dall'alimentazione e dal ciclo dei beni. Non tutti pesano allo stesso modo: il 10% più ricco della popolazione mondiale genera una quota molto più alta delle emissioni rispetto al 50% più povero.</p>
+      <table class="cmp-table">
+        <thead>
+          <tr><th>Aspetto</th><th>Impronta Ecologica</th><th>Impronta Idrica</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Cosa misura</strong></td><td>Superficie fertile di terra e mare richiesta per risorse e assorbimento CO₂</td><td>Volume totale di acqua dolce consumata o inquinata lungo la filiera</td></tr>
+          <tr><td><strong>Unità di misura</strong></td><td>Ettari globali (<strong>gha</strong>)</td><td>Litri (<strong>L</strong>) o metri cubi (<strong>m³</strong>)</td></tr>
+          <tr><td><strong>Limite di riferimento</strong></td><td>Biocapacità del pianeta (~1,6 gha/persona)</td><td>Disponibilità rinnovabile di fiumi, falde e pioggia del bacino locale</td></tr>
+          <tr><td><strong>Perché si completano</strong></td><td>Un prodotto può consumare poca terra ma molta acqua di falda (es. colture irrigue nel deserto), o viceversa</td><td>Valutarle insieme evita di risolvere un problema ambientale creandone un altro</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Domande per la classe · Impronta Ecologica</h3>
+      <div class="q-class-list">
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">1. Se l'Italia ha un'impronta di circa 4,2 gha/persona e una biocapacità interna intorno a 0,9 gha/persona, cosa significa?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-eco-1">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-eco-1" hidden>Significa che siamo in <strong>deficit ecologico</strong>: i nostri consumi richiedono circa 4,5 volte la superficie produttiva disponibile sul territorio nazionale. Per coprire la differenza "importiamo biocapacità" dall'estero (cibo, legno, combustibili, prodotti industriali) ed emettiamo CO₂ oltre la capacità di assorbimento dei nostri boschi e mari.</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">2. Impronta ecologica e impronta di carbonio (Carbon Footprint) sono la stessa cosa?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-eco-2">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-eco-2" hidden>No: l'impronta di carbonio misura i gas serra emessi (in tonnellate di CO₂ equivalente) ed è <strong>una delle 6 componenti</strong> dell'impronta ecologica. L'impronta ecologica traduce quella CO₂ in ettari di bosco/oceano necessari ad assorbirla e vi somma suolo agricolo, pascoli, foreste, pesca e cemento.</div>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- 2. IMPRONTA IDRICA -->
   <section id="idrica" hidden>
     <div class="card">
-      <h2>Che cos'è l'impronta idrica</h2>
-      <p>L'impronta idrica è il volume totale di acqua dolce usato, direttamente o indirettamente, per produrre beni e servizi consumati da una persona, una città o un Paese. Si misura in litri, o in metri cubi.</p>
+      <h2>Che cos'è l'impronta idrica (approfondimento)</h2>
+      <p>L'<strong>impronta idrica</strong> (<em>Water Footprint</em>, definita da Arjen Hoekstra e sviluppata dal Water Footprint Network) misura il <strong>volume totale di acqua dolce</strong> consumato (evaporato o incorporato nel prodotto) e inquinato lungo l'intera filiera produttiva dei beni e servizi usati da una persona, un'azienda o un Paese. Si misura in <strong>litri (L)</strong> o <strong>metri cubi (m³)</strong>, dove 1 m³ = 1.000 litri.</p>
+      <p>Il concetto chiave è quello di <strong>acqua virtuale</strong> (o invisibile): quando compriamo una mela, un quaderno o una t-shirt non vediamo l'acqua versata nei campi o usata in tintoria, eppure quel bene "contiene" tutta l'acqua servita dalla materia prima fino al negozio (<em>dalla culla allo scaffale</em>).</p>
       <div class="grid two">
         <div class="water-card green" style="border-top-color:var(--accent)">
-          <h3>Impronta diretta</h3>
-          <p>L'acqua che usiamo in casa: doccia, cucina, lavatrice, giardino, WC.</p>
+          <h3>Impronta diretta (~5–10% del totale)</h3>
+          <p>L'acqua che vediamo scorrere in casa e a scuola: doccia (~40–60 L), sciacquone (~6–10 L), cucina, lavatrice, giardino. In media in Italia è attorno a <strong>150–220 litri al giorno</strong> per persona.</p>
         </div>
         <div class="water-card blue" style="border-top-color:var(--accent)">
-          <h3>Impronta indiretta</h3>
-          <p>L'acqua usata lungo la filiera per fabbricare ciò che compriamo: cibo, vestiti, smartphone, energia.</p>
+          <h3>Impronta indiretta (~90–95% del totale)</h3>
+          <p>Tutta l'acqua nascosta usata per produrre ciò che mangiamo, indossiamo e usiamo (agricoltura, mangimi, industria tessile ed elettronica, energia): spesso vale <strong>3.000–5.000 litri al giorno</strong> a persona!</p>
         </div>
       </div>
-      <div class="formula">Impronta idrica totale = impronta diretta + impronta indiretta</div>
-      <p class="note">Spesso l'impronta indiretta è molto più grande di quella diretta: ciò che mangiamo pesa più di ciò che beviamo.</p>
+      <div class="formula">Impronta idrica totale = impronta diretta + impronta indiretta (Acqua Verde + Blu + Grigia)</div>
+      <p class="note"><strong>Perché non basta guardare solo il rubinetto?</strong> Chiudere il rubinetto mentre ci si lava i denti fa risparmiare ~10 litri al giorno (gesto importante!), ma evitare di sprecare 100 g di cibo ad alta impronta o riparare/usare più a lungo un vestito può salvare migliaia di litri d'acqua invisibile.</p>
     </div>
 
     <div class="card">
-      <h3>Quanta acqua serve per produrre 1 kg di…</h3>
-      <p class="note">Stime arrotondate, da confrontare con le fonti scientifiche citate in classe.</p>
+      <h3>Quanta acqua serve per produrre 1 kg di… (o 1 unità)</h3>
+      <p class="note">Stime medie globali arrotondate (Water Footprint Network). Passa da <em>Cibo</em> ad <em>Altri prodotti</em> per confrontare alimenti, abiti e carta.</p>
       <div class="controls" id="foodControls">
-        <button aria-pressed="true" data-view="food">Cibo</button>
-        <button aria-pressed="false" data-view="other">Altri prodotti</button>
+        <button aria-pressed="true" data-view="food">Cibo (per 1 kg)</button>
+        <button aria-pressed="false" data-view="other">Altri prodotti (per pezzo)</button>
       </div>
       <div id="foodChart"></div>
     </div>
 
     <div class="card">
-      <h3>Riflettiamo</h3>
-      <ul>
-        <li>Perché una bistecca ha un'impronta idrica molto più alta di una porzione di legumi?</li>
-        <li>Se produciamo cibo in una regione secca, chi paga il costo dell'acqua?</li>
-        <li>Quanta acqua indiretta c'è nella tua colazione di stamattina?</li>
-      </ul>
+      <h3>Domande per la classe · Riflettiamo sull'Impronta Idrica</h3>
+      <div class="q-class-list">
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">1. Perché 1 kg di carne bovina ha un'impronta idrica (~15.000 L) molto più alta di 1 kg di legumi o verdure (~200–4.000 L)?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-idrica-1">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-idrica-1" hidden>Perché occorrono <strong>anni di crescita</strong> e decine di chilogrammi di foraggio e cereali (che a loro volta richiedono moltissima acqua verde e blu per essere coltivati) per produrre 1 solo kg di carne. L'acqua bevuta direttamente dall'animale è meno del 2% del totale; oltre il 95% serve a far crescere ciò che l'animale mangia.</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">2. Se produciamo un cibo molto assetato in una regione secca per poi esportarlo altrove, chi paga il costo dell'acqua?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-idrica-2">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-idrica-2" hidden>Il prezzo ambientale lo paga il <strong>territorio di origine</strong>: fiumi in secca, falde sotterranee che si abbassano e conflitti idrici per gli abitanti locali, anche se l'alimento viene consumato a migliaia di chilometri di distanza (<strong>commercio di acqua virtuale</strong>). Per questo il luogo di produzione conta quanto i litri totali!</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">3. Quanta acqua indiretta può esserci nella tua colazione di stamattina (es. latte o caffè/tè + pane e marmellata)?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-idrica-3">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-idrica-3" hidden>Anche una semplice colazione può superare facilmente i <strong>400–600 litri</strong> di acqua virtuale: ad esempio una tazza di latte (~250 ml = ~250 L), due fette di pane/fette biscottate (60 g = ~95 L), un cucchiaio di marmellata (~30 L) e un frutto di stagione (~100–120 L). Sprecando metà colazione nel cestino si sprecano centinaia di litri d'acqua invisibile!</div>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- 3. VERDE BLU GRIGIA -->
   <section id="colori" hidden>
     <div class="card">
-      <h2>Acqua verde, blu e grigia</h2>
-      <p>Nel calcolo dell'impronta idrica si distinguono tre tipi di acqua, a seconda della loro origine e del loro impatto.</p>
+      <h2>Acqua verde, blu e grigia (i tre colori dell'impronta idrica)</h2>
+      <p>Non tutta l'acqua ha lo stesso peso ecologico: 1.000 litri prelevati da un fiume in siccità sono ben più critici di 1.000 litri di pioggia caduta naturalmente su un campo. Per questo si distinguono <strong>tre componenti</strong>:</p>
       <div class="grid three">
         <div class="water-card green">
           <h3>Acqua verde</h3>
-          <p>È l'acqua piovana immagazzinata nel suolo e usata dalle piante. È quella che fa crescere grano, olivi e pomodori senza irrigazione.</p>
-          <p class="note">Impatto: basso, se il suolo è sano e la pioggia è regolare.</p>
+          <p>È l'<strong>acqua piovana</strong> trattenuta negli strati superficiali del suolo e assorbita o evaporata dalle piante (agricoltura, pascoli, foreste) senza prelievi da fiumi o falde.</p>
+          <p class="note"><strong>Impatto:</strong> generalmente basso sul ciclo idrico, purché non porti a deforestazione o erosione del suolo.</p>
         </div>
         <div class="water-card blue">
           <h3>Acqua blu</h3>
-          <p>È l'acqua prelevata da fiumi, laghi e falde e poi evaporata o non restituita allo stesso bacino. È quella dell'irrigazione e dell'uso domestico.</p>
-          <p class="note">Impatto: può impoverire fiumi e falde, soprattutto in estate.</p>
+          <p>È l'<strong>acqua dolce superficiale o sotterranea</strong> (fiumi, laghi, invasi, falde) prelevata per irrigazione agricola, processi industriali o uso domestico che evapora o entra nel prodotto senza tornare subito al bacino d'origine.</p>
+          <p class="note"><strong>Impatto:</strong> alto nei mesi secchi e nelle aree aride, perché può prosciugare fiumi e abbassare le falde.</p>
         </div>
         <div class="water-card grey">
           <h3>Acqua grigia</h3>
-          <p>È il volume teorico d'acqua necessario per diluire gli inquinanti scaricati, fino a rispettare i limiti di qualità.</p>
-          <p class="note">Impatto: misura quanto un processo inquina l'acqua.</p>
+          <p>È il <strong>volume teorico d'acqua dolce pulita</strong> che servirebbe per diluire gli inquinanti scaricati (fertilizzanti azotati, pesticidi, coloranti tessili, metalli, reflui) fino a rientrare nei limiti ambientali di legge.</p>
+          <p class="note"><strong>Impatto:</strong> misura il grado di contaminazione chimica lasciata dal processo produttivo.</p>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h3>Esempio illustrativo: una maglietta di cotone</h3>
-      <p class="note">Ripartizione ipotetica dell'impronta idrica di un capo, a scopo didattico.</p>
+      <h3>Esempio illustrativo: una maglietta di cotone (250 g ≈ 2.500 L)</h3>
+      <p class="note">Ripartizione didattica tipica delle tre componenti tra coltivazione del cotone e tintura industriale del tessuto.</p>
       <div class="stack">
         <div style="width:72%; background:var(--green)">Verde 72%</div>
         <div style="width:8%; background:var(--blue)">8%</div>
         <div style="width:20%; background:var(--grey)">Grigia 20%</div>
       </div>
       <div class="legend">
-        <span><span class="dot" style="background:var(--green)"></span>Verde: pioggia</span>
-        <span><span class="dot" style="background:var(--blue)"></span>Blu: irrigazione</span>
-        <span><span class="dot" style="background:var(--grey)"></span>Grigia: inquinamento</span>
+        <span><span class="dot" style="background:var(--green)"></span>Verde: pioggia nei campi</span>
+        <span><span class="dot" style="background:var(--blue)"></span>Blu: irrigazione + lavaggi industriali</span>
+        <span><span class="dot" style="background:var(--grey)"></span>Grigia: diluzione fertilizzanti e tinture</span>
       </div>
-      <p>Domanda per la classe: quale parte dell'acqua è più problematica? Perché la quota grigia può essere grande anche se l'acqua non "sparisce"?</p>
+      <div class="q-class-list" style="margin-top:.85rem;">
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">1. Guardando la maglietta di cotone, quale parte dell'acqua è più problematica in estate e perché?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-col-1">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-col-1" hidden>L'<strong>acqua blu</strong> e l'<strong>acqua grigia</strong> sono le più critiche: la quota blu (anche se solo 8% nella media, può salire oltre il 40% in regioni aride come Asia centrale) sottrae acqua reale da fiumi e laghi assetati, mentre la quota grigia rende inutilizzabile altra acqua dolce a causa di pesticidi e tinture chimiche.</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">2. Perché la quota grigia (20%) può essere grande anche se quell'acqua non viene "bevuta" o "evaporata"?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-col-2">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-col-2" hidden>Perché l'inquinamento compromette un volume d'acqua dolce pulita molte volte superiore allo scarico stesso: bastano pochi grammi di colorante o nitrato per rendere non potabile e danneggiare ecologicamente migliaia di litri d'acqua di un fiume finché non vengono depurati o diluiti.</div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -382,6 +481,18 @@
   }
   boxes.forEach(b => b.addEventListener('change', updateCount));
   updateCount();
+
+  // Class discussion "Mostra risposta" buttons
+  document.querySelectorAll('.btn-reveal[data-reveal]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.reveal);
+      if (!target) return;
+      const isOpen = !target.hidden;
+      target.hidden = isOpen;
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      btn.textContent = isOpen ? 'Mostra risposta' : 'Nascondi risposta';
+    });
+  });
 </script>
 </body>
 </html>
