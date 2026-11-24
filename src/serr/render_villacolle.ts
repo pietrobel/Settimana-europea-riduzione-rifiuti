@@ -466,7 +466,15 @@ function renderB4(ctx: VillacolleContext): string {
             <button type="button" class="serr-chip ${uiState.b4DragSet === "all" ? "active" : ""}" data-b4-set="all">Tutti (15)</button>
           </div>
         </div>
-        <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 8px;">Trascina ogni prodotto nel bidone giusto (oppure clicca un cartellino e poi il bidone su touch/tastiera).</p>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 8px;">Trascina ogni prodotto nel bidone giusto (oppure tocca un cartellino e poi il bidone su LIM/touch/tastiera).</p>
+        ${(() => {
+          const selDrag = uiState.b4SelectedBucketItem
+            ? gameItems.find((it) => it.id === uiState.b4SelectedBucketItem)
+            : null;
+          return selDrag
+            ? `<div class="serr-feedback ok" style="margin-bottom:8px;"><strong>Selezionato:</strong> ${e(selDrag.product)} → Tocca ora il bidone giusto qui sotto!</div>`
+            : "";
+        })()}
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
           ${gameItems.map((it) => {
             const placed = uiState.b4DragPlacements[it.id];
@@ -477,9 +485,9 @@ function renderB4(ctx: VillacolleContext): string {
         </div>
         <div class="serr-bins-grid">
           ${buckets.map((bk) => `
-            <div class="serr-bin-drop" data-b4-drop="${e(bk.id)}" style="border-top:4px solid ${bk.color};">
+            <div class="serr-bin-drop ${uiState.b4SelectedBucketItem ? "ready-drop" : ""}" data-b4-drop="${e(bk.id)}" style="border-top:4px solid ${bk.color};">
               <strong>${e(bk.label)}</strong>
-              <small>Rilascia qui</small>
+              <small>${uiState.b4SelectedBucketItem ? "Tocca per inserire qui" : "Rilascia qui"}</small>
             </div>
           `).join("")}
         </div>

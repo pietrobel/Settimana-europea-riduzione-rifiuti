@@ -20,7 +20,7 @@ export interface CommonHubContext {
   saveAndRefresh: () => void;
   markActivityDone: (id: string, xp?: number) => void;
   navigateTo: (tab: string) => void;
-  openMezzSub: (sub: "home" | "a1" | "a2" | "a3" | "a4" | "a5" | "giochi") => void;
+  openMezzSub: (sub: "home" | "impronte" | "a1" | "a2" | "a3" | "a4" | "a5" | "giochi") => void;
   openVillaSub: (sub: "home" | "lezione" | "b1" | "b2" | "b3" | "b4" | "b5" | "giochi") => void;
   esc: (s: string) => string;
 }
@@ -69,6 +69,7 @@ export function renderLabOverview(container: HTMLElement, ctx: CommonHubContext)
         <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:10px;">Analisi dell'impronta idrica (15 alimenti WFN), calcolatore di combinazioni alimentari, ciclo produttivo in 7 fasi, 10 casi del Detective dello Spreco e composizione del pasto equilibrato.</p>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <button type="button" class="btn btn-primary btn-sm" data-open-mezz="home">Apri Percorso Mezzovalle →</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-open-mezz="impronte">Scheda Impronte (Eco &amp; Idrica)</button>
           <button type="button" class="btn btn-sm" data-open-mezz="a1">A1 Acqua Nascosta</button>
           <button type="button" class="btn btn-sm" data-open-mezz="a4">A4 Detective Spreco</button>
         </div>
@@ -99,6 +100,7 @@ export function renderLabOverview(container: HTMLElement, ctx: CommonHubContext)
         <button type="button" class="serr-action-tile" data-hub-nav="diario"><strong>Il Mio Diario (${ctx.state.diaryEntries.length})</strong><span>Salvataggio offline persistente (${e(ctx.storageBackend)})</span></button>
         <button type="button" class="serr-action-tile" data-hub-nav="missioni"><strong>Missioni Finali &amp; Attestati</strong><span>3 missioni con attestato personalizzato scaricabile</span></button>
         <button type="button" class="serr-action-tile" data-hub-nav="monitoraggio"><strong>Monitoraggio &amp; Fonti (${totalDone} att.)</strong><span>Risultati senza classifiche + trasparenza scientifica</span></button>
+        <button type="button" class="serr-action-tile" data-open-mezz="impronte"><strong>Modulo Impronte (Ecologica &amp; Idrica)</strong><span>Scheda interattiva: gha, biocapacità, acqua verde, blu, grigia e verifica</span></button>
         <button type="button" class="serr-action-tile" data-open-video="1"><strong>Video Intro (3–5 min) per Tematica</strong><span>Embed brevi per Primaria e Media + voce offline</span></button>
         <button type="button" class="serr-action-tile" data-open-portale="1"><strong>Portale, App &amp; Film Consigliati</strong><span>Link esterni, calcolatori, video e film gratuiti</span></button>
       </div>

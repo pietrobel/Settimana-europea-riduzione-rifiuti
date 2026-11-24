@@ -18,7 +18,8 @@ export interface MezzovalleContext {
 }
 
 const uiState = {
-  subTab: "home" as "home" | "a1" | "a2" | "a3" | "a4" | "a5" | "giochi",
+  subTab: "home" as "home" | "impronte" | "a1" | "a2" | "a3" | "a4" | "a5" | "giochi",
+  impronteFrameTall: false,
   a1SelectedId: "pane",
   a1CompareB: "manzo",
   a1Category: "Tutte",
@@ -58,6 +59,7 @@ export function renderMezzovalleView(container: HTMLElement, ctx: MezzovalleCont
   const subNav = `
     <div class="serr-subnav" role="tablist" aria-label="Attività Percorso Mezzovalle">
       <button type="button" class="serr-pill ${uiState.subTab === "home" ? "active" : ""}" data-m-tab="home">Panoramica Percorso A</button>
+      <button type="button" class="serr-pill ${uiState.subTab === "impronte" ? "active" : ""}" data-m-tab="impronte">Scheda Impronte (Eco &amp; Idrica)</button>
       <button type="button" class="serr-pill ${uiState.subTab === "a1" ? "active" : ""}" data-m-tab="a1">A1 · Acqua Nascosta (15 cibi)</button>
       <button type="button" class="serr-pill ${uiState.subTab === "a2" ? "active" : ""}" data-m-tab="a2">A2 · Calcolatore Impronta</button>
       <button type="button" class="serr-pill ${uiState.subTab === "a3" ? "active" : ""}" data-m-tab="a3">A3 · Viaggio in 7 Fasi</button>
@@ -69,6 +71,7 @@ export function renderMezzovalleView(container: HTMLElement, ctx: MezzovalleCont
 
   let bodyHtml = "";
   if (uiState.subTab === "home") bodyHtml = renderHome(ctx);
+  else if (uiState.subTab === "impronte") bodyHtml = renderImpronteEmbed(ctx);
   else if (uiState.subTab === "a1") bodyHtml = renderA1(ctx);
   else if (uiState.subTab === "a2") bodyHtml = renderA2(ctx);
   else if (uiState.subTab === "a3") bodyHtml = renderA3(ctx);
@@ -125,11 +128,12 @@ function renderHome(ctx: MezzovalleContext): string {
           <li>Ricostruire le 7 fasi produttive e capire perché ridurre gli sprechi alimentari tutela risorse già consumate.</li>
           <li>Comporre pasti vari ed equilibrati senza restrizioni né competizioni alimentari tra studenti.</li>
         </ul>
-        <div class="serr-progress-note">Attività Mezzovalle completate: <strong>${doneCount} / 6</strong></div>
+        <div class="serr-progress-note">Attività Mezzovalle completate: <strong>${doneCount} / 7</strong></div>
       </div>
       <div class="serr-card">
         <h4 style="margin-top:0;">Accedi subito ai laboratori</h4>
         <div class="serr-mini-cards">
+          <button type="button" class="serr-action-tile" data-m-tab="impronte"><strong>Modulo Impronte · Ecologica &amp; Idrica</strong><span>Scheda interattiva: gha, biocapacità, acqua verde, blu, grigia, quiz e azioni</span></button>
           <button type="button" class="serr-action-tile" data-m-tab="a1"><strong>A1 · L'Acqua Nascosta</strong><span>15 alimenti, grafici proporzionali, confronto e gioco di ordinamento</span></button>
           <button type="button" class="serr-action-tile" data-m-tab="a2"><strong>A2 · Calcolatore Impronta</strong><span>Seleziona grammi e confronta Pasto A vs Pasto B</span></button>
           <button type="button" class="serr-action-tile" data-m-tab="a3"><strong>A3 · Viaggio in 7 Fasi</strong><span>Dalla preparazione del terreno fino al consumo finale</span></button>
@@ -138,6 +142,36 @@ function renderHome(ctx: MezzovalleContext): string {
           <button type="button" class="serr-action-tile" data-m-tab="giochi"><strong>Verifiche &amp; Missione</strong><span>Quiz 15 domande, gioco di associazione e Custode delle Risorse</span></button>
         </div>
       </div>
+    </div>
+  `;
+}
+
+function renderImpronteEmbed(ctx: MezzovalleContext): string {
+  const done = ctx.state.completedActivities.includes("M_IMPRONTE");
+  const frameHeight = uiState.impronteFrameTall ? "820px" : "clamp(540px, 68dvh, 760px)";
+  return `
+    <div class="serr-info-strip">
+      <strong>Scheda Didattica Interattiva Integrata · Quanto pesiamo sul pianeta?</strong>
+      Esplora le 5 schede interattive direttamente qui sotto: <em>1. Impronta ecologica (gha e biocapacità)</em>, <em>2. Impronta idrica diretta/indiretta</em>, <em>3. Acqua verde, blu e grigia</em>, <em>4. Verifica rapida</em> e <em>5. Checklist azioni quotidiane</em>.
+    </div>
+    <div class="serr-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+        <div>
+          <span class="serr-badge-small">MODULO INTERATTIVO INTEGRATO · MEZZOVALLE</span>
+          <h4 style="margin:4px 0 0;">Impronte: ecologica, idrica e acqua verde, blu e grigia</h4>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+          <button type="button" class="btn btn-sm" id="btn-impronte-tall">${uiState.impronteFrameTall ? "Altezza compatta" : "Espandi vista LIM"}</button>
+          <button type="button" class="btn ${done ? "" : "btn-primary"} btn-sm" id="btn-impronte-done">${done ? "Modulo completato ✓" : "Segna completato (+15 XP)"}</button>
+          <button type="button" class="btn btn-sm" data-m-tab="a1">Approfondisci in A1 (15 cibi) →</button>
+        </div>
+      </div>
+      <iframe
+        src="/assets/aistudio/Impronte__ecologica__idrica_e_acqua_verde__blu_e_grigia_a67eff9e.html"
+        title="Modulo interattivo: Impronte ecologica, idrica e acqua verde, blu e grigia"
+        style="width:100%;height:${frameHeight};border:1.5px solid var(--border);border-radius:12px;background:#f6f8f5;display:block;"
+        loading="lazy"
+      ></iframe>
     </div>
   `;
 }
@@ -576,6 +610,15 @@ function renderGames(ctx: MezzovalleContext): string {
 }
 
 function bindEvents(container: HTMLElement, ctx: MezzovalleContext, _e: (s: string) => string): void {
+  container.querySelector("#btn-impronte-tall")?.addEventListener("click", () => {
+    uiState.impronteFrameTall = !uiState.impronteFrameTall;
+    renderMezzovalleView(container, ctx);
+  });
+  container.querySelector("#btn-impronte-done")?.addEventListener("click", () => {
+    ctx.markActivityDone("M_IMPRONTE", 15);
+    renderMezzovalleView(container, ctx);
+  });
+
   container.querySelectorAll<HTMLButtonElement>("[data-a1-cat]").forEach((b) =>
     b.addEventListener("click", () => {
       uiState.a1Category = b.dataset.a1Cat || "Tutte";

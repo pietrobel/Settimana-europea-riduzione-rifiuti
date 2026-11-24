@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Impronte: ecologica, idrica e acqua verde, blu e grigia</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f6f8f5;
+    --surface: #ffffff;
+    --text: #1d2a22;
+    --muted: #5b6b61;
+    --border: #d9e2dc;
+    --green: #2e7d32;
+    --blue: #1565c0;
+    --grey: #6d6d6d;
+    --accent: #00796b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #121a15;
+      --surface: #1b2620;
+      --text: #e6efe9;
+      --muted: #a8b9ae;
+      --border: #2f3d35;
+      --green: #66bb6a;
+      --blue: #64b5f6;
+      --grey: #bdbdbd;
+      --accent: #4db6ac;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #121a15;
+    --surface: #1b2620;
+    --text: #e6efe9;
+    --muted: #a8b9ae;
+    --border: #2f3d35;
+    --green: #66bb6a;
+    --blue: #64b5f6;
+    --grey: #bdbdbd;
+    --accent: #4db6ac;
+  }
+  :root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    background: var(--bg);
+  }
+  header {
+    padding: 1.5rem 1rem 1rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
+  header p { margin: 0; color: var(--muted); }
+  nav.tabs {
+    display: flex; gap: .4rem; overflow-x: auto; padding: .75rem 1rem;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  }
+  nav.tabs button {
+    flex: 0 0 auto; border: 1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: .5rem .9rem; border-radius: 999px; cursor: pointer; font-size: .92rem;
+  }
+  nav.tabs button[aria-selected="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+  main { max-width: 760px; margin: 0 auto; padding: 1rem; }
+  section[hidden] { display: none; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1rem 1.1rem; margin-bottom: 1rem;
+  }
+  h2 { font-size: 1.25rem; margin: .25rem 0 .75rem; }
+  h3 { font-size: 1.05rem; margin: .5rem 0 .4rem; }
+  p { margin: .5rem 0; }
+  .note { font-size: .85rem; color: var(--muted); }
+  .formula {
+    font-weight: 600; text-align: center; padding: .6rem; border-radius: 10px;
+    background: var(--bg); border: 1px dashed var(--border); margin: .75rem 0;
+  }
+  .grid { display: grid; gap: .75rem; grid-template-columns: 1fr; }
+  @media (min-width: 560px) { .grid.two { grid-template-columns: 1fr 1fr; } .grid.three { grid-template-columns: repeat(3, 1fr); } }
+  .water-card { border-top: 6px solid; border-radius: 12px; padding: .9rem; background: var(--bg); }
+  .water-card.green { border-color: var(--green); }
+  .water-card.blue { border-color: var(--blue); }
+  .water-card.grey { border-color: var(--grey); }
+  .water-card h3 { margin-top: 0; }
+  .bar-row { display: grid; grid-template-columns: 9.5rem 1fr 4.5rem; gap: .5rem; align-items: center; margin: .35rem 0; font-size: .92rem; }
+  .bar-track { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; height: 1.1rem; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--accent); transition: width .4s ease; }
+  .bar-value { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .stack { display: flex; height: 2.2rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); margin: .5rem 0; }
+  .stack div { display: flex; align-items: center; justify-content: center; color: #fff; font-size: .8rem; font-weight: 600; }
+  .legend { display: flex; flex-wrap: wrap; gap: .75rem; font-size: .88rem; color: var(--muted); }
+  .dot { display: inline-block; width: .8rem; height: .8rem; border-radius: 50%; margin-right: .3rem; vertical-align: middle; }
+  .controls { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0 .75rem; }
+  .controls button, .btn {
+    border: 1px solid var(--accent); background: transparent; color: var(--accent);
+    padding: .45rem .8rem; border-radius: 8px; cursor: pointer; font-size: .9rem;
+  }
+  .controls button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  .quiz-q { font-weight: 600; margin-top: .75rem; }
+  .quiz-opts { display: grid; gap: .4rem; margin-top: .4rem; }
+  .quiz-opts button {
+    text-align: left; padding: .6rem .75rem; border-radius: 9px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); cursor: pointer; font-size: .95rem;
+  }
+  .quiz-opts button.ok { border-color: var(--green); background: color-mix(in srgb, var(--green) 18%, transparent); }
+  .quiz-opts button.ko { border-color: #c62828; background: color-mix(in srgb, #c62828 14%, transparent); }
+  .feedback { margin-top: .35rem; min-height: 1.2rem; font-size: .92rem; }
+  .check li { margin: .35rem 0; }
+  ul { padding-left: 1.2rem; }
+  footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 1.5rem 1rem 2.5rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Quanto pesiamo sul pianeta?</h1>
+  <p>Impronta ecologica, impronta idrica e acqua verde, blu e grigia</p>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Sezioni">
+  <button role="tab" aria-selected="true" data-tab="eco">1. Impronta ecologica</button>
+  <button role="tab" aria-selected="false" data-tab="idrica">2. Impronta idrica</button>
+  <button role="tab" aria-selected="false" data-tab="colori">3. Verde, blu, grigia</button>
+  <button role="tab" aria-selected="false" data-tab="quiz">4. Verifica</button>
+  <button role="tab" aria-selected="false" data-tab="azioni">5. Che cosa posso fare</button>
+</nav>
+
+<main>
+
+  <!-- 1. IMPRONTA ECOLOGICA -->
+  <section id="eco">
+    <div class="card">
+      <h2>Che cos'è l'impronta ecologica</h2>
+      <p>L'impronta ecologica misura quanta superficie biologicamente produttiva (terra e mare) serve a una persona, a una città o a un intero Paese per produrre ciò che consuma e per assorbire i rifiuti che produce, in particolare l'anidride carbonica.</p>
+      <p>L'unità di misura è l'<strong>ettaro globale</strong> (gha): un ettaro con la produttività media della Terra.</p>
+      <div class="formula">Impronta ecologica = consumi di risorse + assorbimento dei rifiuti</div>
+      <p class="note">Il confronto fondamentale è con la <strong>biocapacità</strong>: la quantità di superficie che la Terra può rigenerare ogni anno.</p>
+    </div>
+
+    <div class="card">
+      <h3>Esempio: quanta superficie serve per persona?</h3>
+      <p class="note">Valori indicativi, pensati solo per la discussione in classe.</p>
+      <div class="bar-row"><span>Stile A (sobrio)</span><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div><span class="bar-value">1,4 gha</span></div>
+      <div class="bar-row"><span>Stile B (medio)</span><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div><span class="bar-value">2,6 gha</span></div>
+      <div class="bar-row"><span>Stile C (molto consumistico)</span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><span class="bar-value">4,8 gha</span></div>
+      <div class="bar-row"><span>Biocapacità media</span><div class="bar-track"><div class="bar-fill" style="width:33%; background:var(--muted)"></div></div><span class="bar-value">~1,6 gha</span></div>
+      <p class="note">Quando la barra di un profilo supera la biocapacità media, si parla di <strong>sovrasfruttamento</strong>: consumiamo più di quanto il pianeta riesce a rigenerare.</p>
+    </div>
+
+    <div class="card">
+      <h3>Impronte pesanti e impronte leggere</h3>
+      <p>Il Paese con il consumo di energia più alto ha generalmente l'impronta più grande, ma l'impronta dipende anche dalla dieta, dai trasporti e dal modo in cui si producono i beni. Non tutti pesano allo stesso modo: il 10% più ricco della popolazione mondiale produce una quota molto più alta delle emissioni rispetto al 50% più povero.</p>
+    </div>
+  </section>
+
+  <!-- 2. IMPRONTA IDRICA -->
+  <section id="idrica" hidden>
+    <div class="card">
+      <h2>Che cos'è l'impronta idrica</h2>
+      <p>L'impronta idrica è il volume totale di acqua dolce usato, direttamente o indirettamente, per produrre beni e servizi consumati da una persona, una città o un Paese. Si misura in litri, o in metri cubi.</p>
+      <div class="grid two">
+        <div class="water-card green" style="border-top-color:var(--accent)">
+          <h3>Impronta diretta</h3>
+          <p>L'acqua che usiamo in casa: doccia, cucina, lavatrice, giardino, WC.</p>
+        </div>
+        <div class="water-card blue" style="border-top-color:var(--accent)">
+          <h3>Impronta indiretta</h3>
+          <p>L'acqua usata lungo la filiera per fabbricare ciò che compriamo: cibo, vestiti, smartphone, energia.</p>
+        </div>
+      </div>
+      <div class="formula">Impronta idrica totale = impronta diretta + impronta indiretta</div>
+      <p class="note">Spesso l'impronta indiretta è molto più grande di quella diretta: ciò che mangiamo pesa più di ciò che beviamo.</p>
+    </div>
+
+    <div class="card">
+      <h3>Quanta acqua serve per produrre 1 kg di…</h3>
+      <p class="note">Stime arrotondate, da confrontare con le fonti scientifiche citate in classe.</p>
+      <div class="controls" id="foodControls">
+        <button aria-pressed="true" data-view="food">Cibo</button>
+        <button aria-pressed="false" data-view="other">Altri prodotti</button>
+      </div>
+      <div id="foodChart"></div>
+    </div>
+
+    <div class="card">
+      <h3>Riflettiamo</h3>
+      <ul>
+        <li>Perché una bistecca ha un'impronta idrica molto più alta di una porzione di legumi?</li>
+        <li>Se produciamo cibo in una regione secca, chi paga il costo dell'acqua?</li>
+        <li>Quanta acqua indiretta c'è nella tua colazione di stamattina?</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3. VERDE BLU GRIGIA -->
+  <section id="colori" hidden>
+    <div class="card">
+      <h2>Acqua verde, blu e grigia</h2>
+      <p>Nel calcolo dell'impronta idrica si distinguono tre tipi di acqua, a seconda della loro origine e del loro impatto.</p>
+      <div class="grid three">
+        <div class="water-card green">
+          <h3>Acqua verde</h3>
+          <p>È l'acqua piovana immagazzinata nel suolo e usata dalle piante. È quella che fa crescere grano, olivi e pomodori senza irrigazione.</p>
+          <p class="note">Impatto: basso, se il suolo è sano e la pioggia è regolare.</p>
+        </div>
+        <div class="water-card blue">
+          <h3>Acqua blu</h3>
+          <p>È l'acqua prelevata da fiumi, laghi e falde e poi evaporata o non restituita allo stesso bacino. È quella dell'irrigazione e dell'uso domestico.</p>
+          <p class="note">Impatto: può impoverire fiumi e falde, soprattutto in estate.</p>
+        </div>
+        <div class="water-card grey">
+          <h3>Acqua grigia</h3>
+          <p>È il volume teorico d'acqua necessario per diluire gli inquinanti scaricati, fino a rispettare i limiti di qualità.</p>
+          <p class="note">Impatto: misura quanto un processo inquina l'acqua.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Esempio illustrativo: una maglietta di cotone</h3>
+      <p class="note">Ripartizione ipotetica dell'impronta idrica di un capo, a scopo didattico.</p>
+      <div class="stack">
+        <div style="width:72%; background:var(--green)">Verde 72%</div>
+        <div style="width:8%; background:var(--blue)">8%</div>
+        <div style="width:20%; background:var(--grey)">Grigia 20%</div>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--green)"></span>Verde: pioggia</span>
+        <span><span class="dot" style="background:var(--blue)"></span>Blu: irrigazione</span>
+        <span><span class="dot" style="background:var(--grey)"></span>Grigia: inquinamento</span>
+      </div>
+      <p>Domanda per la classe: quale parte dell'acqua è più problematica? Perché la quota grigia può essere grande anche se l'acqua non "sparisce"?</p>
+    </div>
+  </section>
+
+  <!-- 4. QUIZ -->
+  <section id="quiz" hidden>
+    <div class="card">
+      <h2>Verifica rapida</h2>
+      <div id="quizBox"></div>
+      <div class="controls"><button id="restartQuiz">Ricomincia</button></div>
+    </div>
+  </section>
+
+  <!-- 5. AZIONI -->
+  <section id="azioni" hidden>
+    <div class="card">
+      <h2>Che cosa posso fare?</h2>
+      <p class="note">Spunta le azioni che fai già, poi scegli quale vuoi migliorare.</p>
+      <ul class="check" style="list-style:none; padding-left:0">
+        <li><label><input type="checkbox"> Preferire la doccia al bagno in vasca</label></li>
+        <li><label><input type="checkbox"> Chiudere il rubinetto mentre mi lavo i denti</label></li>
+        <li><label><input type="checkbox"> Usare lavatrice e lavastoviglie solo a pieno carico</label></li>
+        <li><label><input type="checkbox"> Lavare frutta e verdura in una bacinella</label></li>
+        <li><label><input type="checkbox"> Mangiare più legumi e cereali integrali</label></li>
+        <li><label><input type="checkbox"> Sprecare meno cibo</label></li>
+        <li><label><input type="checkbox"> Comprare meno capi di abbigliamento, ma di qualità</label></li>
+        <li><label><input type="checkbox"> Usare i mezzi pubblici o la bicicletta quando possibile</label></li>
+      </ul>
+      <p id="actionCount" class="note"></p>
+    </div>
+  </section>
+
+</main>
+
+<footer>Materiale didattico originale. Valori indicativi per uso in classe.</footer>
+
+<script>
+  // Tabs
+  const tabs = document.querySelectorAll('nav.tabs button');
+  tabs.forEach(btn => btn.addEventListener('click', () => {
+    tabs.forEach(b => b.setAttribute('aria-selected', 'false'));
+    btn.setAttribute('aria-selected', 'true');
+    document.querySelectorAll('main > section').forEach(s => s.hidden = (s.id !== btn.dataset.tab));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }));
+
+  // Food water chart
+  const foods = [
+    ['Carne bovina', 15000], ['Formaggio', 5000], ['Riso', 2500],
+    ['Pane', 1600], ['Uova', 3300], ['Pasta', 1800],
+    ['Mele', 800], ['Patate', 300], ['Pomodori', 200]
+  ];
+  const others = [
+    ['Un paio di jeans', 7500], ['Una t-shirt', 2500], ['Un litro di birra', 300],
+    ['Un litro di latte', 1000], ['Un foglio A4', 10], ['Una tazza di caffè', 140]
+  ];
+  function drawChart(data, max) {
+    const box = document.getElementById('foodChart');
+    box.innerHTML = data.map(([name, v]) =>
+      `<div class="bar-row"><span>${name}</span>
+         <div class="bar-track"><div class="bar-fill" style="width:${(v / max * 100).toFixed(1)}%"></div></div>
+         <span class="bar-value">${v.toLocaleString('it-IT')} L</span></div>`
+    ).join('');
+  }
+  drawChart(foods, 15000);
+  document.querySelectorAll('#foodControls button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#foodControls button').forEach(x => x.setAttribute('aria-pressed', 'false'));
+    b.setAttribute('aria-pressed', 'true');
+    if (b.dataset.view === 'food') drawChart(foods, 15000);
+    else drawChart(others, 7500);
+  }));
+
+  // Quiz
+  const questions = [
+    {
+      q: 'Quale unità di misura si usa per l\'impronta ecologica?',
+      opts: ['Litri', 'Ettari globali (gha)', 'Chilogrammi di CO₂ soltanto'],
+      ans: 1,
+      why: 'L\'impronta ecologica si misura in ettari globali, cioè superficie biologicamente produttiva.'
+    },
+    {
+      q: 'Quale delle seguenti è acqua verde?',
+      opts: ['Acqua dei fiumi usata per irrigare', 'Acqua piovana usata dalle piante', 'Acqua necessaria a diluire gli inquinanti'],
+      ans: 1,
+      why: 'L\'acqua verde è la pioggia immagazzinata nel suolo e utilizzata dalla vegetazione.'
+    },
+    {
+      q: 'Che cosa misura l\'acqua grigia?',
+      opts: ['La quantità d\'acqua evaporata', 'Il volume d\'acqua necessario a diluire gli inquinanti', 'La quantità di pioggia caduta'],
+      ans: 1,
+      why: 'L\'acqua grigia indica quanta acqua servirebbe per riportare la qualità sotto i limiti.'
+    },
+    {
+      q: 'Che cosa indica l\'overshoot (sovrasfruttamento)?',
+      opts: ['Che consumiamo meno di quanto la Terra rigenera', 'Che consumiamo più di quanto la Terra riesce a rigenerare', 'Che la biocapacità è aumentata'],
+      ans: 1,
+      why: 'Il sovrasfruttamento si verifica quando la domanda di risorse supera la capacità di rigenerazione.'
+    },
+    {
+      q: 'Perché l\'impronta idrica indiretta è spesso più grande di quella diretta?',
+      opts: ['Perché usiamo molta acqua per lavarci', 'Perché l\'acqua serve per produrre ciò che consumiamo', 'Perché l\'acqua è gratuita'],
+      ans: 1,
+      why: 'Per produrre cibo, vestiti ed energia serve molta più acqua di quella che usiamo direttamente.'
+    }
+  ];
+  let current = 0, score = 0;
+  function renderQuiz() {
+    const box = document.getElementById('quizBox');
+    if (current >= questions.length) {
+      box.innerHTML = `<p class="quiz-q">Hai totalizzato ${score} su ${questions.length}.</p>
+        <p>${score === questions.length ? 'Ottimo lavoro!' : 'Rileggi le sezioni e riprova.'}</p>`;
+      return;
+    }
+    const q = questions[current];
+    box.innerHTML = `<p class="note">Domanda ${current + 1} di ${questions.length}</p>
+      <p class="quiz-q">${q.q}</p>
+      <div class="quiz-opts">${q.opts.map((o, i) => `<button data-i="${i}">${o}</button>`).join('')}</div>
+      <div class="feedback" id="fb"></div>`;
+    box.querySelectorAll('.quiz-opts button').forEach(b => b.addEventListener('click', () => {
+      const i = +b.dataset.i;
+      const fb = document.getElementById('fb');
+      box.querySelectorAll('.quiz-opts button').forEach(x => x.disabled = true);
+      if (i === q.ans) { b.classList.add('ok'); score++; fb.textContent = 'Corretto. ' + q.why; }
+      else {
+        b.classList.add('ko');
+        box.querySelectorAll('.quiz-opts button')[q.ans].classList.add('ok');
+        fb.textContent = 'Non esatto. ' + q.why;
+      }
+      setTimeout(() => { current++; renderQuiz(); }, 2200);
+    }));
+  }
+  document.getElementById('restartQuiz').addEventListener('click', () => { current = 0; score = 0; renderQuiz(); });
+  renderQuiz();
+
+  // Action counter
+  const boxes = document.querySelectorAll('#azioni input[type="checkbox"]');
+  const count = document.getElementById('actionCount');
+  function updateCount() {
+    const n = [...boxes].filter(b => b.checked).length;
+    count.textContent = `Azioni già praticate: ${n} su ${boxes.length}.`;
+  }
+  boxes.forEach(b => b.addEventListener('change', updateCount));
+  updateCount();
+</script>
+</body>
+</html>

@@ -953,7 +953,22 @@
       outline-offset: 2px;
     }
     html.lim-screen .topbar-inner {
+      flex-wrap: wrap;
+      gap: 8px 12px;
       padding: 8px max(18px, env(safe-area-inset-right)) 8px max(18px, env(safe-area-inset-left));
+    }
+    html.lim-screen .primary-nav {
+      order: 3;
+      flex: 0 0 100%;
+      width: 100%;
+      border-top: 1px solid var(--border);
+      padding: 6px 4px 2px;
+      justify-content: flex-start;
+      gap: 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+    html.lim-screen .map-canvas-box .map-interactive-wrap {
+      width: min(100%, max(260px, calc((100dvh - 295px) * 16 / 9)));
     }
     html.lim-screen .nav-btn {
       min-height: 44px;
@@ -1011,6 +1026,10 @@
       font-size: 0.84rem;
       border-width: 2px;
     }
+    html.lim-screen .coding-ide-split {
+      grid-template-columns: 225px 1fr;
+      gap: 14px;
+    }
     html.lim-screen .coding-blk-btn {
       min-height: 44px;
       padding: 8px 11px;
@@ -1041,6 +1060,37 @@
       min-height: 48px;
       font-size: 0.96rem;
       border-width: 2px;
+    }
+    html.lim-screen .serr-drag-chip {
+      min-height: 46px;
+      padding: 8px 13px;
+      font-size: 0.88rem;
+      border-width: 2px;
+    }
+    html.lim-screen .serr-bin-drop {
+      min-height: 68px;
+      padding: 12px 10px;
+      font-size: 0.88rem;
+    }
+    html.lim-screen .serr-food-row,
+    html.lim-screen .serr-prod-item,
+    html.lim-screen .serr-order-item {
+      min-height: 52px;
+      padding: 9px 12px;
+      font-size: 0.9rem;
+    }
+    html.lim-screen .serr-food-bars,
+    html.lim-screen .serr-catalog-list,
+    html.lim-screen .serr-quiz-scroll {
+      max-height: 440px;
+      gap: 8px;
+    }
+    html.lim-screen .serr-list,
+    html.lim-screen .serr-feedback,
+    html.lim-screen .serr-info-strip,
+    html.lim-screen .serr-comp-box,
+    html.lim-screen .serr-table {
+      font-size: 0.9rem;
     }
     html.lim-screen .grid-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1109,6 +1159,46 @@
       border: 1.5px solid #ffffff;
       display: inline-block;
       flex-shrink: 0;
+    }
+    .lim-timer-sep {
+      width: 1px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.24);
+      margin: 0 2px;
+    }
+    .lim-timer-readout {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+      font-size: 0.96rem;
+      padding: 5px 10px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1.5px solid rgba(134, 239, 172, 0.5);
+      color: #86efac;
+      min-width: 64px;
+      text-align: center;
+    }
+    .lim-timer-readout.urgent {
+      border-color: #fca5a5;
+      color: #fecaca;
+      background: rgba(127, 29, 29, 0.72);
+    }
+    .team-turn-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(100, 116, 139, 0.14);
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+    .team-box.active-turn .team-turn-pill {
+      background: var(--accent);
+      color: #ffffff;
     }
 
     /* Activity Operational Details & Card Actions */
@@ -2031,8 +2121,9 @@
     .serr-drag-chip.is-ok { border-color: #25804f; background: #e8f6ed; }
     .serr-drag-chip.is-err { border-color: #c73c32; background: #fdeceb; }
     .serr-bins-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; }
-    .serr-bin-drop { border: 2px dashed #b9c9c0; border-radius: 10px; padding: 8px 6px; text-align: center; cursor: pointer; background: #fafcfb; display: flex; flex-direction: column; gap: 2px; font-size: 0.77rem; }
+    .serr-bin-drop { border: 2px dashed #b9c9c0; border-radius: 10px; padding: 8px 6px; text-align: center; cursor: pointer; background: #fafcfb; display: flex; flex-direction: column; gap: 2px; font-size: 0.77rem; transition: background-color 0.14s ease, border-color 0.14s ease; }
     .serr-bin-drop.drag-over { background: #e7f6ec; border-color: #1f6e45; }
+    .serr-bin-drop.ready-drop { border-color: #257a49; background: #f0f9f3; box-shadow: inset 0 0 0 1px rgba(37, 122, 73, 0.25); }
     .serr-sheet-preview { background: #fff; border: 1px solid #b8c6be; border-radius: 10px; padding: 14px; }
     .serr-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 6px; }
     .serr-table th, .serr-table td { border: 1px solid #cbd5e1; padding: 5px 7px; text-align: left; }
@@ -2113,7 +2204,7 @@
       </div>
     </header>
     <canvas id="lim-annot-canvas" class="lim-annot-canvas no-print" aria-hidden="true"></canvas>
-    <div id="lim-pen-toolbar" class="lim-pen-toolbar no-print" role="toolbar" aria-label="Strumenti Penna ed Evidenziatore LIM Samsung">
+    <div id="lim-pen-toolbar" class="lim-pen-toolbar no-print" role="toolbar" aria-label="Strumenti Penna, Evidenziatore e Timer LIM Samsung">
       <span style="font-size:0.78rem;font-weight:800;color:#86efac;">Penna LIM:</span>
       <button type="button" class="lim-pen-btn" data-pen-tool="green" aria-pressed="true"><span class="lim-pen-swatch" style="background:#16a34a;"></span>Verde</button>
       <button type="button" class="lim-pen-btn" data-pen-tool="blue" aria-pressed="false"><span class="lim-pen-swatch" style="background:#0284c7;"></span>Blu</button>
@@ -2121,6 +2212,13 @@
       <button type="button" class="lim-pen-btn" data-pen-tool="highlight" aria-pressed="false"><span class="lim-pen-swatch" style="background:#facc15;"></span>Evidenziatore</button>
       <button type="button" class="lim-pen-btn" id="btn-lim-pen-clear">Cancella</button>
       <button type="button" class="lim-pen-btn" id="btn-lim-pen-interact" aria-pressed="false" title="Sospendi momentaneamente il tratto per cliccare sulla pagina tenendo i segni visibili">Usa schermo</button>
+      <span class="lim-timer-sep" aria-hidden="true"></span>
+      <span style="font-size:0.78rem;font-weight:800;color:#93c5fd;">Timer:</span>
+      <button type="button" class="lim-pen-btn" data-lim-timer="60">1'</button>
+      <button type="button" class="lim-pen-btn" data-lim-timer="180">3'</button>
+      <button type="button" class="lim-pen-btn" data-lim-timer="300">5'</button>
+      <span id="lim-timer-readout" class="lim-timer-readout" aria-live="polite">00:00</span>
+      <button type="button" class="lim-pen-btn" id="btn-lim-timer-stop" title="Azzera timer LIM">Stop</button>
       <button type="button" class="lim-pen-btn" id="btn-lim-pen-close">Chiudi ✕</button>
     </div>
 
@@ -2485,12 +2583,12 @@
             <div id="quiz-unlocked-banner" class="meta-line" style="margin:0;font-size:0.8rem;flex-shrink:0;"></div>
             <div id="team-bar" class="team-bar" style="display:none;margin-bottom:0;">
               <div class="team-box active-turn" id="team-a-box">
-                <strong>Squadra Foglia</strong>
-                <span class="num" id="team-a-score" style="font-size:1.05rem;font-weight:700;">0 pt</span>
+                <div><strong>Squadra Foglia</strong><span class="team-turn-pill" id="team-a-turn-pill">● Turno attivo</span></div>
+                <span class="num" id="team-a-score" style="font-size:1.1rem;font-weight:800;">0 pt</span>
               </div>
               <div class="team-box" id="team-b-box">
-                <strong>Squadra Acqua</strong>
-                <span class="num" id="team-b-score" style="font-size:1.05rem;font-weight:700;">0 pt</span>
+                <div><strong>Squadra Acqua</strong><span class="team-turn-pill" id="team-b-turn-pill">In attesa</span></div>
+                <span class="num" id="team-b-score" style="font-size:1.1rem;font-weight:800;">0 pt</span>
               </div>
             </div>
 
@@ -2900,7 +2998,10 @@
                 <h3 style="font-size:1rem;margin-bottom:4px;">Acqua Virtuale, Cibo &amp; Impronta Nascosta</h3>
                 <p style="font-size:0.84rem;margin-bottom:0;">Acqua verde, blu e grigia negli alimenti, regola FIFO, etichette e recupero creativo degli avanzi.</p>
               </div>
-              <button type="button" class="btn btn-primary no-print" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" data-open-lesson="mezzovalle">Apri Lezione &amp; Slide</button>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;" class="no-print">
+                <button type="button" class="btn btn-primary" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" data-open-lesson="mezzovalle">Apri Lezione &amp; Slide</button>
+                <button type="button" class="btn btn-secondary" style="min-height:32px;padding:4px 10px;font-size:0.8rem;" onclick="window.openSerrModule && window.openSerrModule('mezzovalle', 'impronte')">Scheda Impronte (Eco &amp; Idrica)</button>
+              </div>
             </article>
             <article class="card">
               <div>
@@ -3354,6 +3455,7 @@
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button type="button" class="btn btn-sm" onclick="window.openSerrModule && window.openSerrModule('mezzovalle', 'home')">Tematica A · Acqua &amp; Cibo (Mezzovalle)</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="window.openSerrModule && window.openSerrModule('mezzovalle', 'impronte')">Scheda Impronte (Eco &amp; Idrica)</button>
           <button type="button" class="btn btn-sm" onclick="window.openSerrModule && window.openSerrModule('villacolle', 'home')">Tematica B · Filiera &amp; Imballi (Villacolle)</button>
           <button type="button" class="btn btn-primary btn-sm" onclick="window.openSerrModule && window.openSerrModule('overview')">Hub SERR</button>
         </div>
@@ -3675,6 +3777,7 @@
         },
         topicTools: [
           { label: "Apri Laboratorio Mezzovalle (A1–A5)", kind: "serrLab", labTab: "mezzovalle", labSub: "home", style: "primary" },
+          { label: "Scheda Impronte (Eco & Idrica)", kind: "serrLab", labTab: "mezzovalle", labSub: "impronte", style: "secondary" },
           { label: "Studia Presentazione: Acqua & Cibo", kind: "lesson", lessonId: "mezzovalle", style: "" },
           { label: "Gioca: Piatto 1000 Litri (Gioco 6)", kind: "game", gameNum: 6, style: "secondary" },
           { label: "Apri Calcolatore Idrico", kind: "section", section: "studenti", subtabGroup: "stud", subtarget: "stud-calc", style: "" },
@@ -7453,10 +7556,15 @@
     });
 
     function updateTeamUI() {
+      const aActive = state.teamTurn === "A";
       document.getElementById("team-a-score").textContent = `${state.teamScoreA} pt`;
       document.getElementById("team-b-score").textContent = `${state.teamScoreB} pt`;
-      document.getElementById("team-a-box").classList.toggle("active-turn", state.teamTurn === "A");
-      document.getElementById("team-b-box").classList.toggle("active-turn", state.teamTurn === "B");
+      document.getElementById("team-a-box").classList.toggle("active-turn", aActive);
+      document.getElementById("team-b-box").classList.toggle("active-turn", !aActive);
+      const pillA = document.getElementById("team-a-turn-pill");
+      const pillB = document.getElementById("team-b-turn-pill");
+      if (pillA) pillA.textContent = aActive ? "● Turno attivo" : "In attesa";
+      if (pillB) pillB.textContent = !aActive ? "● Turno attivo" : "In attesa";
     }
 
     function inferQuizModule(qObj, fallbackTown) {
@@ -9395,6 +9503,70 @@
         ["pointerup", "pointercancel"].forEach(evName => {
           canvas.addEventListener(evName, () => { isDrawing = false; });
         });
+
+        /* Timer d'aula LIM (1', 3', 5') con segnale acustico offline */
+        const timerReadout = document.getElementById("lim-timer-readout");
+        const btnTimerStop = document.getElementById("btn-lim-timer-stop");
+        let timerSeconds = 0;
+        let timerId = null;
+
+        function playLimChime() {
+          try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctxAudio = new AudioCtx();
+            [0, 0.22].forEach((offset, idx) => {
+              const osc = ctxAudio.createOscillator();
+              const gain = ctxAudio.createGain();
+              osc.type = "sine";
+              osc.frequency.value = idx === 0 ? 660 : 880;
+              gain.gain.setValueAtTime(0.08, ctxAudio.currentTime + offset);
+              gain.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime + offset + 0.18);
+              osc.connect(gain);
+              gain.connect(ctxAudio.destination);
+              osc.start(ctxAudio.currentTime + offset);
+              osc.stop(ctxAudio.currentTime + offset + 0.19);
+            });
+          } catch (_e) {}
+        }
+
+        function renderLimTimer() {
+          if (!timerReadout) return;
+          const m = String(Math.floor(timerSeconds / 60)).padStart(2, "0");
+          const s = String(timerSeconds % 60).padStart(2, "0");
+          timerReadout.textContent = `${m}:${s}`;
+          timerReadout.classList.toggle("urgent", timerSeconds > 0 && timerSeconds <= 10);
+        }
+
+        function stopLimTimer() {
+          if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+          }
+          timerSeconds = 0;
+          renderLimTimer();
+        }
+
+        toolbar.querySelectorAll("[data-lim-timer]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const secs = Number(btn.getAttribute("data-lim-timer")) || 60;
+            if (timerId) clearInterval(timerId);
+            timerSeconds = secs;
+            renderLimTimer();
+            timerId = setInterval(() => {
+              timerSeconds -= 1;
+              if (timerSeconds <= 0) {
+                stopLimTimer();
+                playLimChime();
+                return;
+              }
+              renderLimTimer();
+            }, 1000);
+          });
+        });
+        if (btnTimerStop) {
+          btnTimerStop.addEventListener("click", stopLimTimer);
+        }
       }
 
       /* Navigazione Slide con telecomando LIM (Frecce / Pagina) e swipe touch */
