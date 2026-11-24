@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Raccolta differenziata</title>
+<style>
+:root{
+  --bg:#fffdf5; --txt:#1b1b1b; --line:#1b1b1b;
+  --btn-bg:#ffffff; --btn-txt:#1b1b1b;
+  --primario-bg:#0d47a1; --primario-txt:#ffffff;
+  --carta-bg:#1565c0; --carta-txt:#ffffff;
+  --plastica-bg:#f9a825; --plastica-txt:#1b1b1b;
+  --vetro-bg:#2e7d32; --vetro-txt:#ffffff;
+  --organico-bg:#6d4c41; --organico-txt:#ffffff;
+  --indiff-bg:#424242; --indiff-txt:#ffffff;
+  --ok:#1b5e20; --ok-txt:#ffffff;
+  --err:#b71c1c;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121212; --txt:#f5f5f5; --line:#f5f5f5;
+    --btn-bg:#263238; --btn-txt:#ffffff;
+    --primario-bg:#90caf9; --primario-txt:#0a1929;
+    --carta-bg:#1565c0; --carta-txt:#ffffff;
+    --plastica-bg:#ffd54f; --plastica-txt:#1b1b1b;
+    --vetro-bg:#2e7d32; --vetro-txt:#ffffff;
+    --organico-bg:#6d4c41; --organico-txt:#ffffff;
+    --indiff-bg:#424242; --indiff-txt:#ffffff;
+    --ok:#a5d6a7; --ok-txt:#0a1f0a;
+    --err:#ef9a9a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121212; --txt:#f5f5f5; --line:#f5f5f5;
+  --btn-bg:#263238; --btn-txt:#ffffff;
+  --primario-bg:#90caf9; --primario-txt:#0a1929;
+  --carta-bg:#1565c0; --carta-txt:#ffffff;
+  --plastica-bg:#ffd54f; --plastica-txt:#1b1b1b;
+  --vetro-bg:#2e7d32; --vetro-txt:#ffffff;
+  --organico-bg:#6d4c41; --organico-txt:#ffffff;
+  --indiff-bg:#424242; --indiff-txt:#ffffff;
+  --ok:#a5d6a7; --ok-txt:#0a1f0a;
+  --err:#ef9a9a;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:20px}
+body{padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.pagina{max-width:760px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:18px}
+h1{font-size:34px;margin:8px 0;text-align:center}
+h2{font-size:26px;margin:4px 0;text-align:center}
+.testo{font-size:22px;line-height:1.4;margin:0}
+.grande{font-size:120px;text-align:center;line-height:1}
+.icona{font-size:72px;line-height:1}
+.campo{font-size:24px;padding:12px;border:4px solid var(--line);border-radius:12px;background:var(--btn-bg);color:var(--btn-txt);width:100%}
+.btn{min-height:64px;font-size:22px;font-weight:bold;padding:12px 16px;border:4px solid var(--line);border-radius:16px;background:var(--btn-bg);color:var(--btn-txt);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:12px;text-align:center}
+.btn:focus-visible{outline:5px solid var(--primario-bg);outline-offset:3px}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn.primario{background:var(--primario-bg);color:var(--primario-txt)}
+.btn.piccolo{min-height:52px;font-size:18px;width:auto;padding:8px 14px}
+.btn.sel{border:8px solid var(--ok);background:var(--ok);color:var(--ok-txt)}
+.riga{display:flex;gap:12px;flex-wrap:wrap}
+.riga .btn{flex:1 1 200px}
+.barra{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;padding:8px 16px;border-bottom:3px solid var(--line)}
+.barra .btn{width:auto}
+.progresso{height:28px;border:3px solid var(--line);border-radius:14px;overflow:hidden;background:var(--btn-bg)}
+.progresso div{height:100%;background:var(--primario-bg)}
+.blocco{border:4px solid var(--line);border-radius:14px;padding:12px 16px;background:var(--btn-bg);color:var(--btn-txt);font-size:20px;line-height:1.4}
+.c-carta{background:var(--carta-bg);color:var(--carta-txt)}
+.c-plastica{background:var(--plastica-bg);color:var(--plastica-txt)}
+.c-vetro{background:var(--vetro-bg);color:var(--vetro-txt)}
+.c-organico{background:var(--organico-bg);color:var(--organico-txt)}
+.c-indiff{background:var(--indiff-bg);color:var(--indiff-txt)}
+.risposta{min-height:110px;flex-direction:column;font-size:22px}
+.risposta.giusta{border:8px solid var(--ok);background:var(--ok);color:var(--ok-txt)}
+.risposta.sbagliata{border:8px solid var(--err);filter:saturate(.3)}
+.segno{font-size:28px;font-weight:bold}
+.msg{font-size:24px;font-weight:bold;text-align:center;padding:12px;border:4px solid var(--line);border-radius:14px;background:var(--btn-bg);color:var(--btn-txt)}
+.msg.ok{background:var(--ok);color:var(--ok-txt)}
+.msg.err{border-color:var(--err)}
+.nota{font-size:18px;text-align:center}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script>
+const h = React.createElement;
+const K = "raccdiff_";
+const SUONO = typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+let ULTIMO = "";
+
+function leggi(k, def){ try{ const v = localStorage.getItem(K+k); return v ? JSON.parse(v) : def; }catch(e){ return def; } }
+function salva(k, v){ try{ localStorage.setItem(K+k, JSON.stringify(v)); }catch(e){} }
+function mescola(a){ const b = a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; }
+
+function voce(){
+  try{
+    const vs = speechSynthesis.getVoices() || [];
+    const it = vs.filter(v => /^it/i.test(v.lang));
+    return it.find(v => /natural|neural|enhanced|premium/i.test(v.name)) || it[0] || null;
+  }catch(e){ return null; }
+}
+function parla(t){
+  ULTIMO = t;
+  if(!SUONO) return;
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t);
+    u.lang = "it-IT"; u.rate = 0.85; u.pitch = 1.1;
+    const v = voce(); if(v) u.voice = v;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+const CONT = [
+  {id:"carta", nome:"carta", colore:"blu", emoji:"📄", cls:"c-carta",
+   ci:"Giornali, quaderni, scatole di cartone e libri.", no:"Niente carta sporca o unta.", hint:"È fatta di carta, come i quaderni."},
+  {id:"plastica", nome:"plastica", colore:"giallo", emoji:"🧴", cls:"c-plastica",
+   ci:"Bottiglie d'acqua, flaconi, vaschette e sacchetti.", no:"Niente penne e niente cibo.", hint:"È di plastica, come le bottiglie d'acqua."},
+  {id:"vetro", nome:"vetro", colore:"verde", emoji:"🫙", cls:"c-vetro",
+   ci:"Bottiglie, barattoli e vasetti di vetro.", no:"Niente specchi e niente lampadine.", hint:"È di vetro: è dura e si vede attraverso."},
+  {id:"organico", nome:"organico", colore:"marrone", emoji:"🍌", cls:"c-organico",
+   ci:"Bucce, avanzi di cibo, fondi di caffè e foglie.", no:"Niente plastica e niente carta.", hint:"Viene dalla natura o è cibo."},
+  {id:"indiff", nome:"indifferenziato", colore:"grigio", emoji:"🗑️", cls:"c-indiff",
+   ci:"Tutto quello che non si ricicla: gomma, cotton fioc, pannolini.", no:"Niente cose che si possono riciclare.", hint:"Non si ricicla: va nel contenitore grigio."}
+];
+
+// [emoji, nome, articolo, contenitore]
+const OGG_RAW = [
+  ["📰","giornale","il","carta"],["📓","quaderno","il","carta"],["📦","scatola di cartone","la","carta"],
+  ["✉️","busta di carta","la","carta"],["📚","libro","il","carta"],["📃","volantino","il","carta"],
+  ["🎨","cartoncino","il","carta"],["📔","agenda","l'","carta"],["📖","rivista","la","carta"],["📄","foglio di carta","il","carta"],
+
+  ["💧","bottiglia d'acqua","la","plastica"],["🧼","flacone di detersivo","il","plastica"],
+  ["🥣","vaschetta di yogurt","la","plastica"],["🛍️","sacchetto di plastica","il","plastica"],
+  ["🥤","bicchiere di plastica","il","plastica"],["🍽️","vassoio di plastica","il","plastica"],
+  ["🧸","giocattolo di plastica","il","plastica"],["🧴","bottiglia di shampoo","la","plastica"],
+  ["🪣","secchio di plastica","il","plastica"],["🥗","contenitore dell'insalata","il","plastica"],
+
+  ["🍾","bottiglia di vino","la","vetro"],["🫙","barattolo di marmellata","il","vetro"],
+  ["🍺","bottiglia di birra","la","vetro"],["🍯","vasetto di miele","il","vetro"],
+  ["🍶","bottiglia di sciroppo","la","vetro"],["🥃","bicchiere di vetro","il","vetro"],
+  ["🏺","vaso di vetro","il","vetro"],["🍷","calice di vetro","il","vetro"],
+  ["🧂","barattolo delle spezie","il","vetro"],["🫙","vasetto di crema","il","vetro"],
+
+  ["🍌","buccia di banana","la","organico"],["☕","fondi di caffè","i","organico"],
+  ["🍎","avanzi di frutta","gli","organico"],["🥔","bucce di patata","le","organico"],
+  ["🍂","foglie secche","le","organico"],["🥚","gusci d'uovo","i","organico"],
+  ["🥕","avanzi di verdura","gli","organico"],["🫖","bustina di tè","la","organico"],
+  ["💐","fiori recisi","i","organico"],["🍞","resti di pane","i","organico"],
+
+  ["👶","pannolino","il","indiff"],["🩹","cerotto","il","indiff"],["🖊️","penna biro","la","indiff"],
+  ["🫧","gomma da masticare","la","indiff"],["🧷","cotton fioc","il","indiff"],
+  ["🪒","rasoio usato","il","indiff"],["🚬","mozzicone di sigaretta","il","indiff"],
+  ["🧦","calza rotta","la","indiff"],["🌫️","polvere dell'aspirapolvere","la","indiff"],
+  ["🧻","tovagliolo sporco","il","indiff"]
+];
+const OGG = OGG_RAW.map(r => ({e:r[0], n:r[1], a:r[2], b:r[3]}));
+
+function contenitore(id){ return CONT.find(c => c.id === id); }
+
+function complimento(nome, sesso){
+  const f = sesso === "ALUNNA";
+  const bravo = f ? "brava" : "bravo";
+  const bravissimo = f ? "bravissima" : "bravissimo";
+  const frasi = [
+    "Complimenti " + nome + ", " + bravissimo + "!",
+    "Esatto, " + nome + "!",
+    "Hai capito, " + nome + ", " + bravo + "!"
+  ];
+  return frasi[Math.floor(Math.random() * frasi.length)];
+}
+
+function nuovoRound(){
+  const ordine = mescola(CONT.map(c => c.id));
+  const dom = [];
+  for(let i = 0; i < 15; i++){
+    const bid = ordine[i % 5];
+    const pool = OGG.filter(o => o.b === bid);
+    const o = pool[Math.floor(Math.random() * pool.length)];
+    const altri = mescola(CONT.map(c => c.id).filter(x => x !== bid)).slice(0, 2);
+    dom.push({o: o, opts: mescola([bid].concat(altri))});
+  }
+  return dom;
+}
+
+function Barra(p){
+  return h("nav", {className:"barra"},
+    p.indietro ? h("button", {className:"btn piccolo", onClick:p.indietro}, "← Indietro") : h("span"),
+    SUONO ? h("button", {className:"btn piccolo", onClick:()=>parla(ULTIMO)}, "🔁 RIPETI") : null,
+    h("button", {className:"btn piccolo", onClick:p.home}, "🏠 HOME")
+  );
+}
+
+function AscoltaBtn(p){
+  if(!SUONO) return null;
+  return h("button", {className:"btn", onClick:()=>parla(p.testo)}, "🔊 " + p.etichetta);
+}
+
+function Gioco(p){
+  const nome = p.nome, sesso = p.sesso;
+  const [dom] = React.useState(() => nuovoRound());
+  const [i, setI] = React.useState(0);
+  const [err, setErr] = React.useState(0);
+  const [sbagliate, setSbagliate] = React.useState([]);
+  const [esito, setEsito] = React.useState(null);
+  const [corrette, setCorrette] = React.useState(0);
+  const [msg, setMsg] = React.useState(null);
+  const [fine, setFine] = React.useState(false);
+  const q = dom[i];
+  const testo = q ? "Dove va " + (q.o.a.endsWith("'") ? q.o.a + q.o.n : q.o.a + " " + q.o.n) + "?" : "";
+
+  React.useEffect(() => {
+    if(!q || fine) return;
+    const t = setTimeout(() => parla(testo), 700);
+    return () => clearTimeout(t);
+  }, [i, fine]);
+
+  function avanti(){
+    if(i + 1 >= dom.length){ setFine(true); parla("Hai completato il gioco! Hai dato " + corrette + " risposte giuste su 15."); return; }
+    setI(i + 1); setErr(0); setSbagliate([]); setEsito(null); setMsg(null);
+  }
+
+  React.useEffect(() => {
+    if(esito === "ok"){
+      const t = setTimeout(avanti, 3000);
+      return () => clearTimeout(t);
+    }
+  }, [esito, i]);
+
+  function scegli(id){
+    if(esito || !q) return;
+    if(id === q.o.b){
+      const m = complimento(nome, sesso);
+      setEsito("ok"); setCorrette(c => c + 1); setMsg({t:m, tipo:"ok"}); parla(m);
+      return;
+    }
+    const e = err + 1;
+    setErr(e); setSbagliate(sbagliate.concat([id]));
+    const c = contenitore(q.o.b);
+    if(e >= 2){
+      setEsito("fine");
+      const t = "La risposta giusta è il contenitore " + c.nome + ". " + c.hint;
+      setMsg({t:t, tipo:"err"}); parla(t);
+    } else {
+      const t = "Quasi! Riprova. " + c.hint;
+      setMsg({t:t, tipo:"err"}); parla(t);
+    }
+  }
+
+  if(fine){
+    return h("div", {className:"pagina"},
+      h(Barra, {home:p.home, indietro:null}),
+      h("div", {className:"grande"}, "🏆"),
+      h("h1", null, "Hai completato il gioco!"),
+      h("p", {className:"testo", style:{textAlign:"center"}}, "Risposte giuste: " + corrette + " su 15."),
+      h("button", {className:"btn primario", onClick:p.ricomincia}, "🔁 RICOMINCIA"),
+      h("button", {className:"btn", onClick:p.altri}, "📦 ALTRI GIOCHI"),
+      h("button", {className:"btn", onClick:p.home}, "🏠 MENU INIZIALE")
+    );
+  }
+
+  if(!q) return null;
+
+  return h("div", {className:"pagina"},
+    h(Barra, {home:p.home, indietro:p.indietro}),
+    h("p", {className:"nota"}, "Domanda " + (i + 1) + " di 15 · Risposte giuste: " + corrette),
+    h("h2", null, testo),
+    h("div", {className:"grande"}, q.o.e),
+    h(AscoltaBtn, {testo:testo, etichetta:"ASCOLTA LA DOMANDA"}),
+    h("div", {className:"riga"},
+      q.opts.map(id => {
+        const c = contenitore(id);
+        let cls = "btn risposta " + c.cls;
+        if(esito && id === q.o.b) cls += " giusta";
+        if(sbagliate.indexOf(id) >= 0 && id !== q.o.b) cls += " sbagliata";
+        const segno = (esito && id === q.o.b) ? "✓" : (sbagliate.indexOf(id) >= 0 && id !== q.o.b ? "✗" : null);
+        return h("button", {key:id, className:cls, onClick:() => scegli(id), disabled: !!esito && id !== q.o.b},
+          h("span", {className:"icona"}, c.emoji),
+          h("span", null, "Contenitore " + c.nome),
+          segno ? h("span", {className:"segno"}, segno) : null
+        );
+      })
+    ),
+    msg ? h("div", {className:"msg " + (msg.tipo === "ok" ? "ok" : "err")}, msg.t) : null,
+    esito ? h("button", {className:"btn primario", onClick:avanti}, "AVANTI →") : null
+  );
+}
+
+function App(){
+  const [nomeSalvato] = React.useState(() => leggi("nome", ""));
+  const [sessoSalvato] = React.useState(() => leggi("sesso", ""));
+  const [schermo, setSchermo] = React.useState(nomeSalvato && sessoSalvato ? "home" : "benvenuto");
+  const [nome, setNome] = React.useState(nomeSalvato);
+  const [sesso, setSesso] = React.useState(sessoSalvato);
+  const [bozza, setBozza] = React.useState(nomeSalvato);
+  const [visti, setVisti] = React.useState(() => leggi("visti", []));
+  const [cont, setCont] = React.useState(0);
+  const [chiave, setChiave] = React.useState(0);
+
+  const home = () => setSchermo("home");
+  const indietroMappa = {lista:"home", scheda:"lista", gioco:"home", fine:"home"};
+  const indietro = () => setSchermo(indietroMappa[schermo] || "home");
+
+  function inizia(){
+    const n = bozza.trim();
+    if(!n || !sesso) return;
+    setNome(n); salva("nome", n); salva("sesso", sesso);
+    setSchermo("home");
+  }
+
+  if(schermo === "benvenuto"){
+    const pronto = !!bozza.trim() && !!sesso;
+    return h("div", {className:"pagina"},
+      h("h1", null, "Benvenuto!"),
+      h("label", {htmlFor:"nomeIn", className:"testo"}, "Come ti chiami?"),
+      h("input", {id:"nomeIn", className:"campo", value:bozza, maxLength:20, autoComplete:"off",
+        onChange:e => setBozza(e.target.value)}),
+      h("p", {className:"testo"}, "Sei un alunno o un'alunna?"),
+      h("div", {className:"riga"},
+        h("button", {className:"btn" + (sesso === "ALUNNO" ? " sel" : ""), onClick:() => setSesso("ALUNNO")},
+          h("span", {className:"icona"}, "👦"), h("span", null, "ALUNNO")),
+        h("button", {className:"btn" + (sesso === "ALUNNA" ? " sel" : ""), onClick:() => setSesso("ALUNNA")},
+          h("span", {className:"icona"}, "👧"), h("span", null, "ALUNNA"))
+      ),
+      h("button", {className:"btn primario", disabled:!pronto, onClick:inizia}, "INIZIA"),
+      !SUONO ? h("p", {className:"nota"}, "La lettura vocale non è disponibile su questo dispositivo: leggi il testo scritto.") : null
+    );
+  }
+
+  const percentuale = Math.round((visti.length / CONT.length) * 100);
+
+  if(schermo === "home"){
+    return h("div", {className:"pagina"},
+      h("h1", null, "Raccolta differenziata ♻️"),
+      h("div", {className:"riga", style:{justifyContent:"space-between", alignItems:"center"}},
+        h("p", {className:"testo"}, "Ciao " + nome + "!"),
+        h("button", {className:"btn piccolo", onClick:() => setSchermo("benvenuto")}, "CAMBIA ALUNNO")
+      ),
+      h("div", {className:"grande"}, "🌍"),
+      h("div", {className:"progresso", role:"progressbar", "aria-valuenow":visti.length, "aria-valuemax":CONT.length},
+        h("div", {style:{width: percentuale + "%"}})),
+      h("p", {className:"nota"}, visti.length + " / " + CONT.length + " contenitori visti"),
+      h("button", {className:"btn", onClick:() => setSchermo("lista")}, "📦 I CONTENITORI"),
+      h("button", {className:"btn primario", onClick:() => { setChiave(chiave + 1); setSchermo("gioco"); }}, "🎮 GIOCHIAMO"),
+      SUONO ? h("button", {className:"btn", onClick:() => parla("Scegli il contenitore giusto per ogni oggetto. Tocca la risposta che pensi sia giusta. Ti aiuto io!")}, "🔊 ASCOLTA LE ISTRUZIONI") : null
+    );
+  }
+
+  if(schermo === "lista"){
+    return h("div", {className:"pagina"},
+      h(Barra, {home:home, indietro:indietro}),
+      h("h2", null, "I contenitori"),
+      CONT.map((c, idx) =>
+        h("button", {key:c.id, className:"btn " + c.cls, onClick:() => {
+          setCont(idx);
+          setVisti(v => { const nv = v.indexOf(c.id) >= 0 ? v : v.concat([c.id]); salva("visti", nv); return nv; });
+          setSchermo("scheda");
+        }},
+          h("span", {className:"icona"}, c.emoji),
+          h("span", null, "Contenitore " + c.nome))
+      )
+    );
+  }
+
+  if(schermo === "scheda"){
+    const c = CONT[cont];
+    const testo = "Contenitore " + c.nome + ", colore " + c.colore + ". Ci vanno: " + c.ci + " Non ci vanno: " + c.no;
+    return h("div", {className:"pagina"},
+      h(Barra, {home:home, indietro:indietro}),
+      h("div", {className:"grande"}, c.emoji),
+      h("h2", null, "Contenitore " + c.nome),
+      h("div", {className:"blocco " + c.cls},
+        h("strong", null, "Colore: "), c.colore),
+      h("div", {className:"blocco"},
+        h("strong", null, "Ci vanno: "), c.ci),
+      h("div", {className:"blocco"},
+        h("strong", null, "Non ci vanno: "), c.no),
+      h(AscoltaBtn, {testo:testo, etichetta:"ASCOLTA LA SCHEDA"}),
+      h("button", {className:"btn primario", onClick:() => { setChiave(chiave + 1); setSchermo("gioco"); }}, "🎮 GIOCHIAMO")
+    );
+  }
+
+  if(schermo === "gioco"){
+    return h(Gioco, {
+      key: chiave,
+      nome: nome,
+      sesso: sesso,
+      home: home,
+      indietro: indietro,
+      ricomincia: () => setChiave(chiave + 1),
+      altri: () => setSchermo("lista")
+    });
+  }
+
+  return null;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+</script>
+</body>
+</html>

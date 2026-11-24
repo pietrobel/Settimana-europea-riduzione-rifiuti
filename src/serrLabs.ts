@@ -43,6 +43,7 @@ declare global {
       setLevel?: (lvl: "primaria" | "secondaria" | "entrambi") => void;
       getLevel?: () => string;
       refreshMapVideo?: () => void;
+      openGame?: (num: number) => void;
     };
     __SERR_VIDEOS?: {
       renderMapVideo: (container: HTMLElement, topicId: string, preferredLevel: string) => void;

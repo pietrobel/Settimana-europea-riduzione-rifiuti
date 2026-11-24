@@ -2642,7 +2642,7 @@
     <!-- 5. GLI 8 GIOCHI INTERATTIVI (INCLUSO CODING RACCOLTA DIFFERENZIATA) & PASSAPORTO -->
     <section id="sec-giochi" class="section-panel" aria-labelledby="h-giochi">
       <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-shrink:0;">
-        <h2 id="h-giochi" style="margin:0;font-size:1.15rem;">8 Giochi, Coding Differenziata &amp; Passaporto</h2>
+        <h2 id="h-giochi" style="margin:0;font-size:1.15rem;">9 Giochi, Coding, Raccolta Vocale &amp; Passaporto</h2>
         <div class="segmented no-print" role="tablist" aria-label="Scegli il gioco o il passaporto" style="flex-wrap:wrap;">
           <button type="button" class="seg-btn" role="tab" id="tab-game-1" aria-pressed="true" aria-selected="true">1. Dove lo butto?</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-2" aria-pressed="false" aria-selected="false">2. Azione → Effetto</button>
@@ -2652,6 +2652,7 @@
           <button type="button" class="seg-btn" role="tab" id="tab-game-6" aria-pressed="false" aria-selected="false">6. Piatto 1000L</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-7" aria-pressed="false" aria-selected="false">7. Stagioni 60s</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-8" aria-pressed="false" aria-selected="false">8. Coding Differenziata</button>
+          <button type="button" class="seg-btn" role="tab" id="tab-game-10" aria-pressed="false" aria-selected="false">9. Raccolta Vocale BES</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-9" aria-pressed="false" aria-selected="false">Passaporto</button>
         </div>
       </div>
@@ -2891,6 +2892,27 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- GIOCO 9 ACCESSIBILE VOCALE: RACCOLTA DIFFERENZIATA (BES / PRIMARIA / LIM) -->
+      <div id="panel-game-10" class="card" style="display:none;padding:14px 16px;">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
+          <div>
+            <h3 style="margin:0 0 2px;">Gioco 9: “Raccolta differenziata” con Lettura Vocale (Primaria &amp; BES)</h3>
+            <p style="margin:0;font-size:0.86rem;color:var(--text-muted);">5 contenitori colorati ad alta leggibilità, sintesi vocale integrata e sfida da 15 domande casuali su 50 oggetti.</p>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;" class="no-print">
+            <button type="button" class="btn btn-sm" id="btn-g10-tall">Espandi vista LIM</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-g10-xp">Segna completato (+15 XP)</button>
+          </div>
+        </div>
+        <iframe
+          id="g10-raccolta-frame"
+          src="/assets/aistudio/Raccolta_differenziata_a4a8af6d.html"
+          title="Gioco interattivo accessibile: Raccolta differenziata"
+          style="width:100%;height:clamp(560px, 70dvh, 780px);border:1.5px solid var(--border);border-radius:12px;background:#fffdf5;display:block;"
+          loading="lazy"
+        ></iframe>
       </div>
 
       <!-- GAMIFICATION: AVATAR, PASSAPORTO ECOLOGICO, MISSIONI, CLASSIFICA & CERTIFICATO -->
@@ -3860,6 +3882,7 @@
         topicTools: [
           { label: "Studia Presentazione: Bosco & Compost", kind: "lesson", lessonId: "dragano", style: "primary" },
           { label: "Gioca: Dove lo butto? (Gioco 1)", kind: "game", gameNum: 1, style: "secondary" },
+          { label: "Raccolta Vocale BES (Gioco 9)", kind: "game", gameNum: 10, style: "" },
           { label: "Gioca: Carrello & Merenda (Gioco 3)", kind: "game", gameNum: 3, style: "" },
           { label: "Quiz Dragano (Bosco & Compost)", kind: "quiz", town: "dragano", style: "" }
         ]
@@ -7823,11 +7846,12 @@
     document.getElementById("btn-quiz-restart").addEventListener("click", initQuiz);
     document.getElementById("quiz-count-select").addEventListener("change", initQuiz);
 
-    /* ==================== GAME TABS (1..9) ==================== */
-    const gameTabs = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => document.getElementById("tab-game-" + n));
-    const gamePanels = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => document.getElementById("panel-game-" + n));
+    /* ==================== GAME TABS (1..10) ==================== */
+    const gameTabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => document.getElementById("tab-game-" + n));
+    const gamePanels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => document.getElementById("panel-game-" + n));
     function switchGame(num) {
       gameTabs.forEach((t, i) => {
+        if (!t || !gamePanels[i]) return;
         const active = (i + 1) === num;
         t.setAttribute("aria-pressed", String(active));
         t.setAttribute("aria-selected", String(active));
@@ -7836,7 +7860,25 @@
         panel.style.display = active ? (num === 8 ? "flex" : "block") : "none";
       });
     }
-    gameTabs.forEach((t, i) => t.addEventListener("click", () => switchGame(i + 1)));
+    gameTabs.forEach((t, i) => { if (t) t.addEventListener("click", () => switchGame(i + 1)); });
+
+    const btnG10Tall = document.getElementById("btn-g10-tall");
+    const g10Frame = document.getElementById("g10-raccolta-frame");
+    if (btnG10Tall && g10Frame) {
+      let g10Expanded = false;
+      btnG10Tall.addEventListener("click", () => {
+        g10Expanded = !g10Expanded;
+        g10Frame.style.height = g10Expanded ? "860px" : "clamp(560px, 70dvh, 780px)";
+        btnG10Tall.textContent = g10Expanded ? "Altezza compatta" : "Espandi vista LIM";
+      });
+    }
+    const btnG10Xp = document.getElementById("btn-g10-xp");
+    if (btnG10Xp) {
+      btnG10Xp.addEventListener("click", () => {
+        addXp(15, "b_g1", "raccolta_bes");
+        btnG10Xp.textContent = "Completamento registrato (+15 XP) ✓";
+      });
+    }
 
     /* ==================== GAME 1 ENGINE ==================== */
     function initGame1() {
@@ -9625,7 +9667,15 @@
         window.__SERR_VIDEOS.renderMapVideo(slot, state.activeTown, state.level);
       }
     }
-    window.__SERR_BRIDGE = { setActiveSection, addXp, escHtml, setLevel, getLevel: () => state.level, refreshMapVideo };
+    window.__SERR_BRIDGE = {
+      setActiveSection,
+      addXp,
+      escHtml,
+      setLevel,
+      getLevel: () => state.level,
+      refreshMapVideo,
+      openGame: (num) => { setActiveSection("giochi"); switchGame(num); }
+    };
   })();
   </script>
   <script type="module" src="/src/serrLabs.ts"></script>

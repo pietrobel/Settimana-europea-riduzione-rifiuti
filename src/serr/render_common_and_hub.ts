@@ -101,6 +101,7 @@ export function renderLabOverview(container: HTMLElement, ctx: CommonHubContext)
         <button type="button" class="serr-action-tile" data-hub-nav="missioni"><strong>Missioni Finali &amp; Attestati</strong><span>3 missioni con attestato personalizzato scaricabile</span></button>
         <button type="button" class="serr-action-tile" data-hub-nav="monitoraggio"><strong>Monitoraggio &amp; Fonti (${totalDone} att.)</strong><span>Risultati senza classifiche + trasparenza scientifica</span></button>
         <button type="button" class="serr-action-tile" data-open-mezz="impronte"><strong>Modulo Impronte (Ecologica &amp; Idrica)</strong><span>Scheda interattiva: gha, biocapacità, acqua verde, blu, grigia e verifica</span></button>
+        <button type="button" class="serr-action-tile" data-open-raccolta="1"><strong>Raccolta Differenziata Vocale (BES/Primaria)</strong><span>Gioco guidato con sintesi vocale, 5 contenitori colorati e 50 oggetti</span></button>
         <button type="button" class="serr-action-tile" data-open-video="1"><strong>Video Intro (3–5 min) per Tematica</strong><span>Embed brevi per Primaria e Media + voce offline</span></button>
         <button type="button" class="serr-action-tile" data-open-portale="1"><strong>Portale, App &amp; Film Consigliati</strong><span>Link esterni, calcolatori, video e film gratuiti</span></button>
       </div>
@@ -116,6 +117,9 @@ export function renderLabOverview(container: HTMLElement, ctx: CommonHubContext)
   container.querySelectorAll<HTMLButtonElement>("[data-hub-nav]").forEach((b) =>
     b.addEventListener("click", () => ctx.navigateTo(b.dataset.hubNav || "overview"))
   );
+  container.querySelector<HTMLButtonElement>("[data-open-raccolta]")?.addEventListener("click", () => {
+    window.__SERR_BRIDGE?.openGame?.(10);
+  });
   container.querySelector<HTMLButtonElement>("[data-open-video]")?.addEventListener("click", () => {
     window.openSerrModule?.("video");
   });
