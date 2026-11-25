@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>L'Impronta Nascosta</title>
+<style>
+:root{--bg:#f6f7f2;--card:#fff;--ink:#1d2a22;--muted:#5b6b60;--accent:#2e7d4f;--accent2:#1f5fa8;--warn:#b36b00;--ok:#2e7d4f;--bad:#b3261e;--line:#d5dcd3;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#17201a;--card:#222e26;--ink:#eef3ee;--muted:#a9b8ad;--accent:#6fcf97;--accent2:#7fb3f0;--warn:#f2b35c;--ok:#6fcf97;--bad:#ff8a80;--line:#3a4a3f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17201a;--card:#222e26;--ink:#eef3ee;--muted:#a9b8ad;--accent:#6fcf97;--accent2:#7fb3f0;--warn:#f2b35c;--ok:#6fcf97;--bad:#ff8a80;--line:#3a4a3f;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:19px;line-height:1.5}
+header{padding:16px 20px;background:var(--accent);color:#fff}
+header h1{margin:0;font-size:1.6em}
+header p{margin:4px 0 0;opacity:.9;font-size:.95em}
+nav{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+button{font:inherit;cursor:pointer;border:2px solid var(--accent);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 16px;min-height:48px}
+button:hover{background:var(--line)}
+button.primary{background:var(--accent);color:#fff}
+button.on{background:var(--accent);color:#fff}
+button.speak{border-color:var(--accent2);color:var(--accent2);min-height:40px;padding:6px 12px;font-size:.9em}
+main{max-width:980px;margin:0 auto;padding:16px}
+section{display:none;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+section.active{display:block}
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h2{margin:0 0 8px;font-size:1.4em;color:var(--accent)}
+h3{margin:18px 0 6px;font-size:1.15em}
+table{width:100%;border-collapse:collapse;margin:10px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+th{background:var(--bg)}
+.note{background:var(--bg);border-left:5px solid var(--warn);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:.95em}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+select,input[type=number]{font:inherit;padding:8px;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--ink);min-height:44px}
+.result{font-size:1.1em;background:var(--bg);padding:12px;border-radius:10px;margin-top:10px}
+.ok{color:var(--ok);font-weight:600}.bad{color:var(--bad);font-weight:600}
+svg{width:100%;height:auto;display:block;margin:8px 0}
+.q{border-top:1px solid var(--line);padding:12px 0}
+.q p{margin:0 0 8px;font-weight:600}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;border-radius:10px}
+.fb{min-height:1.5em;margin-top:6px}
+.score{font-size:1.3em;font-weight:700;margin-top:12px}
+.ta{width:100%;min-height:70px;font:inherit;padding:8px;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--ink);margin-bottom:10px}
+@page{size:A4;margin:12mm}
+@media print{header,nav,button,.speak{display:none!important}section{display:none!important}section.active{display:block!important;border:none;box-shadow:none;padding:0}main{padding:0}body{font-size:10pt;background:#fff;color:#000}.guide h2{font-size:15pt;margin:0 0 4px}.guide h3{font-size:12pt;margin:8px 0 3px}.guide table,.guide th,.guide td{font-size:10.5pt;padding:3px 6px}}
+</style>
+<script>if(typeof NodeList!=="undefined"&&NodeList.prototype&&!NodeList.prototype.forEach){NodeList.prototype.forEach=Array.prototype.forEach;}</script>
+</head>
+<body>
+<header>
+  <h1>L'Impronta Nascosta</h1>
+  <p>Grafici per una merenda senza sprechi · Matematica e Scienze · Classe prima</p>
+</header>
+<nav>
+  <button data-tab="t0" class="on">0 · Riscaldamento</button>
+  <button data-tab="t1">1 · Dati</button>
+  <button data-tab="t2">2 · Istogramma</button>
+  <button data-tab="t3">3 · Diagramma mele</button>
+  <button data-tab="t4">4 · Surplus</button>
+  <button data-tab="t5">5 · Verifica</button>
+  <button data-tab="t6">6 · Esercizi</button>
+  <button data-tab="t7">7 · Caso 2</button>
+  <button data-tab="t8">8 · Elaborato</button>
+  <button data-tab="t9">9 · Confronto menu</button>
+  <button data-tab="t10">10 · Approfondimento</button>
+</nav>
+<main>
+
+<section id="t0" class="active">
+  <div class="sec-head"><h2>0 · Riscaldamento: visibile o nascosta?</h2><button class="speak" onclick="speak(document.getElementById('t0').innerText)">🔊 Leggi</button></div>
+  <p>Per ogni elemento scegli se è un'impronta <b>visibile</b> (la vedi nel piatto) o <b>nascosta</b> (serve per produrlo). Tempo previsto: 15 minuti.</p>
+  <div id="sort0"></div>
+  <div class="result" id="sort0fb"></div>
+  <div class="controls"><button class="primary" onclick="show('t1')">Avanti: dati →</button></div>
+</section>
+
+<section id="t1">
+  <div class="sec-head"><h2>1 · La carta degli alimenti</h2><button class="speak" onclick="speak(document.getElementById('t1').innerText)">🔊 Leggi</button></div>
+  <p>L'<b>impronta idrica</b> è una <b>stima media</b> dell'acqua usata per produrre <b>1 kg</b> di alimento. Non è acqua versata sul cibo.</p>
+  <table>
+    <tr><th>Alimento</th><th>Litri per 1 kg</th><th>Come si legge</th></tr>
+    <tr><td>Mele</td><td>822 L</td><td>1 kg di mele → 822 litri</td></tr>
+    <tr><td>Pane di frumento</td><td>1.608 L</td><td>1 kg di pane → 1.608 litri</td></tr>
+    <tr><td>Riso</td><td>2.497 L</td><td>1 kg di riso → 2.497 litri</td></tr>
+    <tr><td>Patate</td><td>287 L</td><td>1 kg di patate → 287 litri</td></tr>
+  </table>
+  <div class="note"><b>Attenzione ai dati:</b> sono medie globali. Fonti diverse possono dare numeri diversi: è normale. Il dato è una stima, non una misura esatta della merenda della nostra classe.</div>
+  <div class="controls">
+    <button class="primary" onclick="show('t2')">Avanti: istogramma →</button>
+  </div>
+</section>
+
+<section id="t2">
+  <div class="sec-head"><h2>2 · Istogramma: impronta idrica di 1 kg</h2><button class="speak" onclick="speak('Impronta idrica di un chilo di alimenti. Riso 2497 litri, pane 1608, mele 822, patate 287.')">🔊 Leggi</button></div>
+  <p>Scala: ogni quadretto vale <b>100 L</b>. Le barre partono tutte da zero.</p>
+  <div class="controls"><button id="btnVal">Mostra / nascondi valori</button></div>
+  <svg id="hist" viewBox="0 0 600 370" role="img" aria-label="Istogramma impronta idrica"></svg>
+  <div class="result" id="histInfo">Quale alimento ha il valore più alto? Quale il più basso?</div>
+  <div class="controls">
+    <button onclick="show('t1')">← Indietro</button>
+    <button class="primary" onclick="show('t3')">Avanti: diagramma →</button>
+  </div>
+</section>
+
+<section id="t3">
+  <div class="sec-head"><h2>3 · Diagramma cartesiano delle mele</h2><button class="speak" onclick="speak('Quantità di mele in chilogrammi sull asse orizzontale, impronta idrica in litri sull asse verticale.')">🔊 Leggi</button></div>
+  <p>Regola: <b>kg × 822 = litri</b>. Premi un pulsante per segnare il punto corrispondente.</p>
+  <div class="controls" id="ptBtns"></div>
+  <svg id="grid" viewBox="0 0 600 380" role="img" aria-label="Diagramma cartesiano mele"></svg>
+  <table id="calcTab">
+    <tr><th>Mele</th><th>Calcolo</th><th>Litri</th></tr>
+  </table>
+  <div class="controls">
+    <button onclick="show('t2')">← Indietro</button>
+    <button class="primary" onclick="show('t4')">Avanti: surplus →</button>
+  </div>
+</section>
+
+<section id="t4">
+  <div class="sec-head"><h2>4 · La merenda che basta</h2><button class="speak" onclick="speak('Per la merenda servono tre chili di mele. Qualcuno propone di comprarne quattro. Calcola il surplus.')">🔊 Leggi</button></div>
+  <p>Caso simulato: per la merenda di gruppo servono le mele indicate, ma qualcuno propone di acquistarne di più.</p>
+  <div class="controls">
+    Quanto serve (kg): <select id="need"></select>
+    Quanto si vorrebbe comprare (kg): <select id="buy"></select>
+  </div>
+  <div class="result" id="surplusCalc"></div>
+  <h3>Quale scelta proponiamo?</h3>
+  <div class="controls">
+    <button id="chooseBuy" class="opt" onclick="choose('buy')">Acquistare la quantità proposta</button>
+    <button id="chooseNeed" class="opt" onclick="choose('need')">Acquistare solo la quantità necessaria</button>
+  </div>
+  <div class="fb" id="choiceFb"></div>
+  <div class="note">Il calcolo indica l'impronta associata alla quantità che rischiamo di sprecare. Non misura l'acqua realmente risparmiata in quell'acquisto.</div>
+  <div class="controls">
+    <button onclick="show('t3')">← Indietro</button>
+    <button class="primary" onclick="show('t6')">Avanti: esercizi →</button>
+  </div>
+</section>
+
+<section id="t5">
+  <div class="sec-head"><h2>5 · Biglietto d'uscita (lavoro individuale)</h2><button class="speak" onclick="speak('Rispondi alle domande senza aiuto del gruppo.')">🔊 Leggi</button></div>
+  <div id="quiz"></div>
+  <div class="score" id="score"></div>
+  <div class="controls"><button class="primary" onclick="show('t8')">Avanti: elaborato →</button>
+  <button onclick="show('t0')">Ricomincia</button></div>
+</section>
+
+<section id="t6">
+  <div class="sec-head"><h2>6 · Esercizi di calcolo</h2><button class="speak" onclick="speak(document.getElementById('t6').innerText)">🔊 Leggi</button></div>
+  <p>Regola: <b>kg × litri per kg</b>. Scrivi il risultato e premi Controlla. Tempo previsto: 20 minuti.</p>
+  <div id="ex6"></div>
+  <div class="controls"><button onclick="show('t4')">← Surplus</button><button class="primary" onclick="show('t7')">Avanti: caso 2 →</button></div>
+</section>
+
+<section id="t7">
+  <div class="sec-head"><h2>7 · Caso simulato 2: le patate</h2><button class="speak" onclick="speak(document.getElementById('t7').innerText)">🔊 Leggi</button></div>
+  <p>Per la merenda servono <b>5 kg di patate</b>, ma qualcuno propone di comprarne <b>7 kg</b>. Tempo previsto: 15 minuti.</p>
+  <div class="controls">Surplus (kg): <input id="c2kg" size="6"> Impronta del surplus (L): <input id="c2l" size="8"> <button onclick="checkC2()">Controlla</button></div>
+  <div class="result" id="c2fb"></div>
+  <h3>Quale proposta facciamo?</h3>
+  <div class="controls"><button onclick="c2choice('need')">Acquistare 5 kg</button><button onclick="c2choice('buy')">Acquistare 7 kg</button></div>
+  <div class="fb" id="c2ch"></div>
+  <h3>Completa la frase</h3>
+  <textarea class="ta" placeholder="Proponiamo di acquistare ___ kg di patate perché ___"></textarea>
+  <div class="controls"><button onclick="show('t6')">← Esercizi</button><button class="primary" onclick="show('t5')">Avanti: verifica →</button></div>
+</section>
+
+<section id="t8" class="guide">
+  <h2>Elaborato individuale: la mia merenda senza sprechi</h2>
+  <p><b>Nome e cognome:</b> ______________________________ &nbsp; <b>Classe:</b> ________ &nbsp; <b>Data:</b> ________</p>
+  <p>Lavoro <b>individuale</b>, su fogli A4 a quadretti. Tempo previsto: 40 minuti. Tutti i dati che servono sono in questa scheda: non serve il computer.</p>
+  <h3>Cosa devi fare, in ordine</h3>
+  <ol>
+  <li><b>Istogramma</b> dei quattro alimenti: mele, pane, riso, patate (dati nella tabella). Titolo; litri sull'asse verticale; scala 1 quadretto = 100 L; barre che partono da zero.</li>
+  <li><b>Diagramma delle mele:</b> asse orizzontale = kg (da 0 a 4); asse verticale = litri (da 0 a 3.500). Punti: (0; 0), (1; 822), (2; 1.644), (3; 2.466), (4; 3.288). Unisci i punti con una linea.</li>
+  <li><b>Surplus dei tre menu</b> (pagina 2): calcoli, domande e proposta.</li>
+  </ol>
+  <p><b>Cosa consegni:</b> i fogli con istogramma, diagramma, calcoli e proposta, con nome e classe.</p>
+  <h3>Tabella dei dati (stime medie)</h3>
+  <table>
+  <tr><th>Alimento</th><th>Litri per 1 kg</th><th>Litri per 100 g</th></tr>
+  <tr><td>Mela</td><td>822 L</td><td>82 L</td></tr>
+  <tr><td>Pane di frumento</td><td>1.608 L</td><td>161 L</td></tr>
+  <tr><td>Riso</td><td>2.497 L</td><td>250 L</td></tr>
+  <tr><td>Patate</td><td>287 L</td><td>29 L</td></tr>
+  <tr><td>Carne bovina</td><td>15.400 L</td><td>1.540 L</td></tr>
+  <tr><td>Formaggio</td><td>3.178 L</td><td>318 L</td></tr>
+  <tr><td>Pomodoro</td><td>214 L</td><td>21 L</td></tr>
+  </table>
+  
+  <div style="page-break-before:always"></div>
+  <h3>Calcolo del surplus: confronto tra tre menu</h3>
+  <p><b>Situazione.</b> Nella classe ci sono 18 alunni. Per la merenda si può scegliere tra tre menu. Per ogni menu è stata proposta una quantità da acquistare più alta di quella necessaria. La differenza si chiama surplus.</p>
+  <p><b>Formule:</b> necessario (kg) = 18 × grammi per alunno ÷ 1.000 &nbsp;|&nbsp; surplus (kg) = acquistato − necessario &nbsp;|&nbsp; litri del surplus = surplus × litri per kg</p>
+  <table>
+  <tr><th>Menu</th><th>Per alunno</th><th>Necessario (18 alunni)</th><th>Acquistato</th><th>Surplus</th><th>Formula per i litri</th></tr>
+  <tr><td>A · Frutta</td><td>mela 150 g</td><td>mela 2,7 kg (esempio)</td><td>mela 3,5 kg</td><td>0,8 kg (esempio)</td><td>surplus × 822</td></tr>
+  <tr><td>B · Panino</td><td>pane 60 g + formaggio 40 g</td><td>____</td><td>pane 1,5 kg; formaggio 1,0 kg</td><td>____</td><td>pane: surplus × 1.608 + formaggio: surplus × 3.178</td></tr>
+  <tr><td>C · Pane e pomodoro</td><td>pane 60 g + pomodoro 80 g</td><td>____</td><td>pane 1,5 kg; pomodoro 2,0 kg</td><td>____</td><td>pane: surplus × 1.608 + pomodoro: surplus × 214</td></tr>
+  </table>
+  <h3>Procedimento, passo per passo</h3>
+  <ol>
+  <li><b>Necessario (kg)</b> = alunni × grammi per alunno ÷ 1.000.</li>
+  <li><b>Surplus (kg)</b> = acquistato − necessario. Fallo per ogni alimento del menu.</li>
+  <li><b>Litri</b> = surplus × litri per kg (dalla tabella). Se il menu ha due alimenti, calcola due volte e somma.</li>
+  </ol>
+  <p><b>Esempio (menu A):</b> necessario 18 × 150 ÷ 1.000 = 2,7 kg. Surplus 3,5 − 2,7 = 0,8 kg. Litri = surplus × 822.</p>
+  <p><b>Esempio 2 (menu B, solo pane):</b> necessario 18 × 60 ÷ 1.000 = 1,08 kg. Surplus 1,5 − 1,08 = 0,42 kg. Litri = surplus × 1.608.</p>
+  <h3>Domande (scrivi i calcoli sul foglio)</h3>
+  <ol>
+  <li>Quale menu ha il surplus più alto in litri? Quanti litri in più rispetto al menu A?</li>
+  <li>Percentuale di spreco del pane nel menu B: surplus ÷ acquistato × 100 = ____ %.</li>
+  <li>Se il menu B si ripete per 5 giorni, quanti litri di surplus si accumulano in una settimana?</li>
+  <li>Quanti kg di pane e di formaggio servono davvero per il menu B, senza surplus?</li>
+  </ol>
+  <h3>Piccola relazione sull'impronta idrica</h3>
+  <p>Rispondi con frasi complete, usando la tabella.</p>
+  <ol>
+  <li>Completa: "L'impronta idrica è la quantità di ______________ usata per produrre ______________."</li>
+  <li>Perché l'impronta idrica è molto più grande dell'acqua che bevi? Fai un esempio con un alimento della tabella.</li>
+  <li>Quale alimento ha l'impronta più alta e quale la più bassa, per 1 kg? Quante volte è più alta la prima?</li>
+  <li>Perché i valori sono stime e non misure esatte? Che cosa potrebbe cambiare nel valore di una mela?</li>
+  <li>Che cosa succede all'acqua quando compriamo più cibo del necessario? Usa la parola <b>surplus</b>.</li>
+  </ol>
+  <p>______________________________________________________________________________</p>
+  <p>______________________________________________________________________________</p>
+  <h3>La mia proposta</h3>
+  <p>Scelgo il menu ______, compro ______ kg di ______________ e ______ kg di ______________, perché ____________________________________________________________.</p>
+  <p>Una frase sulle stime: i litri sono valori medi, non l'acqua esatta usata dalla nostra scuola.</p>
+  <h3>Controllo prima di consegnare</h3>
+  <p>☐ Ho scritto il titolo ☐ L'istogramma ha la scala ☐ Il diagramma ha punti e linea ☐ Il surplus è scritto con il calcolo ☐ Ho scritto la proposta</p>
+  <p><b>Firma:</b> ______________________</p>
+  <div class="controls"><button onclick="show('t5')">← Verifica</button><button class="primary" onclick="window.print()">Stampa (A4, una pagina)</button></div>
+</section>
+<section id="t8old" style="display:none">
+  <div class="sec-head"><h2>8 · Elaborato finale</h2></div>
+  <p><b>LA NOSTRA MERENDA SENZA SPRECHI.</b> Lavorate in gruppo, poi stampate o salvate come PDF questa pagina. Tempo previsto: 25 minuti.</p>
+  <h3>Titolo del lavoro</h3>
+  <input style="width:100%;font:inherit;padding:8px;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--ink)" placeholder="Titolo">
+  <h3>Ruoli</h3>
+  <table><tr><th>Ruolo</th><th>Che cosa fa</th><th>Nome</th></tr>
+  <tr><td>Lettore dei dati</td><td>Legge i valori e controlla le unità</td><td><input size="16"></td></tr>
+  <tr><td>Responsabile del grafico</td><td>Disegna e controlla barre e assi</td><td><input size="16"></td></tr>
+  <tr><td>Responsabile dei calcoli</td><td>Completa e ricontrolla i calcoli</td><td><input size="16"></td></tr>
+  <tr><td>Portavoce</td><td>Controlla la lista e presenta la proposta</td><td><input size="16"></td></tr></table>
+  <h3>Parti del lavoro</h3>
+  <p>Istogramma (scala, unità e nomi degli alimenti):</p><textarea class="ta"></textarea>
+  <p>Diagramma delle mele (punti, linea, unità):</p><textarea class="ta"></textarea>
+  <p>Calcolo del surplus (4 kg − 3 kg e impronta associata):</p><textarea class="ta"></textarea>
+  <p>Proposta concreta motivata:</p><textarea class="ta"></textarea>
+  <p>Una frase che spiega perché i dati sono stime e non misure esatte:</p><textarea class="ta"></textarea>
+  <h3>Checklist finale</h3>
+  <p><label><input type="checkbox"> Titolo</label><br><label><input type="checkbox"> Istogramma con unità e scala</label><br><label><input type="checkbox"> Diagramma delle mele con punti e linea</label><br><label><input type="checkbox"> Calcolo del surplus</label><br><label><input type="checkbox"> Impronta del surplus</label><br><label><input type="checkbox"> Proposta concreta</label><br><label><input type="checkbox"> Frase sulle stime</label></p>
+  <h3>Autovalutazione</h3>
+  <p><label><input type="checkbox"> Ho capito i dati</label> · <label><input type="checkbox"> So leggere l'istogramma</label> · <label><input type="checkbox"> So trovare un punto sul grafico</label> · <label><input type="checkbox"> So spiegare il surplus</label></p>
+  <div class="controls"><button onclick="show('t5')">← Verifica</button><button class="primary" onclick="window.print()">Stampa / Salva come PDF</button></div>
+</section>
+<section id="t9">
+  <div class="sec-head"><h2>9 · Confronto di menu</h2><button class="speak" onclick="speak(document.getElementById('t9').innerText)">🔊 Leggi</button></div>
+  <p>Regola per ogni alimento: <b>grammi × litri per kg ÷ 1000</b>. Per il pasto si sommano i litri di tutti gli ingredienti. Tempo previsto: 25 minuti.</p>
+  <h3>Confronto tra merende e pranzi (per una persona)</h3>
+  <table>
+  <tr><th>Menu</th><th>Ingredienti (grammi)</th><th>Litri</th><th>Per 22 alunni</th></tr>
+  <tr><td>A. Frutta</td><td>mela 150 g</td><td>123 L</td><td>2.706 L</td></tr>
+  <tr><td>B. Panino</td><td>pane 60 g + formaggio 40 g</td><td>223 L</td><td>4.906 L</td></tr>
+  <tr><td>C. Banana</td><td>banana 150 g</td><td>119 L</td><td>2.618 L</td></tr>
+  <tr><td>D. Pane e pomodoro</td><td>pane 60 g + pomodoro 80 g</td><td>113 L</td><td>2.486 L</td></tr>
+  <tr><td>Pranzo vegetariano</td><td>pasta 80 g, formaggio 40 g, pomodoro 100 g, cavolo 150 g, pane 50 g</td><td>412 L</td><td>9.064 L</td></tr>
+  <tr><td>Pranzo con pollo</td><td>pasta 80 g, pollo 50 g, pomodoro 100 g, cavolo 150 g, pane 50 g</td><td>500 L</td><td>11.000 L</td></tr>
+  <tr><td>Pranzo con carne bovina</td><td>pasta 80 g, carne bovina 100 g, pomodoro 100 g, cavolo 150 g, pane 50 g</td><td>1.825 L</td><td>40.150 L</td></tr>
+  <tr><td>Colazione con uova</td><td>latte 200 g, uovo 60 g, pane 50 g</td><td>482 L</td><td>10.604 L</td></tr>
+  <tr><td>Merenda con yogurt</td><td>yogurt 125 g, arancia 150 g</td><td>105 L</td><td>2.310 L</td></tr>
+  </table>
+  <div class="note"><b>Tutti i valori sono stime.</b> Carne bovina, pollo, maiale, caffe e cioccolato sono ripresi dall'articolo Zanichelli citato nella sezione 10. Sono medie globali per 1 kg di prodotto, e fonti diverse danno numeri diversi. Per le uova le fonti indicano circa 196 L per un uovo da 60 g, cioè circa 3.300 L/kg. Arrotondamenti: i litri sono riportati senza decimali.</div>
+  <h3>Domande di confronto</h3>
+  <ol>
+  <li>Quante volte pesa di più in litri il pranzo con carne bovina rispetto al pranzo vegetariano? Arrotonda al decimo.</li>
+  <li>Se in una settimana (5 giorni) un alunno sceglie ogni giorno il panino B invece della frutta A, quanti litri in più consuma in totale?</li>
+  <li>Quale merenda ha l'impronta più bassa? Di quanti litri è inferiore alla merenda B?</li>
+  <li>Se il pranzo con pollo viene preparato per 22 alunni ma ne mangiano solo 20, quanti litri risultano associati al cibo non consumato?</li>
+  </ol>
+  <h3>Costruisci il tuo menu</h3>
+  <p>Inserisci i grammi di ogni ingrediente: i litri si calcolano automaticamente. Ricorda che tutti i valori sono stime.</p>
+  <table>
+  <thead><tr><th>Alimento</th><th>Litri per kg</th><th>Grammi</th><th>Litri</th></tr></thead>
+  <tbody id="bBody"></tbody>
+  <tfoot><tr><th colspan="3">Totale del menu</th><th id="btot">0 L</th></tr></tfoot>
+  </table>
+  <div class="controls"><button onclick="show('t8')">← Elaborato</button><button class="primary" onclick="show('t0')">Torna all'inizio</button></div>
+</section>
+<section id="t10">
+  <div class="sec-head"><h2>10 · Approfondimento: l'acqua nascosta</h2><button class="speak" onclick="speak(document.getElementById('t10').innerText)">🔊 Leggi</button></div>
+  <p>Tutti i giorni usiamo acqua in modo diretto: per bere, lavarci, cucinare. Ma gran parte dell'acqua che consumiamo non passa dal rubinetto. È incorporata in ciò che mangiamo, indossiamo e compriamo. È l'<b>impronta idrica</b>.</p>
+  <p><b>Approfondimento per studenti e docenti:</b> <a href="https://aulascienze.scuola.zanichelli.it/speciali-scienze/speciale-2024-la-risorsa-scarsa/?content=impronta-idrica-umanita" target="_blank" rel="noopener">L'impronta idrica dell'umanità, Aula di scienze Zanichelli</a></p>
+  <h3>Un'acqua dolce limitata</h3>
+  <p>Quasi tutta l'acqua del pianeta è salata, e l'acqua dolce facilmente utilizzabile è una quota molto piccola, circa l'1% del totale. Per questo ogni litro conta: l'acqua dolce è una risorsa limitata che tutti devono condividere.</p>
+  <h3>Dove va l'acqua</h3>
+  <p>Il settore agricolo è il principale consumatore di acqua dolce nel mondo: secondo le stime più citate usa circa il 70% del prelievo totale. Industria e uso domestico prelevano il resto. Il cibo, quindi, è il punto dove si decide gran parte del consumo d'acqua.</p>
+  <h3>Tre tipi di acqua</h3>
+  <p>L'impronta idrica si divide in tre parti. L'<b>acqua verde</b> è la pioggia assorbita dalle piante. L'<b>acqua blu</b> è quella prelevata da fiumi, laghi e falde. L'<b>acqua grigia</b> è la quantità di acqua necessaria a diluire l'inquinamento prodotto dalla coltivazione, per esempio dai fertilizzanti.</p>
+  <h3>Quanto pesano gli alimenti</h3>
+  <p>Le stime per 1 kg di prodotto (medie globali) sono molto diverse: 822 L per le mele, 1.608 L per il pane, 2.497 L per il riso, circa 3.300 L per le uova e circa 15.400 L per la carne bovina. La carne pesa di più perché l'animale mangia colture, e l'acqua usata per produrre quel mangime si aggiunge a quella dell'allevamento.</p>
+  <h3>Esempio di calcolo</h3>
+  <p>Un panino con 60 g di pane e 40 g di formaggio. Il pane: 0,06 kg × 1.608 L/kg = circa 96 L. Il formaggio: 0,04 kg × 3.178 L/kg = circa 127 L. Totale: circa 223 L. Ricorda che sono stime.</p>
+  <h3>Non è acqua sprecata per sempre</h3>
+  <p>L'acqua verde torna nel ciclo naturale. L'acqua blu, invece, può ridurre le risorse disponibili per le famiglie, per i fiumi e per altri usi, soprattutto nelle zone dove l'acqua scarseggia. Per questo conta da dove viene e quanto ne serve.</p>
+  <h3>Dati dall'articolo di riferimento</h3>
+  <p>I dati seguenti sono ripresi dall'articolo Zanichelli citato sopra. Sono stime, non misure esatte.</p>
+  <ul>
+  <li>Acqua dolce utilizzabile: meno dell'1% di quella presente sulla Terra, perché gran parte è intrappolata nei ghiacci.</li>
+  <li>Italia: consumo diretto di circa 236 litri al giorno a persona; impronta idrica complessiva di circa 6.300 litri al giorno a persona, considerando anche i consumi indiretti.</li>
+  <li>Impronta idrica annua per persona: circa 1.385 metri cubi nel mondo, 2.842 negli Stati Uniti e 2.332 in Italia.</li>
+  <li>Una mela singola: circa 70 litri, a differenza del valore per chilo (822 L), che riguarda un'altra quantità. Questa differenza va spiegata in classe.</li>
+  <li>Un hamburger di manzo da 150 grammi: circa 2.400 litri.</li>
+  <li>Cotone: circa 10.000 litri al chilo; una t-shirt di cotone: circa 2.700 litri.</li>
+  <li>Una fetta di pane: circa 40 litri.</li>
+  <li>Caffè: quasi 19.000 litri al chilo; una tazzina: circa 130 litri.</li>
+  <li>Cioccolato: circa 20.000 litri al chilo.</li>
+  <li>Verdura: in media circa 300 litri al chilo.</li>
+  </ul>
+  <h3>Come si calcola l'impronta idrica</h3>
+  <p>Il calcolo ha tre passaggi. Primo: si individua la quantità di alimento in grammi. Secondo: si trasforma in chilogrammi, dividendo per 1.000. Terzo: si moltiplica per il valore in litri per chilo.</p>
+  <p><b>Esempio 1.</b> Una mela di 150 g: 150 ÷ 1.000 = 0,15 kg; 0,15 × 822 = circa 123 L.</p>
+  <p><b>Esempio 2.</b> Una porzione di 100 g di carne bovina: 100 ÷ 1.000 = 0,1 kg; 0,1 × 15.400 = 1.540 L.</p>
+  <h3>Parole chiave</h3>
+  <ul>
+  <li><b>Impronta idrica:</b> la quantità di acqua dolce usata per produrre un bene o un servizio, lungo tutta la filiera.</li>
+  <li><b>Acqua virtuale:</b> l'acqua usata per produrre un bene. Non si vede nel prodotto finito, ma è contenuta nel suo costo idrico.</li>
+  <li><b>Acqua verde, blu, grigia:</b> le tre componenti dell'impronta, spiegate nella sezione sopra.</li>
+  <li><b>Stima media:</b> un valore calcolato su molti casi. Non descrive esattamente una singola mela o un singolo panino.</li>
+  </ul>
+  <h3>Tre errori da evitare</h3>
+  <ol>
+  <li>Confondere l'impronta idrica con l'acqua che beviamo o versiamo sul cibo.</li>
+  <li>Confrontare valori riferiti a quantità diverse, per esempio una mela singola (circa 70 L) e un chilo di mele (822 L).</li>
+  <li>Considerare una stima media come una misura esatta della nostra merenda.</li>
+  </ol>
+  <h3>Che cosa cambia nelle nostre scelte</h3>
+  <p>L'acqua che usiamo direttamente, dal rubinetto, è una piccola parte dell'impronta. In Italia il consumo diretto è di circa 236 litri al giorno a persona, mentre l'impronta complessiva arriva a circa 6.300 litri. Per questo le scelte più efficaci riguardano il cibo che compriamo e quanto ne sprechiamo: comprare le quantità necessarie, preferire alimenti vegetali, usare gli avanzi e non buttare il pane.</p>
+  <h3>Per riflettere</h3>
+  <ol>
+  <li>Perché l'acqua nascosta è più grande di quella che usiamo direttamente?</li>
+  <li>Quale merenda della tabella ha l'impronta più bassa, e perché?</li>
+  <li>Che cosa cambierebbe se il riso fosse prodotto in una zona con molta pioggia invece che in una zona secca?</li>
+  </ol>
+  <div class="controls"><button onclick="const s=document.getElementById('sol10');s.style.display=s.style.display==='block'?'none':'block';">Mostra le soluzioni</button></div>
+  <div id="sol10" class="note" style="display:none">
+  <ol>
+  <li>L'acqua nascosta è più grande perché include quella usata per produrre cibo, vestiti e altri beni, non solo quella del rubinetto. In Italia il consumo diretto è di circa 236 litri al giorno, mentre l'impronta complessiva è di circa 6.300 litri.</li>
+  <li>La merenda con l'impronta più bassa è la D, pane e pomodoro, con circa 113 litri. È inferiore alla merenda B (panino con formaggio, 223 litri) di circa 110 litri.</li>
+  <li>Il valore cambierebbe. Con più pioggia cresce la quota di acqua verde e cala quella di acqua blu prelevata da fiumi e falde. Il dato medio è una stima: il luogo di produzione conta.</li>
+  </ol>
+  </div>
+  <div class="controls"><button onclick="show('t9')">← Confronto menu</button><button class="primary" onclick="show('t0')">Torna all'inizio</button></div>
+</section>
+</main>
+<script>
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var DATA = [{
+  n: "Riso",
+  v: 2497
+}, {
+  n: "Pane",
+  v: 1608
+}, {
+  n: "Mele",
+  v: 822
+}, {
+  n: "Patate",
+  v: 287
+}];
+var APPLE = 822;
+var showVals = false;
+function show(id) {
+  document.querySelectorAll('section').forEach(function (s) {
+    return s.classList.toggle('active', s.id === id);
+  });
+  document.querySelectorAll('nav button').forEach(function (b) {
+    return b.classList.toggle('on', b.dataset.tab === id);
+  });
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('nav button').forEach(function (b) {
+  return b.onclick = function () {
+    return show(b.dataset.tab);
+  };
+});
+function speak(t) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t.replace(/\s+/g, ' ').slice(0, 900));
+  u.lang = 'it-IT';
+  u.rate = 0.9;
+  speechSynthesis.speak(u);
+}
+
+/* ---- Istogramma ---- */
+function drawHist() {
+  var maxV = 2800,
+    top = 20,
+    bot = 310,
+    left = 70,
+    right = 580;
+  var Y = function Y(v) {
+    return bot - v / maxV * (bot - top);
+  };
+  var s = '';
+  for (var v = 0; v <= maxV; v += 100) {
+    var y = Y(v);
+    s += `<line x1="${left}" x2="${right}" y1="${y}" y2="${y}" stroke="var(--line)"/>`;
+    if (v % 500 === 0) s += `<text x="${left - 8}" y="${y + 5}" text-anchor="end" font-size="14" fill="var(--muted)">${v}</text>`;
+  }
+  s += `<line x1="${left}" x2="${left}" y1="${top}" y2="${bot}" stroke="var(--ink)" stroke-width="2"/>`;
+  s += `<line x1="${left}" x2="${right}" y1="${bot}" y2="${bot}" stroke="var(--ink)" stroke-width="2"/>`;
+  s += `<text x="14" y="${(top + bot) / 2}" font-size="14" fill="var(--ink)" transform="rotate(-90 14 ${(top + bot) / 2})" text-anchor="middle">litri (L)</text>`;
+  var step = (right - left) / DATA.length;
+  DATA.forEach(function (d, i) {
+    var cx = left + step * i + step / 2,
+      w = 70,
+      y = Y(d.v);
+    var col = ['#1f5fa8', '#b36b00', '#2e7d4f', '#8a5a9e'][i];
+    s += `<rect x="${cx - w / 2}" y="${y}" width="${w}" height="${bot - y}" fill="${col}" rx="4"/>`;
+    s += `<text x="${cx}" y="${bot + 22}" text-anchor="middle" font-size="16" fill="var(--ink)">${d.n}</text>`;
+    if (showVals) s += `<text x="${cx}" y="${y - 8}" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">${d.v.toLocaleString('it-IT')} L</text>`;
+  });
+  document.getElementById('hist').innerHTML = s;
+}
+document.getElementById('btnVal').onclick = function () {
+  showVals = !showVals;
+  drawHist();
+};
+
+/* ---- Diagramma mele ---- */
+var L_LEFT = 70,
+  L_RIGHT = 580,
+  L_TOP = 20,
+  L_BOT = 320;
+var X = function X(k) {
+  return L_LEFT + k * (L_RIGHT - L_LEFT) / 4;
+};
+var YL = function YL(l) {
+  return L_BOT - l / 3500 * (L_BOT - L_TOP);
+};
+var shown = [0];
+function drawGrid() {
+  var s = '';
+  for (var l = 0; l <= 3500; l += 500) {
+    var y = YL(l);
+    s += `<line x1="${L_LEFT}" x2="${L_RIGHT}" y1="${y}" y2="${y}" stroke="var(--line)"/>`;
+    s += `<text x="${L_LEFT - 8}" y="${y + 5}" text-anchor="end" font-size="14" fill="var(--muted)">${l}</text>`;
+  }
+  for (var k = 0; k <= 4; k++) {
+    s += `<text x="${X(k)}" y="${L_BOT + 22}" text-anchor="middle" font-size="15" fill="var(--muted)">${k}</text>`;
+  }
+  s += `<line x1="${L_LEFT}" x2="${L_LEFT}" y1="${L_TOP}" y2="${L_BOT}" stroke="var(--ink)" stroke-width="2"/>`;
+  s += `<line x1="${L_LEFT}" x2="${L_RIGHT}" y1="${L_BOT}" y2="${L_BOT}" stroke="var(--ink)" stroke-width="2"/>`;
+  s += `<text x="${(L_LEFT + L_RIGHT) / 2}" y="${L_BOT + 44}" text-anchor="middle" font-size="15" fill="var(--ink)">kg di mele (x)</text>`;
+  s += `<text x="16" y="${(L_TOP + L_BOT) / 2}" font-size="15" fill="var(--ink)" transform="rotate(-90 16 ${(L_TOP + L_BOT) / 2})" text-anchor="middle">litri (y)</text>`;
+  var pts = shown.map(function (k) {
+    return [k, APPLE * k];
+  });
+  if (pts.length > 1) {
+    s += `<polyline fill="none" stroke="var(--accent)" stroke-width="3" points="${pts.map(function (_ref) {
+      var _ref2 = _slicedToArray(_ref, 2),
+        k = _ref2[0],
+        l = _ref2[1];
+      return X(k) + ',' + YL(l);
+    }).join(' ')}"/>`;
+  }
+  pts.forEach(function (_ref3) {
+    var _ref4 = _slicedToArray(_ref3, 2),
+      k = _ref4[0],
+      l = _ref4[1];
+    s += `<circle cx="${X(k)}" cy="${YL(l)}" r="7" fill="var(--accent)"/>`;
+    s += `<text x="${X(k) + 10}" y="${YL(l) - 8}" font-size="14" fill="var(--ink)">(${k}; ${l.toLocaleString('it-IT')})</text>`;
+  });
+  document.getElementById('grid').innerHTML = s;
+  var btns = document.getElementById('ptBtns');
+  if (!btns.children.length) {
+    var _loop = function _loop(_k) {
+      var b = document.createElement('button');
+      b.textContent = `Punto ${_k} kg`;
+      b.onclick = function () {
+        if (!shown.includes(_k)) {
+          shown.push(_k);
+          shown.sort(function (a, b) {
+            return a - b;
+          });
+          drawGrid();
+        }
+      };
+      btns.appendChild(b);
+    };
+    for (var _k = 0; _k <= 4; _k++) {
+      _loop(_k);
+    }
+    var r = document.createElement('button');
+    r.textContent = 'Ricomincia';
+    r.onclick = function () {
+      shown = [0];
+      drawGrid();
+    };
+    btns.appendChild(r);
+  }
+  var t = document.getElementById('calcTab');
+  t.innerHTML = '<tr><th>Mele</th><th>Calcolo</th><th>Litri</th></tr>';
+  for (var _k2 = 0; _k2 <= 4; _k2++) {
+    var done = shown.includes(_k2);
+    t.innerHTML += `<tr><td>${_k2} kg</td><td>${_k2} × 822</td><td>${done ? (APPLE * _k2).toLocaleString('it-IT') + ' L' : '—'}</td></tr>`;
+  }
+}
+
+/* ---- Surplus ---- */
+function fillSelect(id, def) {
+  var sel = document.getElementById(id);
+  for (var k = 1; k <= 6; k++) {
+    var o = document.createElement('option');
+    o.value = k;
+    o.textContent = k + ' kg';
+    if (k === def) o.selected = true;
+    sel.appendChild(o);
+  }
+  sel.onchange = updateSurplus;
+}
+var selectedChoice = null;
+function updateSurplus() {
+  var need = +document.getElementById('need').value,
+    buy = +document.getElementById('buy').value;
+  var s = Math.max(0, buy - need),
+    l = s * APPLE;
+  document.getElementById('surplusCalc').innerHTML = `Passo 1: serve <b>${need} kg</b>.<br>Passo 2: si propone di comprare <b>${buy} kg</b>.<br>` + `Passo 3: ${buy} − ${need} = <b>${s} kg</b> in più.<br>` + `Passo 4: ${s} × 822 = <b>${l.toLocaleString('it-IT')} L</b> associati al surplus.`;
+  choose(selectedChoice, true);
+}
+function choose(c, silent) {
+  if (!c) {
+    return;
+  }
+  selectedChoice = c;
+  var need = +document.getElementById('need').value,
+    buy = +document.getElementById('buy').value;
+  var fb = document.getElementById('choiceFb');
+  document.getElementById('chooseBuy').classList.toggle('on', c === 'buy');
+  document.getElementById('chooseNeed').classList.toggle('on', c === 'need');
+  if (c === 'need') {
+    fb.innerHTML = `<span class="ok">Scelta motivata: proponiamo di acquistare ${need} kg, la quantità necessaria.</span>`;
+  } else {
+    fb.innerHTML = `<span class="bad">Attenzione: comprare ${buy} kg produrrebbe ${buy - need} kg di avanzo e un'impronta da evitare.</span>`;
+  }
+}
+fillSelect('need', 3);
+fillSelect('buy', 4);
+
+/* ---- Verifica ---- */
+var QUIZ = [{
+  q: "1. Quale grafico permette di confrontare l'impronta idrica dei quattro alimenti?",
+  o: ["Il diagramma cartesiano", "L'istogramma", "Il surplus"],
+  a: 1,
+  ok: "Esatto: l'istogramma confronta barre per ogni alimento.",
+  no: "Il diagramma cartesiano serve per le coppie kg-litri; l'istogramma confronta alimenti."
+}, {
+  q: "2. Che cosa significa il punto (3; 2.466) nel diagramma delle mele?",
+  o: ["3 litri per 2.466 kg", "3 kg di mele corrispondono a 2.466 litri stimati", "2.466 kg di mele costano 3 euro"],
+  a: 1,
+  ok: "Esatto: il primo numero sono i kg, il secondo i litri stimati.",
+  no: "Il primo numero è sempre i kg, il secondo i litri."
+}, {
+  q: "3. Quale azione evita di comprare cibo in eccesso?",
+  o: ["Comprare sempre di più per sicurezza", "Calcolare la quantità necessaria prima di comprare", "Buttare il cibo che avanza"],
+  a: 1,
+  ok: "Esatto: pianificare la quantità prima dell'acquisto evita lo spreco.",
+  no: "Pianificare prima dell'acquisto è l'azione giusta."
+}];
+var scored = 0,
+  answered = 0;
+function renderQuiz() {
+  var box = document.getElementById('quiz');
+  box.innerHTML = '';
+  QUIZ.forEach(function (item, i) {
+    var d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = `<p>${item.q}</p>`;
+    item.o.forEach(function (txt, j) {
+      var b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = txt;
+      b.onclick = function () {
+        if (item.done) return;
+        item.done = true;
+        answered++;
+        var fb = d.querySelector('.fb');
+        if (j === item.a) {
+          scored++;
+          fb.innerHTML = `<span class="ok">${item.ok}</span>`;
+        } else fb.innerHTML = `<span class="bad">${item.no}</span>`;
+        document.getElementById('score').textContent = `Risposte corrette: ${scored} su ${QUIZ.length}`;
+      };
+      d.appendChild(b);
+    });
+    var f = document.createElement('div');
+    f.className = 'fb';
+    d.appendChild(f);
+    box.appendChild(d);
+  });
+}
+var SORT = [["Il pane che mangio a merenda", "V"], ["Acqua usata per far crescere il grano", "N"], ["Trasporto del pane con il camion", "N"], ["La mela che tengo in mano", "V"], ["Terreno usato per il frutteto", "N"], ["Energia per conservare il formaggio in frigo", "N"]];
+function mkSort() {
+  var box = document.getElementById('sort0');
+  var ok = 0;
+  SORT.forEach(function (_ref5) {
+    var _ref6 = _slicedToArray(_ref5, 2),
+      t = _ref6[0],
+      a = _ref6[1];
+    var d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<p>' + t + '</p>';
+    var f = document.createElement('div');
+    f.className = 'fb';
+    [['V', 'Visibile'], ['N', 'Nascosta']].forEach(function (_ref7) {
+      var _ref8 = _slicedToArray(_ref7, 2),
+        k = _ref8[0],
+        l = _ref8[1];
+      var b = document.createElement('button');
+      b.textContent = l;
+      b.onclick = function () {
+        if (d.dataset.done) return;
+        d.dataset.done = 1;
+        if (k === a) {
+          ok++;
+          f.innerHTML = '<span class="ok">Giusto</span>';
+        } else f.innerHTML = '<span class="bad">No: era ' + (a === 'V' ? 'visibile' : 'nascosta') + '</span>';
+        document.getElementById('sort0fb').textContent = 'Risposte corrette: ' + ok + ' su ' + SORT.length;
+      };
+      d.appendChild(b);
+    });
+    d.appendChild(f);
+    box.appendChild(d);
+  });
+}
+var EX = [{
+  q: '2 kg di pane: quanti litri?',
+  a: 3216
+}, {
+  q: '3 kg di riso: quanti litri?',
+  a: 7491
+}, {
+  q: '5 kg di patate: quanti litri?',
+  a: 1435
+}, {
+  q: '1,5 kg di mele: quanti litri?',
+  a: 1233
+}, {
+  q: '2,5 kg di mele: quanti litri?',
+  a: 2055
+}, {
+  q: 'Quanti kg di mele corrispondono a 2.466 L?',
+  a: 3
+}];
+function mkEx() {
+  var box = document.getElementById('ex6');
+  EX.forEach(function (e, i) {
+    var d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<p>' + e.q + '</p><input id="ex' + i + '" inputmode="decimal" size="12"> <button>Controlla</button> <span class="fb"></span>';
+    box.appendChild(d);
+    d.querySelector('button').onclick = function () {
+      var v = parseFloat(document.getElementById('ex' + i).value.replace(/\./g, '').replace(',', '.'));
+      var f = d.querySelector('.fb');
+      f.innerHTML = Math.abs(v - e.a) < 0.5 ? '<span class="ok">Corretto</span>' : '<span class="bad">Ricontrolla: kg × litri per kg</span>';
+    };
+  });
+}
+function checkC2() {
+  var kg = parseFloat(document.getElementById('c2kg').value.replace(',', '.'));
+  var l = parseFloat(document.getElementById('c2l').value.replace(/\./g, '').replace(',', '.'));
+  document.getElementById('c2fb').innerHTML = kg === 2 && l === 574 ? '<span class="ok">Corretto: 7 − 5 = 2 kg; 2 × 287 = 574 L.</span>' : '<span class="bad">Ricontrolla: surplus = acquistato − necessario; poi moltiplica per 287.</span>';
+}
+function c2choice(c) {
+  document.getElementById('c2ch').innerHTML = c === 'need' ? '<span class="ok">Scelta motivata: 5 kg sono la quantità necessaria.</span>' : '<span class="bad">Con 7 kg avanzano 2 kg di patate, cioè 574 L associati da evitare.</span>';
+}
+var ING = [["Mela", 822], ["Banana", 790], ["Pane", 1608], ["Pasta secca", 1849], ["Riso", 2497], ["Patate", 287], ["Pomodoro", 214], ["Cavolo", 237], ["Formaggio", 3178], ["Pollo", 4300], ["Carne bovina", 15400], ["Maiale", 6000], ["Uova (circa 196 L per uovo da 60 g)", 3300], ["Latte", 1020], ["Yogurt", 291], ["Lattuga", 240], ["Arance", 460], ["Olive", 3025], ["Prosciutto", 6000], ["Cioccolato", 20000], ["Caffè", 19000]];
+function mkBuilder() {
+  var b = document.getElementById('bBody');
+  ING.forEach(function (x, i) {
+    var r = document.createElement('tr');
+    r.innerHTML = '<td>' + x[0] + '</td><td>' + x[1].toLocaleString('it-IT') + '</td><td><input type="number" min="0" value="0" id="g' + i + '" size="6"></td><td id="l' + i + '">0 L</td>';
+    b.appendChild(r);
+    r.querySelector('input').oninput = updB;
+  });
+}
+function updB() {
+  var tot = 0;
+  ING.forEach(function (x, i) {
+    var g = +document.getElementById('g' + i).value || 0;
+    var l = g * x[1] / 1000;
+    tot += l;
+    document.getElementById('l' + i).textContent = Math.round(l).toLocaleString('it-IT') + ' L';
+  });
+  document.getElementById('btot').textContent = Math.round(tot).toLocaleString('it-IT') + ' L';
+}
+mkSort();
+mkEx();
+mkBuilder();
+drawHist();
+drawGrid();
+renderQuiz();
+updateSurplus();
+</script>
+</body>
+</html>

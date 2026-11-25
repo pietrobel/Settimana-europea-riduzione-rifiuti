@@ -59,7 +59,7 @@ export function renderMezzovalleView(container: HTMLElement, ctx: MezzovalleCont
   const subNav = `
     <div class="serr-subnav" role="tablist" aria-label="Attività Percorso Mezzovalle">
       <button type="button" class="serr-pill ${uiState.subTab === "home" ? "active" : ""}" data-m-tab="home">Panoramica Percorso A</button>
-      <button type="button" class="serr-pill ${uiState.subTab === "impronte" ? "active" : ""}" data-m-tab="impronte">Scheda Impronte (Eco &amp; Idrica)</button>
+      <button type="button" class="serr-pill ${uiState.subTab === "impronte" ? "active" : ""}" data-m-tab="impronte">App Unificata: Impronte &amp; Nascosta</button>
       <button type="button" class="serr-pill ${uiState.subTab === "a1" ? "active" : ""}" data-m-tab="a1">A1 · Acqua Nascosta (15 cibi)</button>
       <button type="button" class="serr-pill ${uiState.subTab === "a2" ? "active" : ""}" data-m-tab="a2">A2 · Calcolatore Impronta</button>
       <button type="button" class="serr-pill ${uiState.subTab === "a3" ? "active" : ""}" data-m-tab="a3">A3 · Viaggio in 7 Fasi</button>
@@ -133,7 +133,7 @@ function renderHome(ctx: MezzovalleContext): string {
       <div class="serr-card">
         <h4 style="margin-top:0;">Accedi subito ai laboratori</h4>
         <div class="serr-mini-cards">
-          <button type="button" class="serr-action-tile" data-m-tab="impronte"><strong>Modulo Impronte · Ecologica &amp; Idrica</strong><span>Scheda interattiva: gha, biocapacità, acqua verde, blu, grigia, quiz e azioni</span></button>
+          <button type="button" class="serr-action-tile" data-m-tab="impronte"><strong>App Unificata · Impronte &amp; L'Impronta Nascosta</strong><span>7 schede complete: Ecologica, Idrica, Verde/Blu/Grigia, Lab Ecologico (g·m²), Lab Idrico (11 attività + A4) e Verifica</span></button>
           <button type="button" class="serr-action-tile" data-m-tab="a1"><strong>A1 · L'Acqua Nascosta</strong><span>15 alimenti, grafici proporzionali, confronto e gioco di ordinamento</span></button>
           <button type="button" class="serr-action-tile" data-m-tab="a2"><strong>A2 · Calcolatore Impronta</strong><span>Seleziona grammi e confronta Pasto A vs Pasto B</span></button>
           <button type="button" class="serr-action-tile" data-m-tab="a3"><strong>A3 · Viaggio in 7 Fasi</strong><span>Dalla preparazione del terreno fino al consumo finale</span></button>
@@ -148,17 +148,17 @@ function renderHome(ctx: MezzovalleContext): string {
 
 function renderImpronteEmbed(ctx: MezzovalleContext): string {
   const done = ctx.state.completedActivities.includes("M_IMPRONTE");
-  const frameHeight = uiState.impronteFrameTall ? "820px" : "clamp(540px, 68dvh, 760px)";
+  const frameClass = uiState.impronteFrameTall ? "embedded-app-iframe tall" : "embedded-app-iframe";
   return `
     <div class="serr-info-strip">
-      <strong>Scheda Didattica Interattiva Integrata · Quanto pesiamo sul pianeta?</strong>
-      Esplora le 5 schede interattive direttamente qui sotto: <em>1. Impronta ecologica (gha e biocapacità)</em>, <em>2. Impronta idrica diretta/indiretta</em>, <em>3. Acqua verde, blu e grigia</em>, <em>4. Verifica rapida</em> e <em>5. Checklist azioni quotidiane</em>.
+      <strong>App Unificata Integrata · Impronte Ecologica, Idrica &amp; L'Impronta Nascosta:</strong>
+      7 schede complete senza passaggi esterni: <em>1. Impronta ecologica</em>, <em>2. Impronta idrica</em>, <em>3. Esploratore Verde/Blu/Grigia</em>, <em>4. Lab Impronta Ecologica (grafici, g·m², pianeti)</em>, <em>5. Lab L'Impronta Nascosta (11 attività &amp; A4)</em>, <em>6. Verifica 10 domande</em> e <em>7. Azioni &amp; Impatto</em>.
     </div>
     <div class="serr-card">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
         <div>
-          <span class="serr-badge-small">MODULO INTERATTIVO INTEGRATO · MEZZOVALLE</span>
-          <h4 style="margin:4px 0 0;">Impronte: ecologica, idrica e acqua verde, blu e grigia</h4>
+          <span class="serr-badge-small">MODULO UNIFICATO · MEZZOVALLE</span>
+          <h4 style="margin:4px 0 0;">Impronte Ecologica, Idrica &amp; L'Impronta Nascosta</h4>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
           <button type="button" class="btn btn-sm" id="btn-impronte-tall">${uiState.impronteFrameTall ? "Altezza compatta" : "Espandi vista LIM"}</button>
@@ -167,9 +167,10 @@ function renderImpronteEmbed(ctx: MezzovalleContext): string {
         </div>
       </div>
       <iframe
-        src="/assets/aistudio/Impronte__ecologica__idrica_e_acqua_verde__blu_e_grigia_a67eff9e.html"
-        title="Modulo interattivo: Impronte ecologica, idrica e acqua verde, blu e grigia"
-        style="width:100%;height:${frameHeight};border:1.5px solid var(--border);border-radius:12px;background:#f6f8f5;display:block;"
+        src="${import.meta.env.BASE_URL}assets/aistudio/Impronte__ecologica__idrica_e_acqua_verde__blu_e_grigia_a67eff9e.html"
+        title="App unificata: Impronte ecologica, idrica e L'Impronta Nascosta"
+        class="${frameClass}"
+        style="width:100%;border:1.5px solid var(--border);border-radius:12px;background:#f5f7f3;display:block;"
         loading="lazy"
       ></iframe>
     </div>

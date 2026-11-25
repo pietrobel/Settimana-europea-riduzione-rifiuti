@@ -8,6 +8,222 @@
   <meta property="og:title" content="SERR 2026 · Rete dei Cinque Borghi" />
   <meta property="og:description" content="Progetta meglio, acquista consapevole, riduci gli sprechi. Risorsa per LIM, Primaria e Secondaria I grado." />
   <meta property="og:type" content="website" />
+  <script id="serr-early-compat">
+  (function () {
+    "use strict";
+    /* 1. Polyfill ES5-safe per API DOM/Array/Object usate dagli script inline e legacy */
+    if (window.NodeList && !NodeList.prototype.forEach) {
+      NodeList.prototype.forEach = Array.prototype.forEach;
+    }
+    if (!Array.prototype.includes) {
+      Array.prototype.includes = function (search, start) {
+        var o = Object(this), len = o.length >>> 0;
+        if (len === 0) return false;
+        var n = start | 0, k = n >= 0 ? n : Math.max(len + n, 0);
+        while (k < len) {
+          if (o[k] === search || (search !== search && o[k] !== o[k])) return true;
+          k++;
+        }
+        return false;
+      };
+    }
+    if (!Array.prototype.find) {
+      Array.prototype.find = function (predicate, thisArg) {
+        var o = Object(this), len = o.length >>> 0;
+        for (var i = 0; i < len; i++) {
+          if (i in o && predicate.call(thisArg, o[i], i, o)) return o[i];
+        }
+        return undefined;
+      };
+    }
+    if (!Array.prototype.findIndex) {
+      Array.prototype.findIndex = function (predicate, thisArg) {
+        var o = Object(this), len = o.length >>> 0;
+        for (var i = 0; i < len; i++) {
+          if (i in o && predicate.call(thisArg, o[i], i, o)) return i;
+        }
+        return -1;
+      };
+    }
+    if (!Array.from) {
+      Array.from = function (arrayLike, mapFn, thisArg) {
+        var arr = [], i, len = arrayLike ? arrayLike.length >>> 0 : 0;
+        for (i = 0; i < len; i++) {
+          arr.push(mapFn ? mapFn.call(thisArg, arrayLike[i], i) : arrayLike[i]);
+        }
+        return arr;
+      };
+    }
+    if (typeof Object.assign !== "function") {
+      Object.assign = function (target) {
+        if (target == null) throw new TypeError("Cannot convert undefined or null to object");
+        var to = Object(target);
+        for (var idx = 1; idx < arguments.length; idx++) {
+          var src = arguments[idx];
+          if (src != null) {
+            for (var key in src) {
+              if (Object.prototype.hasOwnProperty.call(src, key)) to[key] = src[key];
+            }
+          }
+        }
+        return to;
+      };
+    }
+    if (!Object.entries) {
+      Object.entries = function (obj) {
+        var props = Object.keys(obj), i = props.length, res = new Array(i);
+        while (i--) res[i] = [props[i], obj[props[i]]];
+        return res;
+      };
+    }
+    if (!Object.values) {
+      Object.values = function (obj) {
+        var props = Object.keys(obj), res = [];
+        for (var i = 0; i < props.length; i++) res.push(obj[props[i]]);
+        return res;
+      };
+    }
+    if (!String.prototype.startsWith) {
+      String.prototype.startsWith = function (search, pos) {
+        pos = !pos || pos < 0 ? 0 : +pos;
+        return this.substring(pos, pos + search.length) === search;
+      };
+    }
+    if (!String.prototype.endsWith) {
+      String.prototype.endsWith = function (search, thisLen) {
+        if (thisLen === undefined || thisLen > this.length) thisLen = this.length;
+        return this.substring(thisLen - search.length, thisLen) === search;
+      };
+    }
+    if (!String.prototype.padStart) {
+      String.prototype.padStart = function (len, str) {
+        var s = String(this), p = String(str === undefined ? " " : str);
+        if (s.length >= len || !p) return s;
+        var diff = len - s.length, pad = "";
+        while (pad.length < diff) pad += p;
+        return pad.slice(0, diff) + s;
+      };
+    }
+    if (window.Element) {
+      if (!Element.prototype.matches) {
+        Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+      }
+      if (!Element.prototype.closest) {
+        Element.prototype.closest = function (s) {
+          var el = this;
+          do {
+            if (el && el.matches && el.matches(s)) return el;
+            el = el.parentElement || el.parentNode;
+          } while (el !== null && el.nodeType === 1);
+          return null;
+        };
+      }
+    }
+
+    /* 2. Feature detection flexbox gap (Chromium < 84 non supporta gap su display:flex) */
+    function checkFlexGap() {
+      try {
+        var flex = document.createElement("div");
+        flex.style.display = "flex";
+        flex.style.flexDirection = "column";
+        flex.style.rowGap = "1px";
+        flex.appendChild(document.createElement("div"));
+        flex.appendChild(document.createElement("div"));
+        (document.body || document.documentElement).appendChild(flex);
+        var supported = flex.scrollHeight === 1;
+        flex.parentNode.removeChild(flex);
+        if (!supported) document.documentElement.className += " no-flex-gap";
+      } catch (_e) {}
+    }
+
+    /* 3. Cattura errori globale e diagnostica visibile invece di schermo bianco */
+    window.__SERR_ERRORS = [];
+    function renderCompatBanner() {
+      var host = document.getElementById("serr-compat-banner");
+      if (!host || !window.__SERR_ERRORS.length) return;
+      host.style.display = "block";
+      var items = "";
+      for (var i = 0; i < window.__SERR_ERRORS.length && i < 6; i++) {
+        var item = window.__SERR_ERRORS[i];
+        items += "<li style=\"margin-bottom:4px;\"><strong>" + item.source + ":</strong> " + item.message + "</li>";
+      }
+      host.innerHTML =
+        "<div style=\"display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;\">" +
+        "<div style=\"flex:1;min-width:220px;\">" +
+        "<strong style=\"color:#991b1b;font-size:0.95rem;\">Avviso di compatibilità o errore di caricamento rilevato</strong>" +
+        "<p style=\"margin:4px 0 6px;font-size:0.84rem;color:#7f1d1d;\">Il browser in uso ha segnalato un problema durante il caricamento di una funzione. I contenuti disponibili restano navigabili.</p>" +
+        "<ul style=\"margin:0 0 6px 18px;padding:0;font-size:0.8rem;color:#7f1d1d;\">" + items + "</ul>" +
+        "<div style=\"font-size:0.74rem;color:#991b1b;opacity:0.88;\">Browser: " + String(navigator.userAgent || "Sconosciuto").replace(/</g, "&lt;") + "</div>" +
+        "</div>" +
+        "<button type=\"button\" id=\"btn-dismiss-compat-banner\" style=\"min-height:36px;padding:6px 12px;border-radius:8px;border:1px solid #b91c1c;background:#ffffff;color:#7f1d1d;font-weight:700;cursor:pointer;\">Chiudi avviso</button>" +
+        "</div>";
+      var dismissBtn = document.getElementById("btn-dismiss-compat-banner");
+      if (dismissBtn) {
+        dismissBtn.onclick = function () { host.style.display = "none"; };
+      }
+    }
+
+    function escapeDiag(str) {
+      return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    window.__SERR_REPORT_ERROR = function (source, err) {
+      var msg = err && err.message ? err.message : String(err || "Errore sconosciuto");
+      window.__SERR_ERRORS.push({ source: escapeDiag(source), message: escapeDiag(msg) });
+      renderCompatBanner();
+    };
+
+    window.onerror = function (message, url, lineNo, colNo, error) {
+      var detail = String(message || "Errore JavaScript");
+      if (lineNo) detail += " (riga " + lineNo + (colNo ? ":" + colNo : "") + ")";
+      if (error && error.message && detail.indexOf(error.message) === -1) detail += " — " + error.message;
+      window.__SERR_ERRORS.push({ source: "Script Pagina", message: escapeDiag(detail) });
+      renderCompatBanner();
+      return false;
+    };
+
+    if (window.addEventListener) {
+      window.addEventListener("unhandledrejection", function (ev) {
+        var reason = ev && ev.reason ? (ev.reason.message || String(ev.reason)) : "Promessa non gestita";
+        window.__SERR_REPORT_ERROR("Operazione asincrona", reason);
+      });
+    }
+
+    function runStartupDiagnostics() {
+      checkFlexGap();
+      var mainEl = document.getElementById("main-content");
+      if (mainEl && mainEl.getBoundingClientRect) {
+        var rect = mainEl.getBoundingClientRect();
+        if (rect.height < 40) {
+          if (document.documentElement.className.indexOf("legacy-layout-fallback") === -1) {
+            document.documentElement.className += " legacy-layout-fallback";
+          }
+        }
+      }
+      if (!window.__SERR_BRIDGE) {
+        window.__SERR_REPORT_ERROR(
+          "Motore principale",
+          "Gli script principali non si sono avviati su questo browser. Verifica gli errori sopra o usa un browser compatibile ES5/HTML5."
+        );
+      }
+      renderCompatBanner();
+    }
+
+    if (document.addEventListener) {
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(runStartupDiagnostics, 350);
+        setTimeout(function () {
+          if (!window.__SERR_MODULE_LOADED && !document.getElementById("serr-lab-root").innerHTML.replace(/\s+/g, "")) {
+            window.__SERR_REPORT_ERROR(
+              "Moduli Percorsi SERR / Video / Portale",
+              "Il bundle modulare non risulta caricato. Le sezioni principali (Home, Mappa, Quiz, Giochi) restano utilizzabili."
+            );
+          }
+        }, 3500);
+      });
+    }
+  })();
+  </script>
   <style>
     :root {
       --bg: #f6f8f7;
@@ -113,8 +329,12 @@
 
     .app-shell {
       width: 100%;
+      height: 100%;
+      height: 100vh;
       height: 100dvh;
       max-width: 100vw;
+      max-height: 100%;
+      max-height: 100vh;
       max-height: 100dvh;
       display: flex;
       flex-direction: column;
@@ -124,8 +344,74 @@
     }
     html.app-fullscreen .app-shell {
       width: 100vw;
+      height: 100%;
+      height: 100vh;
       height: 100dvh;
       box-shadow: none;
+    }
+    #serr-compat-banner {
+      background: #fef2f2;
+      border-bottom: 2px solid #dc2626;
+      padding: 10px 16px;
+      flex-shrink: 0;
+      z-index: 45;
+    }
+    /* Ripristino d'emergenza se il motore CSS legacy comprime <main> sotto 40px */
+    html.legacy-layout-fallback,
+    html.legacy-layout-fallback body {
+      height: auto;
+      min-height: 100%;
+      overflow-y: auto;
+      display: block;
+    }
+    html.legacy-layout-fallback .app-shell {
+      height: auto;
+      min-height: 100vh;
+      max-height: none;
+      overflow: visible;
+      display: block;
+    }
+    html.legacy-layout-fallback .main-wrap,
+    html.legacy-layout-fallback .section-panel.active,
+    html.legacy-layout-fallback .stage-body,
+    html.legacy-layout-fallback .subpanel-fit {
+      height: auto;
+      min-height: 75vh;
+      max-height: none;
+      overflow: visible;
+      display: block;
+    }
+    .embedded-app-iframe {
+      height: 620px;
+      height: 70vh;
+      height: clamp(560px, 70vh, 780px);
+      height: clamp(560px, 70dvh, 780px);
+    }
+    .embedded-app-iframe.tall {
+      height: 860px;
+    }
+    .embedded-panel-fs {
+      position: fixed !important;
+      top: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      height: 100vh !important;
+      height: 100dvh !important;
+      margin: 0 !important;
+      z-index: 9999 !important;
+      border-radius: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      background: var(--surface, #ffffff) !important;
+      overflow: hidden !important;
+    }
+    .embedded-panel-fs .embedded-app-iframe {
+      flex: 1 1 0% !important;
+      min-height: 0 !important;
+      height: 100% !important;
     }
 
     html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after {
@@ -207,6 +493,7 @@
       scrollbar-color: #94a3b8 transparent;
       flex: 1 1 0%;
       min-width: 0;
+      justify-content: center;
       justify-content: safe center;
       padding: 3px 6px 6px;
       position: relative;
@@ -366,7 +653,7 @@
 
     /* Main Stage Layout (Zero outer scrollbars) */
     .main-wrap {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       width: 100%;
       padding: 12px 18px;
@@ -376,7 +663,7 @@
     }
     .section-panel {
       display: none;
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       flex-direction: column;
       overflow: hidden;
@@ -384,7 +671,7 @@
     }
     .section-panel.active { display: flex; }
     .stage-body {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       overflow-y: auto;
       scrollbar-width: thin;
@@ -401,7 +688,7 @@
     .stage-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
     .stage-body::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     .subpanel-fit {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       overflow-y: auto;
       scrollbar-width: thin;
@@ -438,8 +725,8 @@
       margin-top: 0;
       text-wrap: balance;
     }
-    h1 { font-size: clamp(1.75rem, 3.2vw, 2.45rem); margin-bottom: 12px; }
-    h2 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); margin-bottom: 12px; }
+    h1 { font-size: 1.95rem; font-size: clamp(1.75rem, 3.2vw, 2.45rem); margin-bottom: 12px; }
+    h2 { font-size: 1.5rem; font-size: clamp(1.35rem, 2.2vw, 1.85rem); margin-bottom: 12px; }
     h3 { font-size: 1.2rem; margin-bottom: 8px; }
     h4 { font-size: 1.05rem; margin-bottom: 6px; }
     p { margin-top: 0; margin-bottom: 14px; max-width: 72ch; }
@@ -473,7 +760,7 @@
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px 18px; }
     .card-soft { background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
     .map-split-stage {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       display: grid;
       grid-template-columns: 1.35fr 1fr;
@@ -491,7 +778,7 @@
       padding: 10px 12px;
     }
     .map-canvas-box {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 210px;
       width: 100%;
       display: flex;
@@ -501,6 +788,9 @@
     }
     .map-canvas-box .map-interactive-wrap {
       position: relative;
+      width: 100%;
+      max-width: 780px;
+      width: min(100%, max(260px, calc((100vh - 245px) * 16 / 9)));
       width: min(100%, max(260px, calc((100dvh - 245px) * 16 / 9)));
       aspect-ratio: 16 / 9;
       height: auto;
@@ -510,9 +800,15 @@
     .map-canvas-box .map-interactive-wrap img.mascot-img {
       display: block;
       width: 100%;
-      height: 100%;
-      max-height: none;
+      height: auto;
+      max-height: 100%;
       object-fit: cover;
+    }
+    @supports (aspect-ratio: 16 / 9) {
+      .map-canvas-box .map-interactive-wrap img.mascot-img {
+        height: 100%;
+        max-height: none;
+      }
     }
     .map-bottom-bar {
       display: flex;
@@ -939,14 +1235,25 @@
 
     /* Samsung LIM Adaptive Classroom Mode (55"-85" UHD/FHD Touch & Passive Stylus) */
     html.lim-screen {
-      --base-size: clamp(17.5px, 0.88vw + 7px, 22px);
+      --base-size: 19px;
       --border: #94a3b8;
     }
     html.lim-screen.lim-large {
-      --base-size: clamp(19px, 1vw + 8px, 24.5px);
+      --base-size: 21.5px;
     }
     html.lim-screen.font-xl {
-      --base-size: clamp(20.5px, 1.15vw + 9px, 26.5px);
+      --base-size: 23.5px;
+    }
+    @supports (font-size: clamp(16px, 1vw, 22px)) {
+      html.lim-screen {
+        --base-size: clamp(17.5px, 0.88vw + 7px, 22px);
+      }
+      html.lim-screen.lim-large {
+        --base-size: clamp(19px, 1vw + 8px, 24.5px);
+      }
+      html.lim-screen.font-xl {
+        --base-size: clamp(20.5px, 1.15vw + 9px, 26.5px);
+      }
     }
     html.lim-screen :focus-visible {
       outline: 4px solid var(--focus);
@@ -955,6 +1262,7 @@
     html.lim-screen .topbar-inner {
       flex-wrap: wrap;
       gap: 8px 12px;
+      padding: 8px 18px;
       padding: 8px max(18px, env(safe-area-inset-right)) 8px max(18px, env(safe-area-inset-left));
     }
     html.lim-screen .primary-nav {
@@ -968,6 +1276,9 @@
       -webkit-overflow-scrolling: touch;
     }
     html.lim-screen .map-canvas-box .map-interactive-wrap {
+      width: 100%;
+      max-width: 720px;
+      width: min(100%, max(260px, calc((100vh - 295px) * 16 / 9)));
       width: min(100%, max(260px, calc((100dvh - 295px) * 16 / 9)));
     }
     html.lim-screen .nav-btn {
@@ -1099,8 +1410,15 @@
     /* Overlay Penna & Evidenziatore LIM Samsung (Canvas trasparente live) */
     .lim-annot-canvas {
       position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       inset: 0;
+      width: 100%;
       width: 100vw;
+      height: 100%;
+      height: 100vh;
       height: 100dvh;
       z-index: 160;
       pointer-events: none;
@@ -1112,6 +1430,7 @@
     }
     .lim-pen-toolbar {
       position: fixed;
+      bottom: 14px;
       bottom: max(14px, env(safe-area-inset-bottom));
       left: 50%;
       transform: translateX(-50%);
@@ -1251,6 +1570,10 @@
     .ws-modal-backdrop {
       display: none;
       position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       inset: 0;
       z-index: 200;
       background: rgba(15, 23, 42, 0.72);
@@ -1319,7 +1642,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       height: 100%;
       overflow: hidden;
@@ -1613,7 +1936,7 @@
     #panel-game-8.active-flex {
       display: flex !important;
       flex-direction: column;
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       height: 100%;
     }
@@ -1675,7 +1998,7 @@
       color: #bbf7d0;
     }
     .pres-shell {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       display: flex;
       flex-direction: column;
@@ -1736,7 +2059,7 @@
       cursor: not-allowed;
     }
     .pres-slide-card {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -1750,7 +2073,7 @@
       box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
     }
     .pres-slide-grid {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
@@ -1788,7 +2111,7 @@
       min-height: 0;
     }
     .pres-svg-slot {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       display: flex;
       align-items: center;
@@ -1807,7 +2130,7 @@
       align-items: center;
     }
     .pres-video-slot {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 155px;
       display: flex;
       flex-direction: column;
@@ -1822,8 +2145,18 @@
       overflow: hidden;
       border: 1px solid var(--border);
     }
+    @supports not (aspect-ratio: 16 / 9) {
+      .pres-video-frame {
+        height: 0;
+        padding-bottom: 56.25%;
+      }
+    }
     .pres-video-frame iframe {
       position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       inset: 0;
       width: 100%;
       height: 100%;
@@ -1849,7 +2182,7 @@
       flex-shrink: 0;
     }
     .pres-quiz-stage {
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
       display: flex;
       flex-direction: column;
@@ -1868,7 +2201,7 @@
       flex-direction: column;
       justify-content: space-between;
       gap: 12px;
-      flex: 1 1 0;
+      flex: 1 1 0%;
       min-height: 0;
     }
     .quiz-gate-grid {
@@ -1933,6 +2266,8 @@
     @media (max-width: 1080px) and (orientation: landscape) and (max-height: 560px) {
       .app-shell {
         width: 100vw;
+        height: 100%;
+        height: 100vh;
         height: 100dvh;
         box-shadow: none;
       }
@@ -1958,6 +2293,8 @@
     @media (max-width: 900px) and (orientation: portrait) {
       .app-shell {
         width: 100vw;
+        height: 100%;
+        height: 100vh;
         height: 100dvh;
         box-shadow: none;
       }
@@ -2042,6 +2379,54 @@
     body.print-preview-mode .section-panel.active,
     body.print-preview-mode .stage-body,
     body.print-preview-mode .subpanel-fit { height: auto; overflow: visible; display: block; }
+
+    /* Fallback per browser senza CSS Grid (es. Chromium < 57) e senza flex gap (< Chrome 84) */
+    @supports not (display: grid) {
+      .hero-box, .grid-2, .grid-3, .map-split-stage, .quiz-layout, .mascot-banner,
+      .bins-grid, .match-columns, .stepper-row, .choice-row, .filter-bar,
+      .badge-grid, .kpi-strip, .form-grid-2, .team-bar, .ws-editor-grid,
+      .coding-main-grid, .coding-ide-split, .g3-grid, .g7-grid, .pres-slide-grid,
+      .quiz-gate-grid, .grid-5-borghi, .serr-grid-2, .serr-grid-3, .serr-grid-study,
+      .serr-mini-cards, .serr-phase-stepper, .serr-stages-grid, .serr-bins-grid {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+      }
+      .hero-box > *, .grid-2 > *, .map-split-stage > *, .quiz-layout > *,
+      .match-columns > *, .choice-row > *, .team-bar > *, .ws-editor-grid > *,
+      .coding-main-grid > *, .pres-slide-grid > *, .serr-grid-2 > * {
+        flex: 1 1 320px;
+        margin: 6px;
+      }
+      .grid-3 > *, .bins-grid > *, .quiz-gate-grid > *, .grid-5-borghi > *, .serr-grid-3 > * {
+        flex: 1 1 240px;
+        margin: 6px;
+      }
+      .filter-bar > *, .badge-grid > *, .kpi-strip > *, .g7-grid > *, .stepper-row > * {
+        flex: 1 1 180px;
+        margin: 5px;
+      }
+      .bar-row { display: flex; align-items: center; justify-content: space-between; }
+      .bar-row > :nth-child(2) { flex: 1 1 auto; margin: 0 10px; }
+    }
+    html.no-flex-gap .primary-nav > * + *,
+    html.no-flex-gap .topbar-cta > * + *,
+    html.no-flex-gap .segmented > * + *,
+    html.no-flex-gap .serr-top-tabs > * + *,
+    html.no-flex-gap .serr-subnav > * + *,
+    html.no-flex-gap .serr-filter-row > * + *,
+    html.no-flex-gap .serr-path-actions > * + *,
+    html.no-flex-gap .lim-pen-toolbar > * + *,
+    html.no-flex-gap .ws-card-actions > * + *,
+    html.no-flex-gap .ws-modal-actions > * + * {
+      margin-left: 8px;
+    }
+    html.no-flex-gap .stage-body > * + *,
+    html.no-flex-gap .subpanel-fit > * + *,
+    html.no-flex-gap .serr-food-bars > * + *,
+    html.no-flex-gap .serr-order-list > * + * {
+      margin-top: 8px;
+    }
 
     /* ===== MODULO DIDATTICO INTERATTIVO SERR (MEZZOVALLE & VILLACOLLE) ===== */
     #sec-serr-lab .stage-body,
@@ -2203,6 +2588,7 @@
         </div>
       </div>
     </header>
+    <div id="serr-compat-banner" role="alert" style="display:none;"></div>
     <canvas id="lim-annot-canvas" class="lim-annot-canvas no-print" aria-hidden="true"></canvas>
     <div id="lim-pen-toolbar" class="lim-pen-toolbar no-print" role="toolbar" aria-label="Strumenti Penna, Evidenziatore e Timer LIM Samsung">
       <span style="font-size:0.78rem;font-weight:800;color:#86efac;">Penna LIM:</span>
@@ -2250,7 +2636,7 @@
                 <span aria-hidden="true">·</span>
                 <span id="hero-level-text">Primaria e Secondaria I grado · Tutti i Cinque Borghi</span>
               </div>
-              <h1 id="h-home" style="margin-bottom:5px;font-size:clamp(1.35rem, 2.2vw, 1.9rem);">Cos'è la SERR 2026?</h1>
+              <h1 id="h-home" style="margin-bottom:5px;font-size:1.55rem;font-size:clamp(1.35rem, 2.2vw, 1.9rem);">Cos'è la SERR 2026?</h1>
               <p style="margin-bottom:6px;font-size:0.9rem;line-height:1.4;">
                 La <strong>SERR (Settimana Europea per la Riduzione dei Rifiuti)</strong> è la campagna europea che invita scuole, famiglie e Comuni a intervenire <strong>prima che un rifiuto nasca</strong>: progettare oggetti riparabili, comprare in modo consapevole e azzerare gli sprechi quotidiani.
               </p>
@@ -2276,7 +2662,7 @@
               <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px;" class="no-print">
                 <span style="font-size:0.78rem;font-weight:700;color:var(--accent-text);">App integrate:</span>
                 <button type="button" class="btn btn-sm" onclick="window.__SERR_BRIDGE && window.__SERR_BRIDGE.openGame(10)">♻️ Raccolta Vocale BES</button>
-                <button type="button" class="btn btn-sm" onclick="window.__SERR_BRIDGE && window.__SERR_BRIDGE.openGame(11)">💧 Impronte Eco &amp; Idrica</button>
+                <button type="button" class="btn btn-sm" onclick="window.__SERR_BRIDGE && window.__SERR_BRIDGE.openGame(11)">🌍 Impronte &amp; L'Impronta Nascosta</button>
               </div>
               <div style="margin-top:5px;font-size:0.78rem;color:var(--text-muted);">
                 <strong>Percorso consigliato:</strong> guarda il breve video introduttivo di ciascuna tematica, esplora le slide e prova giochi e app integrate. Le progettazioni docenti sono in alto.
@@ -2659,7 +3045,7 @@
           <button type="button" class="seg-btn" role="tab" id="tab-game-7" aria-pressed="false" aria-selected="false">7. Stagioni 60s</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-8" aria-pressed="false" aria-selected="false">8. Coding Differenziata</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-10" aria-pressed="false" aria-selected="false">9. Raccolta Vocale BES</button>
-          <button type="button" class="seg-btn" role="tab" id="tab-game-11" aria-pressed="false" aria-selected="false">10. Impronte Eco &amp; Idrica</button>
+          <button type="button" class="seg-btn" role="tab" id="tab-game-11" aria-pressed="false" aria-selected="false">10. Impronte &amp; L'Impronta Nascosta</button>
           <button type="button" class="seg-btn" role="tab" id="tab-game-9" aria-pressed="false" aria-selected="false">Passaporto</button>
         </div>
       </div>
@@ -2667,7 +3053,7 @@
         <span style="font-size:0.84rem;font-weight:700;color:var(--accent-text);">App interattive integrate pronte all'uso (anche in Percorsi SERR → Mezzovalle):</span>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button type="button" class="btn btn-primary btn-sm" id="btn-quick-app-raccolta">9. Apri Raccolta Vocale BES ♻️</button>
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-quick-app-impronte">10. Apri Impronte Eco &amp; Idrica 💧</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-quick-app-impronte">10. Apri Impronte &amp; L'Impronta Nascosta 🌍</button>
         </div>
       </div>
       <div class="stage-body">
@@ -2917,24 +3303,29 @@
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;" class="no-print">
             <button type="button" class="btn btn-sm" id="btn-g10-tall">Espandi vista LIM</button>
+            <button type="button" class="btn btn-sm" id="btn-g10-fs" aria-pressed="false">Schermo intero</button>
             <button type="button" class="btn btn-primary btn-sm" id="btn-g10-xp">Segna completato (+15 XP)</button>
           </div>
         </div>
         <iframe
           id="g10-raccolta-frame"
-          src="/assets/aistudio/Raccolta_differenziata_a4a8af6d.html"
+          src="./assets/aistudio/Raccolta_differenziata_a4a8af6d.html"
           title="Gioco interattivo accessibile: Raccolta differenziata"
-          style="width:100%;height:clamp(560px, 70dvh, 780px);border:1.5px solid var(--border);border-radius:12px;background:#fffdf5;display:block;"
+          class="embedded-app-iframe"
+          style="width:100%;border:1.5px solid var(--border);border-radius:12px;background:#fffdf5;display:block;"
+          allowfullscreen
+          webkitallowfullscreen
+          mozallowfullscreen
           loading="lazy"
         ></iframe>
       </div>
 
-      <!-- GIOCO 10 / APP INTEGRATA: IMPRONTE ECOLOGICA, IDRICA E ACQUA VERDE, BLU E GRIGIA -->
+      <!-- GIOCO 10 / APP UNIFICATA: IMPRONTE ECOLOGICA, IDRICA & L'IMPRONTA NASCOSTA -->
       <div id="panel-game-11" class="card" style="display:none;padding:14px 16px;">
         <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
           <div>
-            <h3 style="margin:0 0 2px;">Gioco 10 / App: “Impronte: ecologica, idrica e acqua verde, blu e grigia”</h3>
-            <p style="margin:0;font-size:0.86rem;color:var(--text-muted);">5 schede interattive: impronta ecologica (gha e biocapacità), impronta idrica, acqua verde/blu/grigia, verifica rapida e azioni.</p>
+            <h3 style="margin:0 0 2px;">Gioco 10 / App Unificata: “Impronte Ecologica, Idrica &amp; L'Impronta Nascosta”</h3>
+            <p style="margin:0;font-size:0.86rem;color:var(--text-muted);">App unificata in 7 schede: approfondimenti con risposte classe, esploratore acqua verde/blu/grigia, Lab Impronta Ecologica (grafici &amp; g·m²), Lab L'Impronta Nascosta (11 attività &amp; A4), verifica unificata da 10 domande e calcolatore azioni.</p>
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;" class="no-print">
             <button type="button" class="btn btn-sm" id="btn-g11-tall">Espandi vista LIM</button>
@@ -2943,9 +3334,10 @@
         </div>
         <iframe
           id="g11-impronte-frame"
-          src="/assets/aistudio/Impronte__ecologica__idrica_e_acqua_verde__blu_e_grigia_a67eff9e.html"
-          title="Modulo interattivo: Impronte ecologica, idrica e acqua verde, blu e grigia"
-          style="width:100%;height:clamp(560px, 70dvh, 780px);border:1.5px solid var(--border);border-radius:12px;background:#f6f8f5;display:block;"
+          src="./assets/aistudio/Impronte__ecologica__idrica_e_acqua_verde__blu_e_grigia_a67eff9e.html"
+          title="App unificata: Impronte ecologica, idrica e L'Impronta Nascosta"
+          class="embedded-app-iframe"
+          style="width:100%;border:1.5px solid var(--border);border-radius:12px;background:#f5f7f3;display:block;"
           loading="lazy"
         ></iframe>
       </div>
@@ -3715,7 +4107,7 @@
 
   <div id="ws-print-container" aria-hidden="true"></div>
 
-  <script>
+  <script id="serr-main-inline-script">
   (function() {
     "use strict";
 
@@ -3834,7 +4226,7 @@
         },
         topicTools: [
           { label: "Apri Laboratorio Mezzovalle (A1–A5)", kind: "serrLab", labTab: "mezzovalle", labSub: "home", style: "primary" },
-          { label: "Scheda Impronte (Eco & Idrica)", kind: "serrLab", labTab: "mezzovalle", labSub: "impronte", style: "secondary" },
+          { label: "App Unificata: Impronte & L'Impronta Nascosta", kind: "serrLab", labTab: "mezzovalle", labSub: "impronte", style: "secondary" },
           { label: "Studia Presentazione: Acqua & Cibo", kind: "lesson", lessonId: "mezzovalle", style: "" },
           { label: "Gioca: Piatto 1000 Litri (Gioco 6)", kind: "game", gameNum: 6, style: "secondary" },
           { label: "Apri Calcolatore Idrico", kind: "section", section: "studenti", subtabGroup: "stud", subtarget: "stud-calc", style: "" },
@@ -4686,39 +5078,50 @@
       if (btnMobileFullscreen) btnMobileFullscreen.textContent = isAppFs ? "Esci schermo intero" : "Schermo intero";
     }
 
-    async function toggleFullscreenMode() {
+    function toggleFullscreenMode() {
       const currentlyFs = document.documentElement.classList.contains("app-fullscreen") || getNativeFsElement() === document.documentElement;
       const rootEl = document.documentElement;
+      const done = function () { syncFullscreenButtons(); };
       if (!currentlyFs) {
         rootEl.classList.add("app-fullscreen");
+        let p = Promise.resolve();
         try {
           const reqFs = rootEl.requestFullscreen || rootEl.webkitRequestFullscreen || rootEl.msRequestFullscreen;
           if (reqFs) {
-            await reqFs.call(rootEl);
-            rootEl.dataset.nativeFs = "1";
+            p = Promise.resolve(reqFs.call(rootEl)).then(function () {
+              rootEl.dataset.nativeFs = "1";
+            }).catch(function () {
+              rootEl.dataset.nativeFs = "0";
+            });
           }
         } catch (_err) {
           rootEl.dataset.nativeFs = "0";
         }
-        try {
-          if (screen.orientation && screen.orientation.lock) {
-            await screen.orientation.lock("landscape");
-          }
-        } catch (_err2) {}
+        p.then(function () {
+          try {
+            if (screen.orientation && screen.orientation.lock) {
+              return Promise.resolve(screen.orientation.lock("landscape")).catch(function () {});
+            }
+          } catch (_err2) {}
+          return undefined;
+        }).then(done, done);
       } else {
         rootEl.classList.remove("app-fullscreen");
         rootEl.dataset.nativeFs = "0";
+        let pExit = Promise.resolve();
         try {
           const exitFs = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
           if (getNativeFsElement() && exitFs) {
-            await exitFs.call(document);
+            pExit = Promise.resolve(exitFs.call(document)).catch(function () {});
           }
         } catch (_err3) {}
-        try {
-          if (screen.orientation && screen.orientation.unlock) {
-            screen.orientation.unlock();
-          }
-        } catch (_err4) {}
+        pExit.then(function () {
+          try {
+            if (screen.orientation && screen.orientation.unlock) {
+              screen.orientation.unlock();
+            }
+          } catch (_err4) {}
+        }).then(done, done);
       }
       syncFullscreenButtons();
     }
@@ -5701,19 +6104,21 @@
     }
 
     function downloadWorksheetAsDoc(data) {
+      const closeTag = "</" + "body></" + "html>";
       const bodyHtml = renderPrintableWorksheetHtml(data, false);
-      const docContent = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
-<head><meta charset="utf-8"><title>${escHtml(data.title)}</title>
-<style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;} table{border-collapse:collapse;width:100%;} td,th{border:1px solid #64748b;padding:6px;}</style>
-</head><body>${bodyHtml}</body></html>`;
+      const docContent = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">\n' +
+        '<head><meta charset="utf-8"><title>' + escHtml(data.title) + '</title>\n' +
+        '<style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;} table{border-collapse:collapse;width:100%;} td,th{border:1px solid #64748b;padding:6px;}</style>\n' +
+        '</' + 'head><body>' + bodyHtml + closeTag;
       triggerBlobDownload("\ufeff" + docContent, "application/msword;charset=utf-8", makeSafeFileSlug(data.code, data.title) + ".doc");
     }
 
     function downloadWorksheetAsHtml(data) {
+      const closeTag = "</" + "body></" + "html>";
       const bodyHtml = renderPrintableWorksheetHtml(data, true);
-      const htmlContent = `<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escHtml(data.title)}</title>
-<style>body{font-family:system-ui,sans-serif;max-width:900px;margin:20px auto;padding:0 16px;background:#f8fafc;} .sheet{background:#fff;padding:24px;border:1px solid #cbd5e1;border-radius:8px;} .bar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px;padding:10px 14px;background:#14532d;color:#fff;border-radius:8px;} button{padding:8px 14px;border:0;border-radius:6px;font-weight:700;cursor:pointer;background:#fff;color:#14532d;} @media print{.bar{display:none;} body{background:#fff;margin:0;padding:0;} .sheet{border:0;padding:0;}}</style>
-</head><body><div class="bar"><span>Scheda compilabile offline · Clicca nei riquadri per scrivere e poi stampa/salva PDF</span><button onclick="window.print()">Stampa / Salva PDF</button></div><div class="sheet">${bodyHtml}</div></body></html>`;
+      const htmlContent = '<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + escHtml(data.title) + '</title>\n' +
+        '<style>body{font-family:system-ui,sans-serif;max-width:900px;margin:20px auto;padding:0 16px;background:#f8fafc;} .sheet{background:#fff;padding:24px;border:1px solid #cbd5e1;border-radius:8px;} .bar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px;padding:10px 14px;background:#14532d;color:#fff;border-radius:8px;} button{padding:8px 14px;border:0;border-radius:6px;font-weight:700;cursor:pointer;background:#fff;color:#14532d;} @media print{.bar{display:none;} body{background:#fff;margin:0;padding:0;} .sheet{border:0;padding:0;}}</style>\n' +
+        '</' + 'head><body><div class="bar"><span>Scheda compilabile offline · Clicca nei riquadri per scrivere e poi stampa/salva PDF</span><button onclick="window.print()">Stampa / Salva PDF</button></div><div class="sheet">' + bodyHtml + '</div>' + closeTag;
       triggerBlobDownload(htmlContent, "text/html;charset=utf-8", makeSafeFileSlug(data.code, data.title) + ".html");
     }
 
@@ -7711,7 +8116,7 @@
         }
         const labelTopic = modKey === "serr" ? "SERR & 5R" : (TOPIC_LABELS[modKey] || "SERR 2026");
         const isSuggested = state.level !== "entrambi" && lvlKey === state.level;
-        const entry = { ...q, town: modKey, tag: `${isSuggested ? "★ Consigliato · " : ""}${lvlLabel} · Tematica: ${labelTopic}` };
+        const entry = Object.assign({}, q, { town: modKey, tag: `${isSuggested ? "★ Consigliato · " : ""}${lvlLabel} · Tematica: ${labelTopic}` });
         if (state.level === "entrambi" || lvlKey === state.level) preferredBank.push(entry);
         else extraBank.push(entry);
       });
@@ -7897,17 +8302,83 @@
     }
     gameTabs.forEach((t, i) => { if (t) t.addEventListener("click", () => switchGame(i + 1)); });
 
-    document.getElementById("btn-quick-app-raccolta")?.addEventListener("click", () => switchGame(10));
-    document.getElementById("btn-quick-app-impronte")?.addEventListener("click", () => switchGame(11));
+    const btnQuickRaccolta = document.getElementById("btn-quick-app-raccolta");
+    if (btnQuickRaccolta) btnQuickRaccolta.addEventListener("click", () => switchGame(10));
+    const btnQuickImpronte = document.getElementById("btn-quick-app-impronte");
+    if (btnQuickImpronte) btnQuickImpronte.addEventListener("click", () => switchGame(11));
 
     const btnG10Tall = document.getElementById("btn-g10-tall");
+    const btnG10Fs = document.getElementById("btn-g10-fs");
+    const g10Panel = document.getElementById("panel-game-10");
     const g10Frame = document.getElementById("g10-raccolta-frame");
     if (btnG10Tall && g10Frame) {
       let g10Expanded = false;
       btnG10Tall.addEventListener("click", () => {
         g10Expanded = !g10Expanded;
-        g10Frame.style.height = g10Expanded ? "860px" : "clamp(560px, 70dvh, 780px)";
+        g10Frame.classList.toggle("tall", g10Expanded);
         btnG10Tall.textContent = g10Expanded ? "Altezza compatta" : "Espandi vista LIM";
+      });
+    }
+    if (btnG10Fs && g10Panel) {
+      const syncG10Fs = function () {
+        const nativeFsEl = getNativeFsElement();
+        const isFs = g10Panel.classList.contains("embedded-panel-fs") || nativeFsEl === g10Panel || nativeFsEl === g10Frame;
+        btnG10Fs.setAttribute("aria-pressed", String(isFs));
+        btnG10Fs.textContent = isFs ? "Esci schermo intero" : "Schermo intero";
+        try {
+          if (g10Frame && g10Frame.contentWindow) {
+            g10Frame.contentWindow.postMessage({ type: "serr-g10-fs-state", active: isFs }, "*");
+          }
+        } catch (_errPost) {}
+      };
+      const toggleG10Fs = function () {
+        const nativeFsEl = getNativeFsElement();
+        const currentlyFs = g10Panel.classList.contains("embedded-panel-fs") || nativeFsEl === g10Panel || nativeFsEl === g10Frame;
+        if (!currentlyFs) {
+          g10Panel.classList.add("embedded-panel-fs");
+          try {
+            const reqFs = g10Panel.requestFullscreen || g10Panel.webkitRequestFullscreen || g10Panel.msRequestFullscreen;
+            if (reqFs) {
+              Promise.resolve(reqFs.call(g10Panel)).then(function () {
+                g10Panel.dataset.nativeFs = "1";
+                syncG10Fs();
+              }).catch(function () {
+                g10Panel.dataset.nativeFs = "0";
+                syncG10Fs();
+              });
+            }
+          } catch (_errReq) {
+            g10Panel.dataset.nativeFs = "0";
+          }
+        } else {
+          g10Panel.classList.remove("embedded-panel-fs");
+          g10Panel.dataset.nativeFs = "0";
+          try {
+            const exitFs = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+            if (getNativeFsElement() && exitFs) {
+              Promise.resolve(exitFs.call(document)).then(syncG10Fs, syncG10Fs);
+            }
+          } catch (_errExit) {}
+        }
+        syncG10Fs();
+      };
+      btnG10Fs.addEventListener("click", toggleG10Fs);
+      ["fullscreenchange", "webkitfullscreenchange"].forEach(evName => {
+        document.addEventListener(evName, () => {
+          const nativeFsEl = getNativeFsElement();
+          if (!nativeFsEl && g10Panel.dataset.nativeFs === "1") {
+            g10Panel.classList.remove("embedded-panel-fs");
+            g10Panel.dataset.nativeFs = "0";
+          }
+          syncG10Fs();
+        });
+      });
+      window.addEventListener("message", (ev) => {
+        if (ev && ev.data && ev.data.type === "serr-g10-toggle-fs") {
+          toggleG10Fs();
+        } else if (ev && ev.data && ev.data.type === "serr-g10-query-fs") {
+          syncG10Fs();
+        }
       });
     }
     const btnG10Xp = document.getElementById("btn-g10-xp");
@@ -7924,7 +8395,7 @@
       let g11Expanded = false;
       btnG11Tall.addEventListener("click", () => {
         g11Expanded = !g11Expanded;
-        g11Frame.style.height = g11Expanded ? "860px" : "clamp(560px, 70dvh, 780px)";
+        g11Frame.classList.toggle("tall", g11Expanded);
         btnG11Tall.textContent = g11Expanded ? "Altezza compatta" : "Espandi vista LIM";
       });
     }
@@ -9574,33 +10045,65 @@
           }
         }
 
-        canvas.addEventListener("pointerdown", (ev) => {
+        function beginStrokeAt(x, y) {
           if (!penOpen || !drawingMode || !ctx2d) return;
           isDrawing = true;
-          lastX = ev.clientX;
-          lastY = ev.clientY;
-          if (canvas.setPointerCapture) {
-            try { canvas.setPointerCapture(ev.pointerId); } catch (_e) {}
-          }
+          lastX = x;
+          lastY = y;
           applyStrokeStyle();
           ctx2d.beginPath();
           ctx2d.moveTo(lastX, lastY);
           ctx2d.lineTo(lastX + 0.1, lastY + 0.1);
           ctx2d.stroke();
-        });
-        canvas.addEventListener("pointermove", (ev) => {
+        }
+        function moveStrokeTo(x, y) {
           if (!isDrawing || !ctx2d) return;
           applyStrokeStyle();
           ctx2d.beginPath();
           ctx2d.moveTo(lastX, lastY);
-          ctx2d.lineTo(ev.clientX, ev.clientY);
+          ctx2d.lineTo(x, y);
           ctx2d.stroke();
-          lastX = ev.clientX;
-          lastY = ev.clientY;
-        });
-        ["pointerup", "pointercancel"].forEach(evName => {
-          canvas.addEventListener(evName, () => { isDrawing = false; });
-        });
+          lastX = x;
+          lastY = y;
+        }
+        if (window.PointerEvent) {
+          canvas.addEventListener("pointerdown", (ev) => {
+            if (!penOpen || !drawingMode || !ctx2d) return;
+            if (canvas.setPointerCapture) {
+              try { canvas.setPointerCapture(ev.pointerId); } catch (_e) {}
+            }
+            beginStrokeAt(ev.clientX, ev.clientY);
+          });
+          canvas.addEventListener("pointermove", (ev) => {
+            moveStrokeTo(ev.clientX, ev.clientY);
+          });
+          ["pointerup", "pointercancel"].forEach(evName => {
+            canvas.addEventListener(evName, () => { isDrawing = false; });
+          });
+        } else {
+          canvas.addEventListener("mousedown", (ev) => {
+            beginStrokeAt(ev.clientX, ev.clientY);
+          });
+          canvas.addEventListener("mousemove", (ev) => {
+            moveStrokeTo(ev.clientX, ev.clientY);
+          });
+          ["mouseup", "mouseleave"].forEach(evName => {
+            canvas.addEventListener(evName, () => { isDrawing = false; });
+          });
+          canvas.addEventListener("touchstart", (ev) => {
+            if (!penOpen || !drawingMode || !ev.touches || !ev.touches[0]) return;
+            ev.preventDefault();
+            beginStrokeAt(ev.touches[0].clientX, ev.touches[0].clientY);
+          });
+          canvas.addEventListener("touchmove", (ev) => {
+            if (!isDrawing || !ev.touches || !ev.touches[0]) return;
+            ev.preventDefault();
+            moveStrokeTo(ev.touches[0].clientX, ev.touches[0].clientY);
+          });
+          ["touchend", "touchcancel"].forEach(evName => {
+            canvas.addEventListener(evName, () => { isDrawing = false; });
+          });
+        }
 
         /* Timer d'aula LIM (1', 3', 5') con segnale acustico offline */
         const timerReadout = document.getElementById("lim-timer-readout");
@@ -9628,10 +10131,12 @@
           } catch (_e) {}
         }
 
+        function pad2Lim(n) { return n < 10 ? "0" + n : String(n); }
+
         function renderLimTimer() {
           if (!timerReadout) return;
-          const m = String(Math.floor(timerSeconds / 60)).padStart(2, "0");
-          const s = String(timerSeconds % 60).padStart(2, "0");
+          const m = pad2Lim(Math.floor(timerSeconds / 60));
+          const s = pad2Lim(timerSeconds % 60);
           timerReadout.textContent = `${m}:${s}`;
           timerReadout.classList.toggle("urgent", timerSeconds > 0 && timerSeconds <= 10);
         }
@@ -9689,6 +10194,13 @@
 
       const presCard = document.getElementById("pres-slide-card");
       if (presCard) {
+        let supportsPassive = false;
+        try {
+          const opts = Object.defineProperty({}, "passive", { get: function () { supportsPassive = true; return true; } });
+          window.addEventListener("testpassive", null, opts);
+          window.removeEventListener("testpassive", null, opts);
+        } catch (_e) {}
+        const passiveArg = supportsPassive ? { passive: true } : false;
         let swipeX = 0;
         let swipeY = 0;
         let swipeValid = false;
@@ -9699,7 +10211,7 @@
           swipeX = ev.touches[0].clientX;
           swipeY = ev.touches[0].clientY;
           swipeValid = true;
-        }, { passive: true });
+        }, passiveArg);
         presCard.addEventListener("touchend", (ev) => {
           if (!swipeValid || !ev.changedTouches || ev.changedTouches.length !== 1) return;
           swipeValid = false;
@@ -9713,7 +10225,7 @@
             const prevBtn = document.getElementById("btn-pres-prev");
             if (prevBtn && !prevBtn.disabled) prevBtn.click();
           }
-        }, { passive: true });
+        }, passiveArg);
       }
     })();
 

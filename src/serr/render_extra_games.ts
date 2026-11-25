@@ -517,7 +517,7 @@ export function renderGame10MusicPe(container: HTMLElement, ctx: ExtraGamesConte
   ];
 
   const activeTracksCount = extraState.g10Grid.filter((row) => row.some(Boolean)).length;
-  const totalBeats = extraState.g10Grid.flat().filter(Boolean).length;
+  const totalBeats = extraState.g10Grid.reduce((acc, row) => acc + row.filter(Boolean).length, 0);
   const musicGoalMet = activeTracksCount === 4 && totalBeats >= 8;
 
   const mob = MOBILITY_MODES.find((m) => m.id === extraState.g10MobId) || MOBILITY_MODES[0];
@@ -642,7 +642,7 @@ export function renderGame10MusicPe(container: HTMLElement, ctx: ExtraGamesConte
       extraState.g10Grid[r][c] = !extraState.g10Grid[r][c];
       if (extraState.g10Grid[r][c]) playEcoSynthSound(r);
       const nowActive = extraState.g10Grid.filter((row) => row.some(Boolean)).length === 4;
-      const nowBeats = extraState.g10Grid.flat().filter(Boolean).length >= 8;
+      const nowBeats = extraState.g10Grid.reduce((acc, row) => acc + row.filter(Boolean).length, 0) >= 8;
       if (nowActive && nowBeats) ctx.addXp(20, null, "g10");
       renderGame10MusicPe(container, ctx);
     })

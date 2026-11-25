@@ -3,19 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Impronte: ecologica, idrica e acqua verde, blu e grigia</title>
+<title>Impronte: Ecologica, Idrica e L'Impronta Nascosta</title>
 <style>
   :root {
     color-scheme: light;
-    --bg: #f6f8f5;
+    --bg: #f5f7f3;
     --surface: #ffffff;
-    --text: #1d2a22;
-    --muted: #5b6b61;
-    --border: #d9e2dc;
+    --text: #1c2a22;
+    --muted: #56675c;
+    --border: #d4dfd7;
     --green: #2e7d32;
     --blue: #1565c0;
-    --grey: #6d6d6d;
+    --grey: #616161;
+    --warn: #b36b00;
+    --bad: #c62828;
     --accent: #00796b;
+    --accent-soft: #e0f2f1;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -28,7 +31,10 @@
       --green: #66bb6a;
       --blue: #64b5f6;
       --grey: #bdbdbd;
+      --warn: #f2b35c;
+      --bad: #ff8a80;
       --accent: #4db6ac;
+      --accent-soft: #1a3833;
     }
   }
   :root[data-theme="dark"] {
@@ -41,168 +47,451 @@
     --green: #66bb6a;
     --blue: #64b5f6;
     --grey: #bdbdbd;
+    --warn: #f2b35c;
+    --bad: #ff8a80;
     --accent: #4db6ac;
+    --accent-soft: #1a3833;
   }
-  :root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
-  *, *::before, *::after { box-sizing: inherit; }
+  *, *::before, *::after { box-sizing: border-box; }
   html { scroll-padding-top: env(safe-area-inset-top, 0px); }
   body {
     margin: 0;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f5f7f3;
     background: var(--bg);
+    color: #1c2a22;
     color: var(--text);
     line-height: 1.55;
-    background: var(--bg);
+    font-size: 16.5px;
   }
-  header {
-    padding: 1.5rem 1rem 1rem;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
+  header.app-head {
+    padding: 1rem 1.25rem .85rem;
+    background: #00695c;
+    background: linear-gradient(135deg, #00695c 0%, #2e7d4f 100%);
+    color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: .75rem;
   }
-  header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
-  header p { margin: 0; color: var(--muted); }
+  header.app-head h1 { margin: 0 0 .15rem; font-size: 1.42rem; line-height: 1.2; }
+  header.app-head p { margin: 0; opacity: .92; font-size: .9rem; }
+  .head-badges { display: flex; gap: .45rem; flex-wrap: wrap; align-items: center; }
+  .head-chip {
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.32);
+    color: #fff;
+    padding: .3rem .65rem;
+    border-radius: 999px;
+    font-size: .8rem;
+    font-weight: 600;
+  }
   nav.tabs {
-    display: flex; gap: .4rem; overflow-x: auto; padding: .75rem 1rem;
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+    display: flex;
+    gap: .45rem;
+    overflow-x: auto;
+    padding: .7rem 1rem;
+    background: #ffffff;
+    background: var(--surface);
+    border-bottom: 1.5px solid #d4dfd7;
+    border-bottom: 1.5px solid var(--border);
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 10;
   }
   nav.tabs button {
-    flex: 0 0 auto; border: 1px solid var(--border); background: var(--bg); color: var(--text);
-    padding: .5rem .9rem; border-radius: 999px; cursor: pointer; font-size: .92rem;
+    flex: 0 0 auto;
+    border: 1.5px solid #d4dfd7;
+    border: 1.5px solid var(--border);
+    background: #f5f7f3;
+    background: var(--bg);
+    color: #1c2a22;
+    color: var(--text);
+    padding: .52rem .92rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: .92rem;
+    font-weight: 600;
+    min-height: 42px;
   }
-  nav.tabs button[aria-selected="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
-  main { max-width: 760px; margin: 0 auto; padding: 1rem; }
-  section[hidden] { display: none; }
+  nav.tabs button[aria-selected="true"] {
+    background: #00796b;
+    background: var(--accent);
+    color: #fff;
+    border-color: #00796b;
+    border-color: var(--accent);
+  }
+  main { max-width: 920px; margin: 0 auto; padding: 1rem; }
+  section[hidden] { display: none !important; }
+  .sub-panel[hidden] { display: none !important; }
   .card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    padding: 1rem 1.1rem; margin-bottom: 1rem;
+    background: #ffffff;
+    background: var(--surface);
+    border: 1px solid #d4dfd7;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.05rem 1.2rem;
+    margin-bottom: 1rem;
   }
-  h2 { font-size: 1.25rem; margin: .25rem 0 .75rem; }
-  h3 { font-size: 1.05rem; margin: .5rem 0 .4rem; }
-  p { margin: .5rem 0; }
-  .note { font-size: .85rem; color: var(--muted); }
+  h2 { font-size: 1.28rem; margin: .15rem 0 .65rem; color: #00796b; color: var(--accent); }
+  h3 { font-size: 1.08rem; margin: .7rem 0 .4rem; }
+  p { margin: .45rem 0; }
+  ul, ol { padding-left: 1.25rem; }
+  .note { font-size: .88rem; color: #56675c; color: var(--muted); }
+  .callout-note {
+    background: #f5f7f3;
+    background: var(--bg);
+    border-left: 5px solid #b36b00;
+    border-left: 5px solid var(--warn);
+    padding: .65rem .9rem;
+    border-radius: 8px;
+    margin: .75rem 0;
+    font-size: .92rem;
+  }
   .formula {
-    font-weight: 600; text-align: center; padding: .6rem; border-radius: 10px;
-    background: var(--bg); border: 1px dashed var(--border); margin: .75rem 0;
+    font-weight: 700;
+    text-align: center;
+    padding: .65rem .8rem;
+    border-radius: 10px;
+    background: #f5f7f3;
+    background: var(--bg);
+    border: 1.5px dashed #00796b;
+    border: 1.5px dashed var(--accent);
+    margin: .75rem 0;
+  }
+  .sec-head { display: flex; justify-content: space-between; align-items: center; gap: .65rem; flex-wrap: wrap; margin-bottom: .35rem; }
+  .speak-btn {
+    border: 1.5px solid #1565c0;
+    border: 1.5px solid var(--blue);
+    background: #ffffff;
+    background: var(--surface);
+    color: #1565c0;
+    color: var(--blue);
+    padding: .4rem .8rem;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: .86rem;
+    font-weight: 600;
+    min-height: 40px;
   }
   .grid { display: grid; gap: .75rem; grid-template-columns: 1fr; }
-  @media (min-width: 560px) { .grid.two { grid-template-columns: 1fr 1fr; } .grid.three { grid-template-columns: repeat(3, 1fr); } }
-  .water-card { border-top: 6px solid; border-radius: 12px; padding: .9rem; background: var(--bg); }
-  .water-card.green { border-color: var(--green); }
-  .water-card.blue { border-color: var(--blue); }
-  .water-card.grey { border-color: var(--grey); }
-  .water-card h3 { margin-top: 0; }
-  .bar-row { display: grid; grid-template-columns: 9.5rem 1fr 4.5rem; gap: .5rem; align-items: center; margin: .35rem 0; font-size: .92rem; }
-  .bar-track { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; height: 1.1rem; overflow: hidden; }
-  .bar-fill { height: 100%; background: var(--accent); transition: width .4s ease; }
-  .bar-value { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
-  .stack { display: flex; height: 2.2rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); margin: .5rem 0; }
-  .stack div { display: flex; align-items: center; justify-content: center; color: #fff; font-size: .8rem; font-weight: 600; }
-  .legend { display: flex; flex-wrap: wrap; gap: .75rem; font-size: .88rem; color: var(--muted); }
-  .dot { display: inline-block; width: .8rem; height: .8rem; border-radius: 50%; margin-right: .3rem; vertical-align: middle; }
-  .controls { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0 .75rem; }
-  .controls button, .btn {
-    border: 1px solid var(--accent); background: transparent; color: var(--accent);
-    padding: .45rem .8rem; border-radius: 8px; cursor: pointer; font-size: .9rem;
+  @media (min-width: 600px) {
+    .grid.two { grid-template-columns: 1fr 1fr; }
+    .grid.three { grid-template-columns: repeat(3, 1fr); }
   }
-  .controls button[aria-pressed="true"] { background: var(--accent); color: #fff; }
-  .quiz-q { font-weight: 600; margin-top: .75rem; }
-  .quiz-opts { display: grid; gap: .4rem; margin-top: .4rem; }
-  .quiz-opts button {
-    text-align: left; padding: .6rem .75rem; border-radius: 9px; border: 1px solid var(--border);
-    background: var(--bg); color: var(--text); cursor: pointer; font-size: .95rem;
-  }
-  .quiz-opts button.ok { border-color: var(--green); background: color-mix(in srgb, var(--green) 18%, transparent); }
-  .quiz-opts button.ko { border-color: #c62828; background: color-mix(in srgb, #c62828 14%, transparent); }
-  .feedback { margin-top: .35rem; min-height: 1.2rem; font-size: .92rem; }
-  .check li { margin: .35rem 0; }
-  ul { padding-left: 1.2rem; }
   .deep-grid { display: grid; gap: .65rem; grid-template-columns: 1fr; margin: .65rem 0; }
-  @media (min-width: 560px) { .deep-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 600px) { .deep-grid { grid-template-columns: repeat(2, 1fr); } }
   .mini-box {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: .7rem .85rem;
+    background: #f5f7f3;
+    background: var(--bg);
+    border: 1px solid #d4dfd7;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .75rem .9rem;
   }
-  .mini-box strong { color: var(--accent); }
-  .cmp-table { width: 100%; border-collapse: collapse; font-size: .9rem; margin-top: .5rem; }
-  .cmp-table th, .cmp-table td { border: 1px solid var(--border); padding: .5rem .65rem; text-align: left; vertical-align: top; }
-  .cmp-table th { background: var(--bg); font-weight: 700; }
+  .mini-box strong { color: #00796b; color: var(--accent); }
+  .water-card { border-top: 6px solid; border-radius: 12px; padding: .9rem; background: #f5f7f3; background: var(--bg); }
+  .water-card.green { border-color: #2e7d32; border-color: var(--green); }
+  .water-card.blue { border-color: #1565c0; border-color: var(--blue); }
+  .water-card.grey { border-color: #616161; border-color: var(--grey); }
+  .water-card h3 { margin-top: 0; }
+  .bar-row { display: grid; grid-template-columns: 10rem 1fr 4.8rem; gap: .5rem; align-items: center; margin: .38rem 0; font-size: .92rem; }
+  .bar-track { background: #f5f7f3; background: var(--bg); border: 1px solid #d4dfd7; border: 1px solid var(--border); border-radius: 6px; height: 1.15rem; overflow: hidden; }
+  .bar-fill { height: 100%; background: #00796b; background: var(--accent); transition: width .35s ease; }
+  .bar-value { text-align: right; font-variant-numeric: tabular-nums; color: #56675c; color: var(--muted); font-weight: 600; }
+  .stack { display: flex; height: 2.3rem; border-radius: 8px; overflow: hidden; border: 1px solid #d4dfd7; border: 1px solid var(--border); margin: .5rem 0; }
+  .stack div { display: flex; align-items: center; justify-content: center; color: #fff; font-size: .82rem; font-weight: 700; transition: width .35s ease; white-space: nowrap; overflow: hidden; }
+  .legend { display: flex; flex-wrap: wrap; gap: .75rem; font-size: .88rem; color: #56675c; color: var(--muted); }
+  .dot { display: inline-block; width: .8rem; height: .8rem; border-radius: 50%; margin-right: .3rem; vertical-align: middle; }
+  .controls { display: flex; flex-wrap: wrap; gap: .55rem; align-items: center; margin: .65rem 0; }
+  .controls button, .btn {
+    border: 1.5px solid #00796b;
+    border: 1.5px solid var(--accent);
+    background: #ffffff;
+    background: var(--surface);
+    color: #00796b;
+    color: var(--accent);
+    padding: .48rem .88rem;
+    border-radius: 9px;
+    cursor: pointer;
+    font: inherit;
+    font-size: .92rem;
+    font-weight: 600;
+    min-height: 44px;
+  }
+  .controls button.primary, .btn.primary { background: #00796b; background: var(--accent); color: #fff; }
+  .controls button[aria-pressed="true"] { background: #00796b; background: var(--accent); color: #fff; }
+  .sub-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    padding: .65rem;
+    border-radius: 12px;
+    background: #f5f7f3;
+    background: var(--bg);
+    border: 1px solid #d4dfd7;
+    border: 1px solid var(--border);
+    margin-bottom: .85rem;
+  }
+  .sub-nav button {
+    border: 1.5px solid #d4dfd7;
+    border: 1.5px solid var(--border);
+    background: #ffffff;
+    background: var(--surface);
+    color: #1c2a22;
+    color: var(--text);
+    padding: .4rem .72rem;
+    border-radius: 9px;
+    cursor: pointer;
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 600;
+    min-height: 38px;
+  }
+  .sub-nav button[aria-selected="true"] {
+    background: #00796b;
+    background: var(--accent);
+    border-color: #00796b;
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .eco-table { width: 100%; border-collapse: collapse; margin: .6rem 0; font-size: .92rem; }
+  .eco-table th, .eco-table td { border: 1px solid #d4dfd7; border: 1px solid var(--border); padding: .5rem .65rem; text-align: left; vertical-align: top; }
+  .eco-table th { background: #f5f7f3; background: var(--bg); font-weight: 700; }
+  .eco-table input[type="number"] {
+    width: 5.2rem; padding: .35rem .45rem; border: 1.5px solid #d4dfd7; border: 1.5px solid var(--border); border-radius: 7px;
+    background: #ffffff; background: var(--surface); color: #1c2a22; color: var(--text); font: inherit; min-height: 38px;
+  }
+  .sort-item { border-top: 1px solid #d4dfd7; border-top: 1px solid var(--border); padding: .65rem 0; }
+  .sort-item:first-child { border-top: none; }
+  .sort-item p { margin: 0 0 .45rem; font-weight: 600; }
+  .sort-btns { display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; }
+  .sort-btns button {
+    border: 1.5px solid #00796b; border: 1.5px solid var(--accent); background: #ffffff; background: var(--surface); color: #1c2a22; color: var(--text);
+    padding: .42rem .88rem; border-radius: 9px; cursor: pointer; font: inherit; font-size: .9rem; min-height: 42px;
+  }
+  .sort-btns button.picked { background: #00796b; background: var(--accent); color: #fff; }
+  .svg-chart { width: 100%; height: auto; display: block; margin: .5rem 0; background: #ffffff; background: var(--surface); border-radius: 10px; }
+  .inline-input {
+    padding: .4rem .6rem; border: 1.5px solid #d4dfd7; border: 1.5px solid var(--border); border-radius: 8px;
+    background: #ffffff; background: var(--surface); color: #1c2a22; color: var(--text); font: inherit; min-height: 42px;
+  }
+  .ta-box {
+    width: 100%; min-height: 70px; padding: .55rem .7rem; border: 1.5px solid #d4dfd7; border: 1.5px solid var(--border);
+    border-radius: 9px; background: #ffffff; background: var(--surface); color: #1c2a22; color: var(--text); font: inherit; margin: .45rem 0;
+  }
+  .ok-txt { color: #2e7d32; color: var(--green); font-weight: 700; }
+  .ko-txt { color: #c62828; color: var(--bad); font-weight: 700; }
+  .feedback { margin-top: .4rem; min-height: 1.3rem; font-size: .93rem; }
   .q-class-list { display: grid; gap: .7rem; margin-top: .5rem; }
   .q-class-item {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 11px; padding: .75rem .9rem;
+    background: #f5f7f3;
+    background: var(--bg);
+    border: 1px solid #d4dfd7;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: .75rem .9rem;
   }
   .q-class-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .6rem; }
   .q-class-title { font-weight: 600; flex: 1 1 260px; }
   .btn-reveal {
-    border: 1.5px solid var(--accent); background: var(--surface); color: var(--accent);
-    padding: .45rem .85rem; border-radius: 8px; cursor: pointer; font-size: .88rem; font-weight: 600;
+    border: 1.5px solid #00796b; border: 1.5px solid var(--accent); background: #ffffff; background: var(--surface); color: #00796b; color: var(--accent);
+    padding: .42rem .85rem; border-radius: 8px; cursor: pointer; font: inherit; font-size: .88rem; font-weight: 600;
     min-height: 40px; flex-shrink: 0;
   }
-  .btn-reveal[aria-expanded="true"] { background: var(--accent); color: #fff; }
+  .btn-reveal[aria-expanded="true"] { background: #00796b; background: var(--accent); color: #fff; }
   .q-answer {
-    margin-top: .6rem; padding: .65rem .8rem; border-radius: 9px;
-    border-left: 4px solid var(--accent); background: var(--surface); font-size: .92rem;
+    margin-top: .6rem; padding: .65rem .85rem; border-radius: 9px;
+    border-left: 4px solid #00796b; border-left: 4px solid var(--accent); background: #ffffff; background: var(--surface); font-size: .92rem;
   }
-  footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 1.5rem 1rem 2.5rem; }
+  .quiz-q { font-weight: 700; margin: .5rem 0; font-size: 1.05rem; }
+  .quiz-opts { display: grid; gap: .45rem; margin-top: .45rem; }
+  .quiz-opts button {
+    text-align: left; padding: .65rem .85rem; border-radius: 10px; border: 1.5px solid #d4dfd7; border: 1.5px solid var(--border);
+    background: #f5f7f3; background: var(--bg); color: #1c2a22; color: var(--text); cursor: pointer; font: inherit; font-size: .96rem; min-height: 46px;
+  }
+  .quiz-opts button.ok { border-color: #2e7d32; border-color: var(--green); background: rgba(46, 125, 50, 0.18); background: color-mix(in srgb, var(--green) 18%, transparent); }
+  .quiz-opts button.ko { border-color: #c62828; border-color: var(--bad); background: rgba(198, 40, 40, 0.14); background: color-mix(in srgb, var(--bad) 14%, transparent); }
+  .lab-banner {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .6rem;
+    padding: .75rem .95rem; border-radius: 11px; border: 1.5px solid #00796b; border: 1.5px solid var(--accent);
+    background: #e0f2f1; background: var(--accent-soft); margin-top: .75rem;
+  }
+  .check li { margin: .42rem 0; }
+  .check input[type="checkbox"] { width: 1.1rem; height: 1.1rem; vertical-align: middle; margin-right: .35rem; }
+  .impact-grid { display: grid; gap: .75rem; grid-template-columns: 1fr; margin-top: .85rem; }
+  @media (min-width: 560px) { .impact-grid { grid-template-columns: 1fr 1fr; } }
+  .step-footer { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; margin-top: .9rem; padding-top: .75rem; border-top: 1px solid #d4dfd7; border-top: 1px solid var(--border); }
+  /* Fallback CSS legacy (Chrome < 57 / < 84 / Tizen 3.0) */
+  html.no-flex-gap .head-badges > * + *,
+  html.no-flex-gap nav.tabs > * + *,
+  html.no-flex-gap .controls > * + *,
+  html.no-flex-gap .sub-nav > * + *,
+  html.no-flex-gap .sort-btns > * + *,
+  html.no-flex-gap .legend > * + * { margin-left: .45rem; margin-bottom: .35rem; }
+  @supports not (display: grid) {
+    .grid, .deep-grid, .impact-grid { display: flex; flex-wrap: wrap; margin: -0.35rem; }
+    .grid > *, .deep-grid > *, .impact-grid > * { flex: 1 1 260px; margin: 0.35rem; }
+    .bar-row { display: flex; align-items: center; }
+    .bar-row > :first-child { flex: 0 0 10rem; }
+    .bar-row > .bar-track { flex: 1 1 auto; margin: 0 .5rem; }
+    .bar-row > .bar-value { flex: 0 0 4.8rem; }
+    .q-class-list > * + *, .quiz-opts > * + * { margin-top: .6rem; }
+    .quiz-opts button { display: block; width: 100%; }
+  }
+  .compat-alert {
+    max-width: 920px; margin: .75rem auto 0; padding: .75rem 1rem; border-radius: 10px;
+    border: 2px solid #c62828; background: #fff5f5; color: #7f1d1d; font-size: .92rem; display: none;
+  }
+  @page { size: A4; margin: 12mm; }
+  @media print {
+    header.app-head, nav.tabs, .sub-nav, .controls, .btn, .speak-btn, .btn-reveal, .lab-banner, .step-footer, footer, .compat-alert { display: none !important; }
+    main { max-width: 100%; padding: 0; }
+    body { background: #fff; color: #000; font-size: 10.5pt; }
+    .card { border: 1px solid #bbb; box-shadow: none; break-inside: avoid; }
+    body.print-idrico-a4 section:not(#lab-nascosta) { display: none !important; }
+    body.print-idrico-a4 #lab-nascosta .sub-panel:not(#hn-t8) { display: none !important; }
+    body.print-idrico-a4 #hn-t8 { display: block !important; }
+  }
+  footer { text-align: center; color: #56675c; color: var(--muted); font-size: .82rem; padding: 1.4rem 1rem 2.2rem; }
 </style>
+<script>
+(function() {
+  if (typeof NodeList !== 'undefined' && NodeList.prototype && !NodeList.prototype.forEach) {
+    NodeList.prototype.forEach = Array.prototype.forEach;
+  }
+  if (!Array.prototype.includes) {
+    Array.prototype.includes = function(el, idx) { return this.indexOf(el, idx || 0) !== -1; };
+  }
+  if (!Array.prototype.find) {
+    Array.prototype.find = function(pred, thisArg) {
+      for (var i = 0; i < this.length; i++) {
+        if (pred.call(thisArg, this[i], i, this)) return this[i];
+      }
+      return undefined;
+    };
+  }
+  if (!Array.from) {
+    Array.from = function(list) { return Array.prototype.slice.call(list || []); };
+  }
+  if (!String.prototype.includes) {
+    String.prototype.includes = function(s, p) { return this.indexOf(s, p || 0) !== -1; };
+  }
+  if (typeof Element !== 'undefined' && !Element.prototype.matches) {
+    Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+  }
+  if (typeof Element !== 'undefined' && !Element.prototype.closest) {
+    Element.prototype.closest = function(sel) {
+      var el = this;
+      while (el && el.nodeType === 1) {
+        if (el.matches(sel)) return el;
+        el = el.parentElement || el.parentNode;
+      }
+      return null;
+    };
+  }
+  try {
+    var t = document.createElement('div');
+    t.style.display = 'flex';
+    t.style.flexDirection = 'column';
+    t.style.rowGap = '1px';
+    t.appendChild(document.createElement('div'));
+    t.appendChild(document.createElement('div'));
+    document.documentElement.appendChild(t);
+    var ok = t.scrollHeight === 1;
+    document.documentElement.removeChild(t);
+    if (!ok) document.documentElement.className += ' no-flex-gap';
+  } catch (e) {}
+
+  window.__IMP_ERR = function(msg) {
+    var b = document.getElementById('compatAlert');
+    if (b) {
+      b.style.display = 'block';
+      b.innerHTML = '<strong>Avviso compatibilità modulo Impronte:</strong> ' + String(msg || 'errore script');
+    }
+  };
+  window.onerror = function(msg, src, line) {
+    window.__IMP_ERR(String(msg || 'Errore JavaScript') + (line ? ' (riga ' + line + ')' : ''));
+  };
+})();
+</script>
 </head>
 <body>
+<div id="compatAlert" class="compat-alert" role="alert"></div>
 
-<header>
-  <h1>Quanto pesiamo sul pianeta?</h1>
-  <p>Impronta ecologica, impronta idrica e acqua verde, blu e grigia</p>
+<header class="app-head">
+  <div>
+    <h1>Quanto pesiamo sul pianeta? · Guida &amp; Laboratori Unificati</h1>
+    <p>Impronta ecologica, impronta idrica, acqua verde/blu/grigia e L'Impronta Nascosta (Matematica e Scienze)</p>
+  </div>
+  <div class="head-badges">
+    <span class="head-chip">1 gha = 10.000 g·m²</span>
+    <span class="head-chip">1 m³ = 1.000 L</span>
+  </div>
 </header>
 
-<nav class="tabs" role="tablist" aria-label="Sezioni">
-  <button role="tab" aria-selected="true" data-tab="eco">1. Impronta ecologica</button>
-  <button role="tab" aria-selected="false" data-tab="idrica">2. Impronta idrica</button>
-  <button role="tab" aria-selected="false" data-tab="colori">3. Verde, blu, grigia</button>
-  <button role="tab" aria-selected="false" data-tab="quiz">4. Verifica</button>
-  <button role="tab" aria-selected="false" data-tab="azioni">5. Che cosa posso fare</button>
+<nav class="tabs" role="tablist" aria-label="Sezioni principali">
+  <button type="button" role="tab" aria-selected="true" data-tab="eco">1. Impronta ecologica</button>
+  <button type="button" role="tab" aria-selected="false" data-tab="idrica">2. Impronta idrica</button>
+  <button type="button" role="tab" aria-selected="false" data-tab="colori">3. Verde, blu, grigia</button>
+  <button type="button" role="tab" aria-selected="false" data-tab="lab-eco">4. Lab Impronta Ecologica</button>
+  <button type="button" role="tab" aria-selected="false" data-tab="lab-nascosta">5. Lab L'Impronta Nascosta</button>
+  <button type="button" role="tab" aria-selected="false" data-tab="quiz">6. Verifica Unificata</button>
+  <button type="button" role="tab" aria-selected="false" data-tab="azioni">7. Azioni &amp; Impatto</button>
 </nav>
 
 <main>
 
-  <!-- 1. IMPRONTA ECOLOGICA -->
+  <!-- ==================== 1. IMPRONTA ECOLOGICA ==================== -->
   <section id="eco">
     <div class="card">
-      <h2>Che cos'è l'impronta ecologica (approfondimento)</h2>
+      <div class="sec-head">
+        <h2>1 · Che cos'è l'impronta ecologica (approfondimento)</h2>
+        <button type="button" class="speak-btn" data-speak-el="eco">🔊 Leggi sezione</button>
+      </div>
       <p>L'<strong>impronta ecologica</strong> (<em>Ecological Footprint</em>, ideata da Mathis Wackernagel e William Rees negli anni '90) misura la quantità totale di <strong>superficie biologicamente produttiva di terra e mare</strong> necessaria per sostenere i consumi di una persona, di una città o di un intero Paese e per assorbire i rifiuti generati, soprattutto l'anidride carbonica (CO₂).</p>
-      <p>Si esprime in <strong>ettari globali (gha)</strong>: 1 gha equivale a 1 ettaro di superficie con la produttività biologica media mondiale. Usare un'unità standard permette di sommare terreni molto diversi (un pascolo arido, un campo di grano fertile, una foresta boreale) su una scala comune.</p>
+      <p>Si esprime in <strong>ettari globali (gha)</strong>: 1 gha corrisponde a 1 ettaro di superficie con produttività biologica media mondiale (pari a <strong>10.000 metri quadrati globali, g·m²</strong>). Usare un'unità standard consente di sommare suoli diversi (un campo fertile, un pascolo arido, una foresta) su un'unica scala.</p>
       <div class="formula">Impronta ecologica (gha) = superficie per produrre risorse + superficie per assorbire la CO₂</div>
+
       <h3>Le 6 categorie di superficie conteggiate</h3>
       <div class="deep-grid">
-        <div class="mini-box"><strong>1. Terreni agricoli (Cropland)</strong><br><span class="note">Suolo per coltivare cibo umano, mangimi animali, fibre naturali (cotone, lino) e oli.</span></div>
-        <div class="mini-box"><strong>2. Pascoli (Grazing land)</strong><br><span class="note">Prati e pascoli destinati all'allevamento per carne, latte, formaggi e lana.</span></div>
+        <div class="mini-box"><strong>1. Terreni agricoli (Cropland)</strong><br><span class="note">Suolo per coltivare cibo umano, mangimi animali, fibre tessili (cotone, lino) e oli vegetali.</span></div>
+        <div class="mini-box"><strong>2. Pascoli (Grazing land)</strong><br><span class="note">Prati e pascoli destinati all'allevamento per carne bovina/ovina, latte, formaggi e lana.</span></div>
         <div class="mini-box"><strong>3. Foreste produttive (Forest products)</strong><br><span class="note">Superficie boschiva richiesta per legname da costruzione, mobili, carta e legna da ardere.</span></div>
         <div class="mini-box"><strong>4. Zone di pesca (Fishing grounds)</strong><br><span class="note">Aree marine e d'acqua dolce necessarie a sostenere il pescato e l'acquacoltura.</span></div>
         <div class="mini-box"><strong>5. Suolo edificato (Built-up land)</strong><br><span class="note">Terreno reso impermeabile da città, strade, fabbriche, scuole e infrastrutture.</span></div>
-        <div class="mini-box"><strong>6. Impronta di carbonio (Carbon uptake land)</strong><br><span class="note">Foreste e oceani necessari per assorbire la CO₂ fossile emessa (oggi è la quota maggiore: ~55–60% del totale globale!).</span></div>
+        <div class="mini-box"><strong>6. Impronta di carbonio (Carbon uptake land)</strong><br><span class="note">Foreste e oceani necessari per assorbire la CO₂ fossile emessa (oggi è la quota maggiore: ~55–60% del totale globale).</span></div>
       </div>
-      <p class="note"><strong>Confronto chiave — Biocapacità &amp; Overshoot:</strong> la <strong>biocapacità</strong> è la capacità reale degli ecosistemi terrestri di rigenerare risorse rinnovabili e assorbire CO₂ in un anno (~1,5–1,6 gha per abitante del pianeta). Quando l'impronta supera la biocapacità entriamo in <strong>sovrasfruttamento ecologico (overshoot)</strong>: preleviamo più in fretta di quanto la natura riesca a rigenerarsi (es. tagliando alberi più rapidamente di quanto ricrescano o accumulando CO₂ in atmosfera). L'<em>Earth Overshoot Day</em> segna il giorno dell'anno in cui l'umanità esaurisce il "budget ecologico" annuale.</p>
+
+      <div class="callout-note">
+        <strong>Biocapacità &amp; Overshoot:</strong> la <strong>biocapacità</strong> è la capacità reale degli ecosistemi di rigenerare risorse rinnovabili e assorbire CO₂ in un anno (~<strong>1,5–1,6 gha per abitante</strong> della Terra). Quando l'impronta supera la biocapacità entriamo in <strong>sovrasfruttamento ecologico (overshoot)</strong>: l'<em>Earth Overshoot Day</em> indica il giorno in cui l'umanità esaurisce il budget ecologico annuale.
+      </div>
     </div>
 
     <div class="card">
-      <h3>Esempio: quanta superficie serve per persona?</h3>
-      <p class="note">Valori indicativi, pensati per la discussione in classe e per calcolare quanti "pianeti Terra" servirebbero.</p>
+      <h3>Quanta superficie serve per persona?</h3>
+      <p class="note">Valori indicativi per calcolare in classe quanti "pianeti Terra" servirebbero.</p>
       <div class="bar-row"><span>Stile A (sobrio)</span><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div><span class="bar-value">1,4 gha</span></div>
       <div class="bar-row"><span>Stile B (medio)</span><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div><span class="bar-value">2,6 gha</span></div>
-      <div class="bar-row"><span>Stile C (molto consumistico)</span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><span class="bar-value">4,8 gha</span></div>
-      <div class="bar-row"><span>Biocapacità media</span><div class="bar-track"><div class="bar-fill" style="width:33%; background:var(--muted)"></div></div><span class="bar-value">~1,6 gha</span></div>
-      <p class="note">Formula rapida in classe: <strong>Numero di pianeti = Impronta (gha) ÷ 1,6 gha</strong>. Con 4,8 gha servirebbero circa <strong>3 pianeti Terra</strong> se tutti vivessero così!</p>
+      <div class="bar-row"><span>Stile C (alto consumo)</span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><span class="bar-value">4,8 gha</span></div>
+      <div class="bar-row"><span>Biocapacità media</span><div class="bar-track"><div class="bar-fill" style="width:33%;background:var(--muted)"></div></div><span class="bar-value">~1,6 gha</span></div>
+      <p class="note">Formula rapida: <strong>Numero di pianeti = Impronta (gha) ÷ 1,6 gha</strong>. Con 4,8 gha servirebbero circa <strong>3 pianeti Terra</strong>.</p>
     </div>
 
     <div class="card">
-      <h3>Impronte pesanti, impronte leggere e differenze tra impronte</h3>
-      <p>L'impronta ecologica dipende soprattutto dai consumi energetici (trasporti, riscaldamento, elettricità fossile), dall'alimentazione e dal ciclo dei beni. Non tutti pesano allo stesso modo: il 10% più ricco della popolazione mondiale genera una quota molto più alta delle emissioni rispetto al 50% più povero.</p>
-      <table class="cmp-table">
+      <h3>Confronto diretto: Impronta Ecologica vs Impronta Idrica</h3>
+      <table class="eco-table">
         <thead>
           <tr><th>Aspetto</th><th>Impronta Ecologica</th><th>Impronta Idrica</th></tr>
         </thead>
         <tbody>
           <tr><td><strong>Cosa misura</strong></td><td>Superficie fertile di terra e mare richiesta per risorse e assorbimento CO₂</td><td>Volume totale di acqua dolce consumata o inquinata lungo la filiera</td></tr>
-          <tr><td><strong>Unità di misura</strong></td><td>Ettari globali (<strong>gha</strong>)</td><td>Litri (<strong>L</strong>) o metri cubi (<strong>m³</strong>)</td></tr>
+          <tr><td><strong>Unità di misura</strong></td><td>Ettari globali (<strong>gha</strong>) o <strong>g·m²</strong></td><td>Litri (<strong>L</strong>) o metri cubi (<strong>m³</strong>)</td></tr>
           <tr><td><strong>Limite di riferimento</strong></td><td>Biocapacità del pianeta (~1,6 gha/persona)</td><td>Disponibilità rinnovabile di fiumi, falde e pioggia del bacino locale</td></tr>
-          <tr><td><strong>Perché si completano</strong></td><td>Un prodotto può consumare poca terra ma molta acqua di falda (es. colture irrigue nel deserto), o viceversa</td><td>Valutarle insieme evita di risolvere un problema ambientale creandone un altro</td></tr>
+          <tr><td><strong>Perché usarle insieme</strong></td><td>Cattura soprattutto energia fossile, trasporti, deforestazione e consumo di suolo</td><td>Cattura lo stress idrico su fiumi e falde (es. colture irrigue in zone aride)</td></tr>
         </tbody>
       </table>
     </div>
@@ -212,48 +501,58 @@
       <div class="q-class-list">
         <div class="q-class-item">
           <div class="q-class-head">
-            <span class="q-class-title">1. Se l'Italia ha un'impronta di circa 4,2 gha/persona e una biocapacità interna intorno a 0,9 gha/persona, cosa significa?</span>
+            <span class="q-class-title">1. Se l'Italia ha un'impronta di ~4,2 gha/persona e una biocapacità interna di ~0,9 gha/persona, cosa significa?</span>
             <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-eco-1">Mostra risposta</button>
           </div>
-          <div class="q-answer" id="ans-eco-1" hidden>Significa che siamo in <strong>deficit ecologico</strong>: i nostri consumi richiedono circa 4,5 volte la superficie produttiva disponibile sul territorio nazionale. Per coprire la differenza "importiamo biocapacità" dall'estero (cibo, legno, combustibili, prodotti industriali) ed emettiamo CO₂ oltre la capacità di assorbimento dei nostri boschi e mari.</div>
+          <div class="q-answer" id="ans-eco-1" hidden>Siamo in <strong>deficit ecologico</strong>: i consumi richiedono circa 4,5 volte la superficie produttiva disponibile sul territorio italiano. Per coprire il divario importiamo risorse dall'estero (cibo, legno, combustibili, beni) e accumuliamo CO₂ oltre la capacità di assorbimento nazionale.</div>
         </div>
         <div class="q-class-item">
           <div class="q-class-head">
-            <span class="q-class-title">2. Impronta ecologica e impronta di carbonio (Carbon Footprint) sono la stessa cosa?</span>
+            <span class="q-class-title">2. Impronta ecologica e impronta di carbonio (Carbon Footprint) sono sinonimi?</span>
             <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-eco-2">Mostra risposta</button>
           </div>
-          <div class="q-answer" id="ans-eco-2" hidden>No: l'impronta di carbonio misura i gas serra emessi (in tonnellate di CO₂ equivalente) ed è <strong>una delle 6 componenti</strong> dell'impronta ecologica. L'impronta ecologica traduce quella CO₂ in ettari di bosco/oceano necessari ad assorbirla e vi somma suolo agricolo, pascoli, foreste, pesca e cemento.</div>
+          <div class="q-answer" id="ans-eco-2" hidden>No: l'impronta di carbonio misura le emissioni di gas serra (in kg o tonnellate di CO₂e) ed è <strong>una delle 6 componenti</strong> dell'impronta ecologica, che traduce quella CO₂ in ettari forestali/marini di assorbimento e vi somma suolo agricolo, pascoli, foreste, pesca e cemento.</div>
         </div>
+      </div>
+      <div class="lab-banner">
+        <span><strong>Passa alla pratica su grafici, surplus e g·m²:</strong> esplora il laboratorio completo dell'Impronta Ecologica.</span>
+        <button type="button" class="btn primary" data-jump-tab="lab-eco">Apri 4. Lab Impronta Ecologica →</button>
       </div>
     </div>
   </section>
 
-  <!-- 2. IMPRONTA IDRICA -->
+  <!-- ==================== 2. IMPRONTA IDRICA ==================== -->
   <section id="idrica" hidden>
     <div class="card">
-      <h2>Che cos'è l'impronta idrica (approfondimento)</h2>
-      <p>L'<strong>impronta idrica</strong> (<em>Water Footprint</em>, definita da Arjen Hoekstra e sviluppata dal Water Footprint Network) misura il <strong>volume totale di acqua dolce</strong> consumato (evaporato o incorporato nel prodotto) e inquinato lungo l'intera filiera produttiva dei beni e servizi usati da una persona, un'azienda o un Paese. Si misura in <strong>litri (L)</strong> o <strong>metri cubi (m³)</strong>, dove 1 m³ = 1.000 litri.</p>
-      <p>Il concetto chiave è quello di <strong>acqua virtuale</strong> (o invisibile): quando compriamo una mela, un quaderno o una t-shirt non vediamo l'acqua versata nei campi o usata in tintoria, eppure quel bene "contiene" tutta l'acqua servita dalla materia prima fino al negozio (<em>dalla culla allo scaffale</em>).</p>
+      <div class="sec-head">
+        <h2>2 · Che cos'è l'impronta idrica (approfondimento)</h2>
+        <button type="button" class="speak-btn" data-speak-el="idrica">🔊 Leggi sezione</button>
+      </div>
+      <p>L'<strong>impronta idrica</strong> (<em>Water Footprint</em>, Arjen Hoekstra / Water Footprint Network) misura il <strong>volume totale di acqua dolce</strong> consumato (evaporato o incorporato nel prodotto) e inquinato lungo tutta la filiera produttiva dei beni e servizi. Si misura in <strong>litri (L)</strong> o <strong>metri cubi (m³)</strong>, con 1 m³ = 1.000 litri.</p>
+      <p>Il cuore del concetto è l'<strong>acqua virtuale</strong> (o invisibile): quando compriamo una mela, un quaderno o un paio di jeans non vediamo l'acqua versata nei campi o in fabbrica, eppure quel bene racchiude tutta l'acqua usata <em>dalla culla allo scaffale</em>.</p>
+
       <div class="grid two">
         <div class="water-card green" style="border-top-color:var(--accent)">
           <h3>Impronta diretta (~5–10% del totale)</h3>
-          <p>L'acqua che vediamo scorrere in casa e a scuola: doccia (~40–60 L), sciacquone (~6–10 L), cucina, lavatrice, giardino. In media in Italia è attorno a <strong>150–220 litri al giorno</strong> per persona.</p>
+          <p>L'acqua che scorre in casa e a scuola: doccia (~40–60 L), sciacquone (~6–10 L), cucina, lavatrice. In Italia vale in media <strong>150–236 litri al giorno</strong> per persona.</p>
         </div>
         <div class="water-card blue" style="border-top-color:var(--accent)">
           <h3>Impronta indiretta (~90–95% del totale)</h3>
-          <p>Tutta l'acqua nascosta usata per produrre ciò che mangiamo, indossiamo e usiamo (agricoltura, mangimi, industria tessile ed elettronica, energia): spesso vale <strong>3.000–5.000 litri al giorno</strong> a persona!</p>
+          <p>Tutta l'acqua nascosta nel cibo, nei vestiti, nella carta e nell'energia: in media arriva a <strong>3.500–6.300 litri al giorno</strong> a persona.</p>
         </div>
       </div>
       <div class="formula">Impronta idrica totale = impronta diretta + impronta indiretta (Acqua Verde + Blu + Grigia)</div>
-      <p class="note"><strong>Perché non basta guardare solo il rubinetto?</strong> Chiudere il rubinetto mentre ci si lava i denti fa risparmiare ~10 litri al giorno (gesto importante!), ma evitare di sprecare 100 g di cibo ad alta impronta o riparare/usare più a lungo un vestito può salvare migliaia di litri d'acqua invisibile.</p>
+      <div class="callout-note">
+        <strong>Dati dal mondo reale:</strong> l'acqua dolce facilmente utilizzabile è meno dell'1% dell'acqua terrestre e l'agricoltura ne impiega circa il <strong>70%</strong>. Per questo evitare sprechi alimentari e scegliere filiere sostenibili fa risparmiare molta più acqua che guardare solo il rubinetto.
+      </div>
     </div>
 
     <div class="card">
-      <h3>Quanta acqua serve per produrre 1 kg di… (o 1 unità)</h3>
-      <p class="note">Stime medie globali arrotondate (Water Footprint Network). Passa da <em>Cibo</em> ad <em>Altri prodotti</em> per confrontare alimenti, abiti e carta.</p>
+      <h3>Quanta acqua serve per produrre 1 kg di… (o 1 pezzo)</h3>
+      <p class="note">Stime medie globali arrotondate (Water Footprint Network).</p>
       <div class="controls" id="foodControls">
-        <button aria-pressed="true" data-view="food">Cibo (per 1 kg)</button>
-        <button aria-pressed="false" data-view="other">Altri prodotti (per pezzo)</button>
+        <button type="button" aria-pressed="true" data-view="food">Cibo (per 1 kg)</button>
+        <button type="button" aria-pressed="false" data-view="other">Altri prodotti (per pezzo)</button>
       </div>
       <div id="foodChart"></div>
     </div>
@@ -263,236 +562,1738 @@
       <div class="q-class-list">
         <div class="q-class-item">
           <div class="q-class-head">
-            <span class="q-class-title">1. Perché 1 kg di carne bovina ha un'impronta idrica (~15.000 L) molto più alta di 1 kg di legumi o verdure (~200–4.000 L)?</span>
+            <span class="q-class-title">1. Perché 1 kg di carne bovina (~15.400 L) pesa molto più di 1 kg di verdure (~200–300 L)?</span>
             <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-idrica-1">Mostra risposta</button>
           </div>
-          <div class="q-answer" id="ans-idrica-1" hidden>Perché occorrono <strong>anni di crescita</strong> e decine di chilogrammi di foraggio e cereali (che a loro volta richiedono moltissima acqua verde e blu per essere coltivati) per produrre 1 solo kg di carne. L'acqua bevuta direttamente dall'animale è meno del 2% del totale; oltre il 95% serve a far crescere ciò che l'animale mangia.</div>
+          <div class="q-answer" id="ans-idrica-1" hidden>Perché l'animale cresce per mesi o anni mangiando decine di chilogrammi di foraggio e cereali coltivati con molta acqua verde e blu. Oltre il 95% dell'impronta deriva dal mangime, non dall'acqua bevuta dall'animale.</div>
         </div>
         <div class="q-class-item">
           <div class="q-class-head">
-            <span class="q-class-title">2. Se produciamo un cibo molto assetato in una regione secca per poi esportarlo altrove, chi paga il costo dell'acqua?</span>
+            <span class="q-class-title">2. Se un frutto molto assetato viene irrigato in una regione arida ed esportato altrove, chi paga il costo idrico?</span>
             <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-idrica-2">Mostra risposta</button>
           </div>
-          <div class="q-answer" id="ans-idrica-2" hidden>Il prezzo ambientale lo paga il <strong>territorio di origine</strong>: fiumi in secca, falde sotterranee che si abbassano e conflitti idrici per gli abitanti locali, anche se l'alimento viene consumato a migliaia di chilometri di distanza (<strong>commercio di acqua virtuale</strong>). Per questo il luogo di produzione conta quanto i litri totali!</div>
+          <div class="q-answer" id="ans-idrica-2" hidden>Il <strong>territorio d'origine</strong>: fiumi in secca e falde che si esauriscono restano lì, anche se il prodotto viene mangiato lontano (<em>commercio di acqua virtuale</em>). Per questo il luogo di produzione conta quanto i litri totali.</div>
         </div>
         <div class="q-class-item">
           <div class="q-class-head">
-            <span class="q-class-title">3. Quanta acqua indiretta può esserci nella tua colazione di stamattina (es. latte o caffè/tè + pane e marmellata)?</span>
+            <span class="q-class-title">3. Quanta acqua nascosta può esserci nella tua colazione o merenda di oggi?</span>
             <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-idrica-3">Mostra risposta</button>
           </div>
-          <div class="q-answer" id="ans-idrica-3" hidden>Anche una semplice colazione può superare facilmente i <strong>400–600 litri</strong> di acqua virtuale: ad esempio una tazza di latte (~250 ml = ~250 L), due fette di pane/fette biscottate (60 g = ~95 L), un cucchiaio di marmellata (~30 L) e un frutto di stagione (~100–120 L). Sprecando metà colazione nel cestino si sprecano centinaia di litri d'acqua invisibile!</div>
+          <div class="q-answer" id="ans-idrica-3" hidden>Facilmente <strong>400–600 litri</strong>: una tazza di latte (~250 L), due fette di pane/fette biscottate (~95 L) e un frutto (~70–120 L). Buttarne metà significa sprecare centinaia di litri invisibili.</div>
         </div>
+      </div>
+      <div class="lab-banner">
+        <span><strong>Quaderno completo di Matematica &amp; Scienze:</strong> istogrammi, diagramma delle mele, surplus, menu ed elaborato A4.</span>
+        <button type="button" class="btn primary" data-jump-tab="lab-nascosta">Apri 5. Lab L'Impronta Nascosta →</button>
       </div>
     </div>
   </section>
 
-  <!-- 3. VERDE BLU GRIGIA -->
+  <!-- ==================== 3. VERDE, BLU, GRIGIA ==================== -->
   <section id="colori" hidden>
     <div class="card">
-      <h2>Acqua verde, blu e grigia (i tre colori dell'impronta idrica)</h2>
-      <p>Non tutta l'acqua ha lo stesso peso ecologico: 1.000 litri prelevati da un fiume in siccità sono ben più critici di 1.000 litri di pioggia caduta naturalmente su un campo. Per questo si distinguono <strong>tre componenti</strong>:</p>
+      <div class="sec-head">
+        <h2>3 · Acqua verde, blu e grigia (i tre colori dell'impronta idrica)</h2>
+        <button type="button" class="speak-btn" data-speak-el="colori">🔊 Leggi sezione</button>
+      </div>
+      <p>Non tutta l'acqua ha lo stesso impatto: 1.000 L prelevati da un fiume in secca sono ben più critici di 1.000 L di pioggia caduta su un campo. Per questo si distinguono <strong>tre componenti</strong>:</p>
       <div class="grid three">
         <div class="water-card green">
           <h3>Acqua verde</h3>
-          <p>È l'<strong>acqua piovana</strong> trattenuta negli strati superficiali del suolo e assorbita o evaporata dalle piante (agricoltura, pascoli, foreste) senza prelievi da fiumi o falde.</p>
-          <p class="note"><strong>Impatto:</strong> generalmente basso sul ciclo idrico, purché non porti a deforestazione o erosione del suolo.</p>
+          <p><strong>Acqua piovana</strong> trattenuta nel suolo superficiale e assorbita/evaporata dalle piante senza prelievi da fiumi o falde.</p>
+          <p class="note"><strong>Impatto:</strong> basso sul ciclo idrico, purché non ci sia deforestazione o erosione.</p>
         </div>
         <div class="water-card blue">
           <h3>Acqua blu</h3>
-          <p>È l'<strong>acqua dolce superficiale o sotterranea</strong> (fiumi, laghi, invasi, falde) prelevata per irrigazione agricola, processi industriali o uso domestico che evapora o entra nel prodotto senza tornare subito al bacino d'origine.</p>
-          <p class="note"><strong>Impatto:</strong> alto nei mesi secchi e nelle aree aride, perché può prosciugare fiumi e abbassare le falde.</p>
+          <p><strong>Acqua dolce superficiale o sotterranea</strong> (fiumi, laghi, falde) prelevata per irrigazione, industria o usi civili che evapora o resta nel prodotto.</p>
+          <p class="note"><strong>Impatto:</strong> critico nei mesi secchi e nelle aree aride.</p>
         </div>
         <div class="water-card grey">
           <h3>Acqua grigia</h3>
-          <p>È il <strong>volume teorico d'acqua dolce pulita</strong> che servirebbe per diluire gli inquinanti scaricati (fertilizzanti azotati, pesticidi, coloranti tessili, metalli, reflui) fino a rientrare nei limiti ambientali di legge.</p>
-          <p class="note"><strong>Impatto:</strong> misura il grado di contaminazione chimica lasciata dal processo produttivo.</p>
+          <p><strong>Volume teorico d'acqua pulita</strong> necessario a diluire gli inquinanti scaricati (fertilizzanti, pesticidi, coloranti tessili) sotto i limiti ambientali.</p>
+          <p class="note"><strong>Impatto:</strong> misura il carico di inquinamento lasciato dalla produzione.</p>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h3>Esempio illustrativo: una maglietta di cotone (250 g ≈ 2.500 L)</h3>
-      <p class="note">Ripartizione didattica tipica delle tre componenti tra coltivazione del cotone e tintura industriale del tessuto.</p>
-      <div class="stack">
-        <div style="width:72%; background:var(--green)">Verde 72%</div>
-        <div style="width:8%; background:var(--blue)">8%</div>
-        <div style="width:20%; background:var(--grey)">Grigia 20%</div>
+      <h3>Esploratore interattivo · Confronta Verde, Blu e Grigia per prodotto</h3>
+      <p class="note">Seleziona un alimento o un bene per osservare come cambia la proporzione tra i tre colori d'acqua.</p>
+      <div class="controls" id="colorProdBtns"></div>
+      <div class="stack" id="colorStack"></div>
+      <div class="legend" style="margin-bottom:.6rem;">
+        <span><span class="dot" style="background:var(--green)"></span>Verde: pioggia nel suolo</span>
+        <span><span class="dot" style="background:var(--blue)"></span>Blu: irrigazione e usi industriali</span>
+        <span><span class="dot" style="background:var(--grey)"></span>Grigia: diluzione inquinanti</span>
       </div>
-      <div class="legend">
-        <span><span class="dot" style="background:var(--green)"></span>Verde: pioggia nei campi</span>
-        <span><span class="dot" style="background:var(--blue)"></span>Blu: irrigazione + lavaggi industriali</span>
-        <span><span class="dot" style="background:var(--grey)"></span>Grigia: diluzione fertilizzanti e tinture</span>
-      </div>
+      <div class="mini-box" id="colorProdNote"></div>
+
       <div class="q-class-list" style="margin-top:.85rem;">
         <div class="q-class-item">
           <div class="q-class-head">
-            <span class="q-class-title">1. Guardando la maglietta di cotone, quale parte dell'acqua è più problematica in estate e perché?</span>
+            <span class="q-class-title">1. Guardando la maglietta di cotone (2.500 L), quale quota è più critica in estate e perché?</span>
             <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-col-1">Mostra risposta</button>
           </div>
-          <div class="q-answer" id="ans-col-1" hidden>L'<strong>acqua blu</strong> e l'<strong>acqua grigia</strong> sono le più critiche: la quota blu (anche se solo 8% nella media, può salire oltre il 40% in regioni aride come Asia centrale) sottrae acqua reale da fiumi e laghi assetati, mentre la quota grigia rende inutilizzabile altra acqua dolce a causa di pesticidi e tinture chimiche.</div>
+          <div class="q-answer" id="ans-col-1" hidden>L'<strong>acqua blu</strong> (prelevata da fiumi e laghi assetati, e in zone aride può superare il 40%) e l'<strong>acqua grigia</strong> (che rende inutilizzabile altra acqua dolce a causa di pesticidi e tinture tessili).</div>
         </div>
         <div class="q-class-item">
           <div class="q-class-head">
-            <span class="q-class-title">2. Perché la quota grigia (20%) può essere grande anche se quell'acqua non viene "bevuta" o "evaporata"?</span>
+            <span class="q-class-title">2. Perché la quota grigia (20%) può essere così grande anche se non viene "bevuta"?</span>
             <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-col-2">Mostra risposta</button>
           </div>
-          <div class="q-answer" id="ans-col-2" hidden>Perché l'inquinamento compromette un volume d'acqua dolce pulita molte volte superiore allo scarico stesso: bastano pochi grammi di colorante o nitrato per rendere non potabile e danneggiare ecologicamente migliaia di litri d'acqua di un fiume finché non vengono depurati o diluiti.</div>
+          <div class="q-answer" id="ans-col-2" hidden>Perché bastano pochi grammi di colorante o fertilizzante per contaminare migliaia di litri d'acqua di fiume, rendendoli ecologicamente danneggiati finché non vengono depurati o diluiti.</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 4. QUIZ -->
-  <section id="quiz" hidden>
-    <div class="card">
-      <h2>Verifica rapida</h2>
-      <div id="quizBox"></div>
-      <div class="controls"><button id="restartQuiz">Ricomincia</button></div>
+  <!-- ==================== 4. LAB IMPRONTA ECOLOGICA ==================== -->
+  <section id="lab-eco" hidden>
+    <div class="card" style="margin-bottom:.75rem;">
+      <div class="sec-head">
+        <div>
+          <h2 style="margin:0;">4 · Lab Impronta Ecologica: Grafici, Surplus &amp; Pianeti Terra</h2>
+          <p class="note" style="margin:.15rem 0 0;">Percorso pratico di Matematica &amp; Scienze in <strong>g·m²</strong> e <strong>gha</strong> (1 gha = 10.000 g·m² · biocapacità media ~1,6 gha/anno).</p>
+        </div>
+        <div style="display:flex;gap:.45rem;flex-wrap:wrap;">
+          <button type="button" class="speak-btn" id="btn-speak-eco-lab">🔊 Leggi intro</button>
+          <button type="button" class="btn" id="btnEcoAllMode" aria-pressed="false" style="min-height:40px;padding:.35rem .75rem;font-size:.84rem;">Mostra tutto in una pagina</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-nav" role="tablist" aria-label="Tappe Lab Impronta Ecologica" id="ecoSubNav">
+      <button type="button" data-esub="e0" aria-selected="true">0 · Riscaldamento</button>
+      <button type="button" data-esub="e1" aria-selected="false">1 · Dati g·m²</button>
+      <button type="button" data-esub="e2" aria-selected="false">2 · Istogramma</button>
+      <button type="button" data-esub="e3" aria-selected="false">3 · Diagramma Auto</button>
+      <button type="button" data-esub="e4" aria-selected="false">4 · Surplus &amp; Caso 2</button>
+      <button type="button" data-esub="e5" aria-selected="false">5 · Esercizi</button>
+      <button type="button" data-esub="e6" aria-selected="false">6 · Settimana &amp; Pianeti</button>
+      <button type="button" data-esub="e7" aria-selected="false">7 · Domande &amp; Stampa</button>
+    </div>
+
+    <div class="card sub-panel" id="e0">
+      <h3>0 · Riscaldamento: impronta visibile o nascosta? (Suolo, foreste e CO₂)</h3>
+      <p class="note">Scegli se ogni elemento è visibile direttamente oppure rappresenta superficie ecologica nascosta necessaria per produrlo o assorbirne i gas serra.</p>
+      <div id="ecoSortBox"></div>
+      <div class="mini-box" id="ecoSortFb" style="margin-top:.65rem;">Risposte corrette: 0 su 6</div>
+      <div class="step-footer"><span></span><button type="button" class="btn primary" data-esub-go="e1">Avanti: 1 · Dati g·m² →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="e1" hidden>
+      <h3>1 · La carta ecologica di cibi e spostamenti (in g·m²)</h3>
+      <p>Usiamo i <strong>metri quadrati globali (g·m²)</strong> di suolo fertile, pascolo e foresta anti-CO₂ necessari per sostenere 1 unità in un anno:</p>
+      <table class="eco-table">
+        <thead><tr><th>Elemento (1 unità)</th><th>Stima in g·m²</th><th>Come si legge</th></tr></thead>
+        <tbody>
+          <tr><td>Patate (1 kg)</td><td>20 g·m²</td><td>1 kg di patate → ~20 g·m²</td></tr>
+          <tr><td>Mele locali (1 kg)</td><td>35 g·m²</td><td>1 kg di mele → ~35 g·m²</td></tr>
+          <tr><td>Pane di frumento (1 kg)</td><td>70 g·m²</td><td>1 kg di pane → ~70 g·m²</td></tr>
+          <tr><td>Formaggio stagionato (1 kg)</td><td>220 g·m²</td><td>1 kg di formaggio → ~220 g·m²</td></tr>
+          <tr><td>Carne bovina (1 kg)</td><td>950 g·m²</td><td>1 kg di carne bovina → ~950 g·m²</td></tr>
+          <tr><td>Auto a benzina (1 km)</td><td>12 g·m²</td><td>1 km in auto → ~12 g·m² (quasi tutto per assorbire CO₂)</td></tr>
+          <tr><td>Autobus (1 km)</td><td>3 g·m²</td><td>1 km in bus → ~3 g·m² (impatto diviso fra i passeggeri)</td></tr>
+        </tbody>
+      </table>
+      <div class="callout-note"><strong>Conversione chiave:</strong> 1 ettaro globale (<strong>1 gha</strong>) = <strong>10.000 g·m²</strong> (un quadrato di 100 m × 100 m). Stime didattiche medie globali.</div>
+      <div class="step-footer"><button type="button" class="btn" data-esub-go="e0">← Riscaldamento</button><button type="button" class="btn primary" data-esub-go="e2">Avanti: 2 · Istogramma →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="e2" hidden>
+      <h3>2 · Istogramma: impronta ecologica di 1 kg di alimento (g·m²)</h3>
+      <p class="note">Scala: ogni linea vale <strong>100 g·m²</strong>. Le barre partono tutte da zero.</p>
+      <div class="controls">
+        <button type="button" id="btnEcoHistVal" aria-pressed="false">Mostra / nascondi valori</button>
+      </div>
+      <svg id="ecoHistSvg" class="svg-chart" viewBox="0 0 600 345" role="img" aria-label="Istogramma impronta ecologica in g·m²"></svg>
+      <div class="mini-box">Confronto rapido: 1 kg di carne bovina (950 g·m²) richiede lo stesso spazio ecologico di circa <strong>47,5 kg di patate</strong> (20 g·m²/kg)!</div>
+      <div class="step-footer"><button type="button" class="btn" data-esub-go="e1">← Dati g·m²</button><button type="button" class="btn primary" data-esub-go="e3">Avanti: 3 · Diagramma Auto →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="e3" hidden>
+      <h3>3 · Diagramma cartesiano: andare a scuola in auto (km × 12 = g·m²)</h3>
+      <p>Regola lineare: <strong>km percorsi × 12 g·m² = superficie forestale per assorbire la CO₂</strong>. Premi i pulsanti per tracciare i punti.</p>
+      <div class="controls" id="ecoGridBtns"></div>
+      <svg id="ecoGridSvg" class="svg-chart" viewBox="0 0 600 355" role="img" aria-label="Diagramma cartesiano spostamenti in auto"></svg>
+      <table class="eco-table" id="ecoCalcTab">
+        <thead><tr><th>Tragitto settimanale</th><th>Calcolo</th><th>Superficie richiesta (g·m²)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="step-footer"><button type="button" class="btn" data-esub-go="e2">← Istogramma</button><button type="button" class="btn primary" data-esub-go="e4">Avanti: 4 · Surplus &amp; Caso 2 →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="e4" hidden>
+      <h3>4 · Surplus ecologico: comprare il giusto vs comprare troppo</h3>
+      <p>Caso simulato 1 (cibo misto a scuola, media <strong>120 g·m²/kg</strong>): comprare in eccesso occupa inutilmente campi, pascoli e foreste.</p>
+      <div class="controls">
+        <label>Serve (kg): <select id="ecoNeed" class="inline-input"></select></label>
+        <label>Si propone (kg): <select id="ecoBuy" class="inline-input"></select></label>
+      </div>
+      <div class="mini-box" id="ecoSurplusRes"></div>
+      <h3>Quale scelta proponiamo?</h3>
+      <div class="controls">
+        <button type="button" id="ecoPickBuy" aria-pressed="false">Acquistare la quantità proposta</button>
+        <button type="button" id="ecoPickNeed" aria-pressed="false">Acquistare solo la quantità necessaria</button>
+      </div>
+      <div class="feedback" id="ecoSurplusFb"></div>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0;">
+      <h3>Caso simulato 2 · Tragitti casa–scuola (20 km a settimana)</h3>
+      <p>Per <strong>20 km</strong> alla settimana: auto = <strong>12 g·m²/km</strong>, autobus = <strong>3 g·m²/km</strong>. Calcola l'impronta in auto e il surplus evitabile rispetto all'autobus.</p>
+      <div class="controls">
+        <label>Auto 20 km (g·m²): <input type="number" id="ecoC2Auto" class="inline-input" style="width:6.5rem"></label>
+        <label>Surplus vs bus (g·m²): <input type="number" id="ecoC2Diff" class="inline-input" style="width:6.5rem"></label>
+        <button type="button" id="btnEcoC2Check">Controlla</button>
+        <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-eco-c2">Mostra soluzione</button>
+      </div>
+      <div class="feedback" id="ecoC2Fb"></div>
+      <div class="q-answer" id="ans-eco-c2" hidden>Auto: 20 × 12 = <strong>240 g·m²</strong>. Autobus: 20 × 3 = <strong>60 g·m²</strong>. Surplus evitabile: 240 − 60 = <strong>180 g·m²</strong> a settimana.</div>
+      <textarea class="ta-box" placeholder="Completa la proposta: Per venire a scuola proponiamo di usare... perché risparmiamo..."></textarea>
+      <div class="step-footer"><button type="button" class="btn" data-esub-go="e3">← Diagramma Auto</button><button type="button" class="btn primary" data-esub-go="e5">Avanti: 5 · Esercizi →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="e5" hidden>
+      <h3>5 · Esercizi di calcolo sull'Impronta Ecologica</h3>
+      <p class="note">Usa i dati della tabella al punto 1 e ricorda che <strong>1 gha = 10.000 g·m²</strong>.</p>
+      <div id="ecoExBox"></div>
+      <div class="step-footer"><button type="button" class="btn" data-esub-go="e4">← Surplus &amp; Caso 2</button><button type="button" class="btn primary" data-esub-go="e6">Avanti: 6 · Settimana &amp; Pianeti →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="e6" hidden>
+      <h3>6 · Costruisci la tua settimana ecologica e conta i Pianeti Terra</h3>
+      <p class="note">Modifica le quantità settimanali (aggiungiamo +0,70 gha/anno per servizi pubblici, scuole e strade). Osserva come cambia il numero di Pianeti Terra!</p>
+      <div class="controls" id="ecoPresetBtns"></div>
+      <table class="eco-table">
+        <thead><tr><th>Abitudine settimanale</th><th>g·m² / unità</th><th>Quantità</th><th>Totale g·m²</th></tr></thead>
+        <tbody id="ecoBuilderBody"></tbody>
+        <tfoot>
+          <tr><th colspan="3">Totale abitudini settimanali</th><th id="ecoBuilderWeek">0 g·m²</th></tr>
+          <tr><th colspan="3">Stima annua + servizi base (+0,70 gha)</th><th id="ecoBuilderYear">0,70 gha</th></tr>
+        </tfoot>
+      </table>
+      <div class="mini-box" id="ecoPlanetRes" style="margin-top:.65rem;"></div>
+      <div class="step-footer"><button type="button" class="btn" data-esub-go="e5">← Esercizi</button><button type="button" class="btn primary" data-esub-go="e7">Avanti: 7 · Domande &amp; Stampa →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="e7" hidden>
+      <h3>7 · Domande per la classe · Laboratorio Impronta Ecologica</h3>
+      <div class="q-class-list">
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">1. Nel grafico dell'auto (12 g·m²/km), perché la linea è dritta e passa per (0; 0)?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-leco-1">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-leco-1" hidden>Perché l'impronta ecologica è <strong>direttamente proporzionale</strong> ai km percorsi: a 0 km corrisponde 0 g·m², raddoppiando i km raddoppia l'impronta, quindi il grafico è una semiretta uscente dall'origine.</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">2. Perché sostituire l'auto con autobus o bici taglia moltissimo l'impronta ecologica ma poco quella idrica?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-leco-2">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-leco-2" hidden>Perché i trasporti emettono soprattutto <strong>CO₂</strong>, che pesa quasi il 60% dell'<strong>impronta ecologica</strong> (<em>carbon uptake land</em>), mentre l'<strong>impronta idrica</strong> dipende soprattutto da agricoltura e cibo.</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">3. Passando da 4,0 gha a 2,4 gha a persona, quanti Pianeti Terra si risparmiano?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-leco-3">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-leco-3" hidden>Da <strong>4,0 ÷ 1,6 = 2,5 pianeti</strong> si scende a <strong>2,4 ÷ 1,6 = 1,5 pianeti</strong>: un risparmio netto di <strong>1 intero pianeta Terra</strong> (1,6 gha/persona)!</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">4. Che cosa succede quando buttiamo via 1 kg di cibo appena comprato?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-leco-4">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-leco-4" hidden>Si sommano due perdite inutili: abbiamo già consumato l'<strong>acqua virtuale</strong> (impronta idrica) e occupato invano <strong>campi, pascoli e foreste</strong> (impronta ecologica). Evitare il surplus protegge entrambe!</div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <button type="button" class="btn" data-esub-go="e6">← Settimana &amp; Pianeti</button>
+        <button type="button" class="btn primary" id="btnPrintEcoLab">Stampa scheda Lab Ecologico (A4)</button>
+      </div>
     </div>
   </section>
 
-  <!-- 5. AZIONI -->
+  <!-- ==================== 5. LAB L'IMPRONTA NASCOSTA (INTEGRATO NATIVAMENTE) ==================== -->
+  <section id="lab-nascosta" hidden>
+    <div class="card" style="margin-bottom:.75rem;">
+      <div class="sec-head">
+        <div>
+          <h2 style="margin:0;">5 · Lab L'Impronta Nascosta: Grafici per una Merenda senza Sprechi</h2>
+          <p class="note" style="margin:.15rem 0 0;">Tutte le 11 schede di Matematica e Scienze integrate direttamente: acqua nascosta (L/kg), doppio confronto idrico+ecologico, soluzioni interattive e stampa A4.</p>
+        </div>
+        <button type="button" class="speak-btn" id="btn-speak-hn">🔊 Leggi scheda attiva</button>
+      </div>
+    </div>
+
+    <div class="sub-nav" role="tablist" aria-label="Schede L'Impronta Nascosta" id="hnSubNav">
+      <button type="button" data-hnsub="hn-t0" aria-selected="true">0 · Riscaldamento</button>
+      <button type="button" data-hnsub="hn-t1" aria-selected="false">1 · Dati</button>
+      <button type="button" data-hnsub="hn-t2" aria-selected="false">2 · Istogramma</button>
+      <button type="button" data-hnsub="hn-t3" aria-selected="false">3 · Diagramma mele</button>
+      <button type="button" data-hnsub="hn-t4" aria-selected="false">4 · Surplus mele</button>
+      <button type="button" data-hnsub="hn-t5" aria-selected="false">5 · Biglietto d'uscita</button>
+      <button type="button" data-hnsub="hn-t6" aria-selected="false">6 · Esercizi</button>
+      <button type="button" data-hnsub="hn-t7" aria-selected="false">7 · Caso 2 patate</button>
+      <button type="button" data-hnsub="hn-t8" aria-selected="false">8 · Elaborato A4</button>
+      <button type="button" data-hnsub="hn-t9" aria-selected="false">9 · Confronto menu</button>
+      <button type="button" data-hnsub="hn-t10" aria-selected="false">10 · Approfondimento</button>
+    </div>
+
+    <div class="card sub-panel" id="hn-t0">
+      <h3>0 · Riscaldamento: visibile o nascosta?</h3>
+      <p>Per ogni elemento scegli se è un'impronta <strong>visibile</strong> (la vedi nel piatto) o <strong>nascosta</strong> (serve per produrlo).</p>
+      <div id="hnSort0"></div>
+      <div class="mini-box" id="hnSort0Fb" style="margin-top:.65rem;">Risposte corrette: 0 su 6</div>
+      <div class="step-footer"><span></span><button type="button" class="btn primary" data-hnsub-go="hn-t1">Avanti: 1 · Dati →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="hn-t1" hidden>
+      <h3>1 · La carta degli alimenti</h3>
+      <p>L'<strong>impronta idrica</strong> è una <strong>stima media</strong> dell'acqua usata per produrre <strong>1 kg</strong> di alimento. Non è acqua versata sul cibo.</p>
+      <table class="eco-table">
+        <thead><tr><th>Alimento</th><th>Litri per 1 kg</th><th>Impronta eco stimata (1 kg)</th><th>Come si legge</th></tr></thead>
+        <tbody>
+          <tr><td>Mele</td><td>822 L</td><td>~35 g·m²</td><td>1 kg di mele → 822 litri</td></tr>
+          <tr><td>Pane di frumento</td><td>1.608 L</td><td>~70 g·m²</td><td>1 kg di pane → 1.608 litri</td></tr>
+          <tr><td>Riso</td><td>2.497 L</td><td>~95 g·m²</td><td>1 kg di riso → 2.497 litri</td></tr>
+          <tr><td>Patate</td><td>287 L</td><td>~20 g·m²</td><td>1 kg di patate → 287 litri</td></tr>
+        </tbody>
+      </table>
+      <div class="callout-note"><strong>Attenzione ai dati:</strong> sono medie globali. Fonti diverse possono dare numeri diversi: il dato è una stima, non una misura esatta della merenda della nostra classe.</div>
+      <div class="step-footer"><button type="button" class="btn" data-hnsub-go="hn-t0">← Riscaldamento</button><button type="button" class="btn primary" data-hnsub-go="hn-t2">Avanti: 2 · Istogramma →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="hn-t2" hidden>
+      <h3>2 · Istogramma: impronta idrica di 1 kg</h3>
+      <p class="note">Scala: ogni linea orizzontale vale <strong>100 L</strong>. Le barre partono tutte da zero.</p>
+      <div class="controls"><button type="button" id="hnBtnHistVal" aria-pressed="false">Mostra / nascondi valori</button></div>
+      <svg id="hnHistSvg" class="svg-chart" viewBox="0 0 600 365" role="img" aria-label="Istogramma impronta idrica"></svg>
+      <div class="mini-box">Confronto: il riso (2.497 L) consuma quasi <strong>8,7 volte</strong> l'acqua delle patate (287 L) per ogni chilo!</div>
+      <div class="step-footer"><button type="button" class="btn" data-hnsub-go="hn-t1">← Dati</button><button type="button" class="btn primary" data-hnsub-go="hn-t3">Avanti: 3 · Diagramma mele →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="hn-t3" hidden>
+      <h3>3 · Diagramma cartesiano delle mele</h3>
+      <p>Regola: <strong>kg × 822 = litri</strong>. Premi un pulsante per segnare il punto corrispondente sulla retta.</p>
+      <div class="controls" id="hnPtBtns"></div>
+      <svg id="hnGridSvg" class="svg-chart" viewBox="0 0 600 375" role="img" aria-label="Diagramma cartesiano mele"></svg>
+      <table class="eco-table" id="hnCalcTab">
+        <thead><tr><th>Mele</th><th>Calcolo</th><th>Litri</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="step-footer"><button type="button" class="btn" data-hnsub-go="hn-t2">← Istogramma</button><button type="button" class="btn primary" data-hnsub-go="hn-t4">Avanti: 4 · Surplus mele →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="hn-t4" hidden>
+      <h3>4 · La merenda che basta (surplus mele)</h3>
+      <p>Caso simulato: per la merenda di gruppo servono le mele indicate, ma qualcuno propone di acquistarne di più.</p>
+      <div class="controls">
+        <label>Quanto serve (kg): <select id="hnNeed" class="inline-input"></select></label>
+        <label>Quanto si vorrebbe comprare (kg): <select id="hnBuy" class="inline-input"></select></label>
+      </div>
+      <div class="mini-box" id="hnSurplusCalc"></div>
+      <h3>Quale scelta proponiamo?</h3>
+      <div class="controls">
+        <button type="button" id="hnChooseBuy" aria-pressed="false">Acquistare la quantità proposta</button>
+        <button type="button" id="hnChooseNeed" aria-pressed="false">Acquistare solo la quantità necessaria</button>
+      </div>
+      <div class="feedback" id="hnChoiceFb"></div>
+      <div class="callout-note">Il calcolo indica l'impronta idrica (e di suolo) associata alla quantità che rischiamo di sprecare.</div>
+      <div class="step-footer"><button type="button" class="btn" data-hnsub-go="hn-t3">← Diagramma mele</button><button type="button" class="btn primary" data-hnsub-go="hn-t6">Avanti: 6 · Esercizi →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="hn-t5" hidden>
+      <h3>5 · Biglietto d'uscita (lavoro individuale)</h3>
+      <div id="hnExitQuiz"></div>
+      <div class="mini-box" id="hnExitScore" style="margin-top:.7rem;font-weight:700;">Risposte corrette: 0 su 3</div>
+      <div class="step-footer"><button type="button" class="btn" data-hnsub-go="hn-t7">← Caso 2</button><button type="button" class="btn primary" data-hnsub-go="hn-t8">Avanti: 8 · Elaborato A4 →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="hn-t6" hidden>
+      <h3>6 · Esercizi di calcolo (impronta idrica)</h3>
+      <p>Regola: <strong>kg × litri per kg</strong>. Scrivi il risultato e premi Controlla.</p>
+      <div id="hnExBox"></div>
+      <div class="step-footer"><button type="button" class="btn" data-hnsub-go="hn-t4">← Surplus mele</button><button type="button" class="btn primary" data-hnsub-go="hn-t7">Avanti: 7 · Caso 2 patate →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="hn-t7" hidden>
+      <h3>7 · Caso simulato 2: le patate</h3>
+      <p>Per la merenda servono <strong>5 kg di patate</strong>, ma qualcuno propone di comprarne <strong>7 kg</strong>.</p>
+      <div class="controls">
+        <label>Surplus (kg): <input type="number" id="hnC2Kg" class="inline-input" style="width:5.5rem"></label>
+        <label>Impronta del surplus (L): <input type="number" id="hnC2L" class="inline-input" style="width:7rem"></label>
+        <button type="button" id="btnHnC2Check">Controlla</button>
+        <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-hn-c2">Mostra soluzione</button>
+      </div>
+      <div class="feedback" id="hnC2Fb"></div>
+      <div class="q-answer" id="ans-hn-c2" hidden>Surplus = 7 − 5 = <strong>2 kg</strong>; Impronta del surplus = 2 × 287 = <strong>574 L</strong> (più ~40 g·m² di suolo agricolo).</div>
+      <h3>Quale proposta facciamo?</h3>
+      <div class="controls">
+        <button type="button" id="hnC2Need">Acquistare 5 kg</button>
+        <button type="button" id="hnC2Buy">Acquistare 7 kg</button>
+      </div>
+      <div class="feedback" id="hnC2Ch"></div>
+      <h3>Completa la frase</h3>
+      <textarea class="ta-box" placeholder="Proponiamo di acquistare ___ kg di patate perché ___"></textarea>
+      <div class="step-footer"><button type="button" class="btn" data-hnsub-go="hn-t6">← Esercizi</button><button type="button" class="btn primary" data-hnsub-go="hn-t5">Avanti: 5 · Biglietto d'uscita →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="hn-t8" hidden>
+      <h3>8 · Elaborato individuale stampabile: la mia merenda senza sprechi</h3>
+      <p><strong>Nome e cognome:</strong> ______________________________ &nbsp; <strong>Classe:</strong> ________ &nbsp; <strong>Data:</strong> ________</p>
+      <p>Lavoro individuale su fogli A4 a quadretti (40 minuti). Tutti i dati necessari sono in questa scheda.</p>
+      <h4>Cosa devi fare, in ordine</h4>
+      <ol>
+        <li><strong>Istogramma</strong> dei quattro alimenti: mele, pane, riso, patate (scala 1 quadretto = 100 L, barre da zero).</li>
+        <li><strong>Diagramma delle mele:</strong> asse X = kg (0–4), asse Y = litri (0–3.500). Punti: (0;0), (1;822), (2;1.644), (3;2.466), (4;3.288).</li>
+        <li><strong>Surplus dei tre menu</strong> (18 alunni): calcoli, domande e proposta finale.</li>
+      </ol>
+      <table class="eco-table">
+        <thead><tr><th>Alimento</th><th>Litri / 1 kg</th><th>Litri / 100 g</th><th>g·m² / 1 kg</th></tr></thead>
+        <tbody>
+          <tr><td>Mela</td><td>822 L</td><td>82 L</td><td>35 g·m²</td></tr>
+          <tr><td>Pane di frumento</td><td>1.608 L</td><td>161 L</td><td>70 g·m²</td></tr>
+          <tr><td>Riso</td><td>2.497 L</td><td>250 L</td><td>95 g·m²</td></tr>
+          <tr><td>Patate</td><td>287 L</td><td>29 L</td><td>20 g·m²</td></tr>
+          <tr><td>Carne bovina</td><td>15.400 L</td><td>1.540 L</td><td>950 g·m²</td></tr>
+          <tr><td>Formaggio</td><td>3.178 L</td><td>318 L</td><td>220 g·m²</td></tr>
+          <tr><td>Pomodoro</td><td>214 L</td><td>21 L</td><td>15 g·m²</td></tr>
+        </tbody>
+      </table>
+      <h4>Calcolo del surplus: confronto tra tre menu (18 alunni)</h4>
+      <p class="note">Formule: necessario (kg) = 18 × g ÷ 1.000 | surplus (kg) = acquistato − necessario | litri = surplus × litri/kg</p>
+      <table class="eco-table">
+        <thead><tr><th>Menu</th><th>Per alunno</th><th>Necessario (18 alunni)</th><th>Acquistato</th><th>Surplus</th><th>Formula litri</th></tr></thead>
+        <tbody>
+          <tr><td>A · Frutta</td><td>mela 150 g</td><td>2,7 kg (esempio)</td><td>3,5 kg</td><td>0,8 kg</td><td>surplus × 822</td></tr>
+          <tr><td>B · Panino</td><td>pane 60 g + formaggio 40 g</td><td>____</td><td>pane 1,5 kg; form. 1,0 kg</td><td>____</td><td>pane × 1.608 + form. × 3.178</td></tr>
+          <tr><td>C · Pane e pomodoro</td><td>pane 60 g + pomodoro 80 g</td><td>____</td><td>pane 1,5 kg; pom. 2,0 kg</td><td>____</td><td>pane × 1.608 + pom. × 214</td></tr>
+        </tbody>
+      </table>
+      <h4>Domande dell'elaborato (con aiuto soluzioni per la correzione in classe)</h4>
+      <ol>
+        <li>Quale menu ha il surplus più alto in litri? Quanti litri in più rispetto al menu A?</li>
+        <li>Percentuale di spreco del pane nel menu B: surplus ÷ acquistato × 100 = ____ %.</li>
+        <li>Se il menu B si ripete per 5 giorni, quanti litri di surplus si accumulano in una settimana?</li>
+        <li>Quanti kg di pane e formaggio servono davvero per il menu B senza surplus?</li>
+      </ol>
+      <div class="controls">
+        <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-hn-t8">Mostra soluzioni guida docente</button>
+      </div>
+      <div class="q-answer" id="ans-hn-t8" hidden>
+        <strong>Menu B:</strong> pane necessario 18×60÷1000 = <strong>1,08 kg</strong> (surplus 0,42 kg → 675 L); formaggio necessario 18×40÷1000 = <strong>0,72 kg</strong> (surplus 0,28 kg → 890 L). Totale surplus B = <strong>~1.565 L</strong> (menu A = 658 L; differenza = <strong>+907 L</strong>). Spreco pane B = 0,42÷1,5×100 = <strong>28%</strong>. In 5 giorni = <strong>~7.825 L</strong>.
+      </div>
+      <div class="step-footer">
+        <button type="button" class="btn" data-hnsub-go="hn-t5">← Biglietto d'uscita</button>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button type="button" class="btn" id="btnPrintIdricoA4">Stampa Elaborato (A4)</button>
+          <button type="button" class="btn primary" data-hnsub-go="hn-t9">Avanti: 9 · Confronto menu →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card sub-panel" id="hn-t9" hidden>
+      <h3>9 · Confronto di menu e Costruttore Pasto (Idrico + Ecologico)</h3>
+      <p>Regola: <strong>grammi × valore per kg ÷ 1.000</strong>. Qui confronti subito <strong>Litri (acqua)</strong> e <strong>g·m² (suolo &amp; CO₂)</strong> insieme!</p>
+      <table class="eco-table">
+        <thead><tr><th>Menu (1 persona)</th><th>Ingredienti</th><th>Litri</th><th>Per 22 alunni</th></tr></thead>
+        <tbody>
+          <tr><td>A. Frutta</td><td>mela 150 g</td><td>123 L</td><td>2.706 L</td></tr>
+          <tr><td>B. Panino</td><td>pane 60 g + formaggio 40 g</td><td>223 L</td><td>4.906 L</td></tr>
+          <tr><td>C. Banana</td><td>banana 150 g</td><td>119 L</td><td>2.618 L</td></tr>
+          <tr><td>D. Pane e pomodoro</td><td>pane 60 g + pomodoro 80 g</td><td>113 L</td><td>2.486 L</td></tr>
+          <tr><td>Pranzo vegetariano</td><td>pasta 80 g, formaggio 40 g, pomodoro 100 g, cavolo 150 g, pane 50 g</td><td>412 L</td><td>9.064 L</td></tr>
+          <tr><td>Pranzo con pollo</td><td>pasta 80 g, pollo 50 g, pomodoro 100 g, cavolo 150 g, pane 50 g</td><td>500 L</td><td>11.000 L</td></tr>
+          <tr><td>Pranzo con carne bovina</td><td>pasta 80 g, carne bovina 100 g, pomodoro 100 g, cavolo 150 g, pane 50 g</td><td>1.825 L</td><td>40.150 L</td></tr>
+          <tr><td>Colazione con uova</td><td>latte 200 g, uovo 60 g, pane 50 g</td><td>482 L</td><td>10.604 L</td></tr>
+          <tr><td>Merenda con yogurt</td><td>yogurt 125 g, arancia 150 g</td><td>105 L</td><td>2.310 L</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Domande di confronto (con risposta per la classe)</h3>
+      <div class="q-class-list">
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">1. Quante volte pesa di più il pranzo con carne bovina rispetto a quello vegetariano? (al decimo)</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-t9-1">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-t9-1" hidden>1.825 ÷ 412 ≈ <strong>4,4 volte</strong> di più in litri d'acqua!</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">2. In 5 giorni di scuola, scegliendo sempre panino B (223 L) invece di frutta A (123 L), quanti litri in più si usano?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-t9-2">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-t9-2" hidden>(223 − 123) × 5 = 100 × 5 = <strong>500 litri</strong> in più a settimana per alunno.</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">3. Quale merenda ha l'impronta più bassa e di quanti litri batte la merenda B?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-t9-3">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-t9-3" hidden>La <strong>merenda con yogurt e arancia (105 L)</strong> — seguita da <strong>D. Pane e pomodoro (113 L)</strong>. Risparmia rispettivamente <strong>118 L</strong> o <strong>110 L</strong> rispetto al panino B (223 L).</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">4. Se il pranzo con pollo (500 L) viene preparato per 22 alunni ma ne mangiano 20, quanti litri vanno sprecati?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-t9-4">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-t9-4" hidden>Avanzano 2 porzioni: 2 × 500 = <strong>1.000 litri</strong> di acqua associati al cibo non consumato.</div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:1rem;">Costruisci il tuo menu (Idrico + Ecologico insieme!)</h3>
+      <p class="note">Carica subito un preset di confronto o modifica i grammi a mano:</p>
+      <div class="controls" id="hnPresetBtns"></div>
+      <div class="mini-box" id="hnDualTotals" style="margin-bottom:.65rem;">
+        Totale menu: <strong>0 L</strong> (acqua) · <strong>0 g·m²</strong> (impronta ecologica)
+      </div>
+      <table class="eco-table">
+        <thead><tr><th>Alimento</th><th>L/kg · g·m²/kg</th><th>Grammi</th><th>Litri</th><th>g·m²</th></tr></thead>
+        <tbody id="hnBuilderBody"></tbody>
+      </table>
+      <div class="step-footer"><button type="button" class="btn" data-hnsub-go="hn-t8">← Elaborato A4</button><button type="button" class="btn primary" data-hnsub-go="hn-t10">Avanti: 10 · Approfondimento →</button></div>
+    </div>
+
+    <div class="card sub-panel" id="hn-t10" hidden>
+      <h3>10 · Approfondimento: l'acqua nascosta (con fonte Zanichelli)</h3>
+      <p>Approfondimento per studenti e docenti: <a href="https://aulascienze.scuola.zanichelli.it/speciali-scienze/speciale-2024-la-risorsa-scarsa/?content=impronta-idrica-umanita" target="_blank" rel="noopener">L'impronta idrica dell'umanità, Aula di scienze Zanichelli</a>.</p>
+      <div class="deep-grid">
+        <div class="mini-box"><strong>Italia &amp; Mondo</strong><br><span class="note">Italia: ~236 L/giorno diretti vs <strong>~6.300 L/giorno</strong> complessivi (~2.332 m³/anno; mondo ~1.385 m³/anno; USA ~2.842 m³/anno).</span></div>
+        <div class="mini-box"><strong>Esempi concreti (stime)</strong><br><span class="note">1 mela (~70 L) · 1 fetta di pane (~40 L) · 1 tazzina di caffè (~130 L) · hamburger 150 g (~2.400 L) · t-shirt cotone (~2.700 L) · cioccolato (~20.000 L/kg).</span></div>
+      </div>
+      <h4>Tre errori da evitare</h4>
+      <ol>
+        <li>Confondere l'impronta idrica con l'acqua che beviamo o versiamo sul cibo.</li>
+        <li>Confrontare quantità diverse (1 mela singola ~70 L vs 1 kg di mele 822 L).</li>
+        <li>Scambiare una stima media globale per una misura esatta locale.</li>
+      </ol>
+      <h4>Per riflettere (risposte individuali sbloccabili)</h4>
+      <div class="q-class-list">
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">1. Perché l'acqua nascosta è molto più grande di quella del rubinetto?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-hn10-1">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-hn10-1" hidden>Perché somma tutta l'acqua usata per coltivare cibo, allevare animali, produrre tessuti, carta ed energia (~6.300 L/giorno contro ~236 L diretti in Italia).</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">2. Quale merenda della tabella ha l'impronta più bassa e perché?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-hn10-2">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-hn10-2" hidden>Yogurt e arancia (~105 L) e pane e pomodoro (~113 L), perché usano ingredienti vegetali o latticini freschi a bassa intensità idrica rispetto ai formaggi stagionati.</div>
+        </div>
+        <div class="q-class-item">
+          <div class="q-class-head">
+            <span class="q-class-title">3. Cosa cambia se il riso cresce in una zona molto piovosa invece che in una zona secca?</span>
+            <button type="button" class="btn-reveal" aria-expanded="false" data-reveal="ans-hn10-3">Mostra risposta</button>
+          </div>
+          <div class="q-answer" id="ans-hn10-3" hidden>Cresce la quota di <strong>acqua verde</strong> (piovana) e cala quella di <strong>acqua blu</strong> prelevata da fiumi e falde: l'impatto locale sugli ecosistemi si riduce molto.</div>
+        </div>
+      </div>
+      <div class="step-footer"><button type="button" class="btn" data-hnsub-go="hn-t9">← Confronto menu</button><button type="button" class="btn primary" data-jump-tab="quiz">Vai alla Verifica Unificata →</button></div>
+    </div>
+  </section>
+
+  <!-- ==================== 6. VERIFICA UNIFICATA (10 DOMANDE) ==================== -->
+  <section id="quiz" hidden>
+    <div class="card">
+      <div class="sec-head">
+        <h2>6 · Verifica Unificata (Ecologica + Idrica + Grafici)</h2>
+        <button type="button" class="btn" id="restartQuiz">Ricomincia Verifica</button>
+      </div>
+      <p class="note">10 domande complete che uniscono tutti i concetti studiati nei laboratori.</p>
+      <div id="quizProgressTrack" class="bar-track" style="margin:.5rem 0 .85rem;"><div id="quizProgressFill" class="bar-fill" style="width:10%"></div></div>
+      <div id="quizBox"></div>
+    </div>
+  </section>
+
+  <!-- ==================== 7. AZIONI & IMPATTO ==================== -->
   <section id="azioni" hidden>
     <div class="card">
-      <h2>Che cosa posso fare?</h2>
-      <p class="note">Spunta le azioni che fai già, poi scegli quale vuoi migliorare.</p>
-      <ul class="check" style="list-style:none; padding-left:0">
-        <li><label><input type="checkbox"> Preferire la doccia al bagno in vasca</label></li>
-        <li><label><input type="checkbox"> Chiudere il rubinetto mentre mi lavo i denti</label></li>
-        <li><label><input type="checkbox"> Usare lavatrice e lavastoviglie solo a pieno carico</label></li>
-        <li><label><input type="checkbox"> Lavare frutta e verdura in una bacinella</label></li>
-        <li><label><input type="checkbox"> Mangiare più legumi e cereali integrali</label></li>
-        <li><label><input type="checkbox"> Sprecare meno cibo</label></li>
-        <li><label><input type="checkbox"> Comprare meno capi di abbigliamento, ma di qualità</label></li>
-        <li><label><input type="checkbox"> Usare i mezzi pubblici o la bicicletta quando possibile</label></li>
+      <div class="sec-head">
+        <h2>7 · Che cosa posso fare? (Calcolatore d'impatto settimanale)</h2>
+        <button type="button" class="speak-btn" data-speak-el="azioni">🔊 Leggi sezione</button>
+      </div>
+      <p class="note">Spunta le azioni che pratichi già o che vuoi adottare in classe: il contatore stima il risparmio combinato di <strong>acqua (L)</strong> e <strong>superficie ecologica (g·m²)</strong> in una settimana!</p>
+      <ul class="check" id="actionList" style="list-style:none;padding-left:0;">
+        <li><label><input type="checkbox" data-w="250" data-e="15"> Preferire la doccia breve (5 min) al bagno in vasca (~250 L · 15 g·m²/sett)</label></li>
+        <li><label><input type="checkbox" data-w="70" data-e="4"> Chiudere il rubinetto mentre mi lavo i denti (~70 L · 4 g·m²/sett)</label></li>
+        <li><label><input type="checkbox" data-w="120" data-e="12"> Usare lavatrice e lavastoviglie solo a pieno carico (~120 L · 12 g·m²/sett)</label></li>
+        <li><label><input type="checkbox" data-w="60" data-e="3"> Lavare frutta e verdura in una bacinella (~60 L · 3 g·m²/sett)</label></li>
+        <li><label><input type="checkbox" data-w="1800" data-e="180"> Sostituire 2 pasti con carne bovina con legumi/cereali (~1.800 L · 180 g·m²/sett)</label></li>
+        <li><label><input type="checkbox" data-w="950" data-e="85"> Ridurre gli sprechi alimentari calcolando il surplus (~950 L · 85 g·m²/sett)</label></li>
+        <li><label><input type="checkbox" data-w="520" data-e="60"> Comprare meno vestiti usa-e-getta e riparare/riutilizzare (~520 L · 60 g·m²/sett)</label></li>
+        <li><label><input type="checkbox" data-w="40" data-e="180"> Usare bici, piedi o autobus per 20 km/settimana invece dell'auto (~40 L · 180 g·m²/sett)</label></li>
       </ul>
-      <p id="actionCount" class="note"></p>
+      <div class="impact-grid">
+        <div class="mini-box"><strong>Azioni attive &amp; Acqua risparmiata</strong><div id="actionWaterOut" style="font-size:1.25rem;font-weight:700;margin-top:.2rem;">0 L / settimana</div></div>
+        <div class="mini-box"><strong>Superficie ecologica liberata</strong><div id="actionEcoOut" style="font-size:1.25rem;font-weight:700;margin-top:.2rem;">0 g·m² / settimana</div></div>
+      </div>
+      <p id="actionCount" class="note" style="margin-top:.6rem;"></p>
     </div>
   </section>
 
 </main>
 
-<footer>Materiale didattico originale. Valori indicativi per uso in classe.</footer>
+<footer>Modulo didattico unificato · Impronta Ecologica, Impronta Idrica &amp; L'Impronta Nascosta · Valori medi indicativi per uso scolastico.</footer>
 
 <script>
-  // Tabs
-  const tabs = document.querySelectorAll('nav.tabs button');
-  tabs.forEach(btn => btn.addEventListener('click', () => {
-    tabs.forEach(b => b.setAttribute('aria-selected', 'false'));
-    btn.setAttribute('aria-selected', 'true');
-    document.querySelectorAll('main > section').forEach(s => s.hidden = (s.id !== btn.dataset.tab));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }));
-
-  // Food water chart
-  const foods = [
-    ['Carne bovina', 15000], ['Formaggio', 5000], ['Riso', 2500],
-    ['Pane', 1600], ['Uova', 3300], ['Pasta', 1800],
-    ['Mele', 800], ['Patate', 300], ['Pomodori', 200]
-  ];
-  const others = [
-    ['Un paio di jeans', 7500], ['Una t-shirt', 2500], ['Un litro di birra', 300],
-    ['Un litro di latte', 1000], ['Un foglio A4', 10], ['Una tazza di caffè', 140]
-  ];
-  function drawChart(data, max) {
-    const box = document.getElementById('foodChart');
-    box.innerHTML = data.map(([name, v]) =>
-      `<div class="bar-row"><span>${name}</span>
-         <div class="bar-track"><div class="bar-fill" style="width:${(v / max * 100).toFixed(1)}%"></div></div>
-         <span class="bar-value">${v.toLocaleString('it-IT')} L</span></div>`
-    ).join('');
+var _document$getElementB2, _document$getElementB3, _document$getElementB4, _document$getElementB9, _document$getElementB15, _document$getElementB16, _document$getElementB17, _document$getElementB25, _document$getElementB28, _document$getElementB29, _document$getElementB30, _document$getElementB34;
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function safeScrollTop() {
+  try {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  } catch (e) {
+    try {
+      window.scrollTo(0, 0);
+    } catch (e2) {}
   }
-  drawChart(foods, 15000);
-  document.querySelectorAll('#foodControls button').forEach(b => b.addEventListener('click', () => {
-    document.querySelectorAll('#foodControls button').forEach(x => x.setAttribute('aria-pressed', 'false'));
-    b.setAttribute('aria-pressed', 'true');
-    if (b.dataset.view === 'food') drawChart(foods, 15000);
-    else drawChart(others, 7500);
-  }));
+}
 
-  // Quiz
-  const questions = [
-    {
-      q: 'Quale unità di misura si usa per l\'impronta ecologica?',
-      opts: ['Litri', 'Ettari globali (gha)', 'Chilogrammi di CO₂ soltanto'],
-      ans: 1,
-      why: 'L\'impronta ecologica si misura in ettari globali, cioè superficie biologicamente produttiva.'
-    },
-    {
-      q: 'Quale delle seguenti è acqua verde?',
-      opts: ['Acqua dei fiumi usata per irrigare', 'Acqua piovana usata dalle piante', 'Acqua necessaria a diluire gli inquinanti'],
-      ans: 1,
-      why: 'L\'acqua verde è la pioggia immagazzinata nel suolo e utilizzata dalla vegetazione.'
-    },
-    {
-      q: 'Che cosa misura l\'acqua grigia?',
-      opts: ['La quantità d\'acqua evaporata', 'Il volume d\'acqua necessario a diluire gli inquinanti', 'La quantità di pioggia caduta'],
-      ans: 1,
-      why: 'L\'acqua grigia indica quanta acqua servirebbe per riportare la qualità sotto i limiti.'
-    },
-    {
-      q: 'Che cosa indica l\'overshoot (sovrasfruttamento)?',
-      opts: ['Che consumiamo meno di quanto la Terra rigenera', 'Che consumiamo più di quanto la Terra riesce a rigenerare', 'Che la biocapacità è aumentata'],
-      ans: 1,
-      why: 'Il sovrasfruttamento si verifica quando la domanda di risorse supera la capacità di rigenerazione.'
-    },
-    {
-      q: 'Perché l\'impronta idrica indiretta è spesso più grande di quella diretta?',
-      opts: ['Perché usiamo molta acqua per lavarci', 'Perché l\'acqua serve per produrre ciò che consumiamo', 'Perché l\'acqua è gratuita'],
-      ans: 1,
-      why: 'Per produrre cibo, vestiti ed energia serve molta più acqua di quella che usiamo direttamente.'
-    }
-  ];
-  let current = 0, score = 0;
-  function renderQuiz() {
-    const box = document.getElementById('quizBox');
-    if (current >= questions.length) {
-      box.innerHTML = `<p class="quiz-q">Hai totalizzato ${score} su ${questions.length}.</p>
-        <p>${score === questions.length ? 'Ottimo lavoro!' : 'Rileggi le sezioni e riprova.'}</p>`;
-      return;
-    }
-    const q = questions[current];
-    box.innerHTML = `<p class="note">Domanda ${current + 1} di ${questions.length}</p>
-      <p class="quiz-q">${q.q}</p>
-      <div class="quiz-opts">${q.opts.map((o, i) => `<button data-i="${i}">${o}</button>`).join('')}</div>
-      <div class="feedback" id="fb"></div>`;
-    box.querySelectorAll('.quiz-opts button').forEach(b => b.addEventListener('click', () => {
-      const i = +b.dataset.i;
-      const fb = document.getElementById('fb');
-      box.querySelectorAll('.quiz-opts button').forEach(x => x.disabled = true);
-      if (i === q.ans) { b.classList.add('ok'); score++; fb.textContent = 'Corretto. ' + q.why; }
-      else {
-        b.classList.add('ko');
-        box.querySelectorAll('.quiz-opts button')[q.ans].classList.add('ok');
-        fb.textContent = 'Non esatto. ' + q.why;
-      }
-      setTimeout(() => { current++; renderQuiz(); }, 2200);
-    }));
-  }
-  document.getElementById('restartQuiz').addEventListener('click', () => { current = 0; score = 0; renderQuiz(); });
-  renderQuiz();
+// ==================== 1. MAIN TABS & JUMP ====================
+var tabs = document.querySelectorAll('nav.tabs button');
+function activateTab(tabId) {
+  tabs.forEach(function (b) {
+    return b.setAttribute('aria-selected', String(b.dataset.tab === tabId));
+  });
+  document.querySelectorAll('main > section').forEach(function (s) {
+    return s.hidden = s.id !== tabId;
+  });
+  safeScrollTop();
+}
+tabs.forEach(function (btn) {
+  return btn.addEventListener('click', function () {
+    return activateTab(btn.dataset.tab);
+  });
+});
+document.querySelectorAll('[data-jump-tab]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    return activateTab(btn.dataset.jumpTab);
+  });
+});
 
-  // Action counter
-  const boxes = document.querySelectorAll('#azioni input[type="checkbox"]');
-  const count = document.getElementById('actionCount');
-  function updateCount() {
-    const n = [...boxes].filter(b => b.checked).length;
-    count.textContent = `Azioni già praticate: ${n} su ${boxes.length}.`;
-  }
-  boxes.forEach(b => b.addEventListener('change', updateCount));
-  updateCount();
+// Speech helper
+function speakText(txt) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(txt.replace(/\s+/g, ' ').slice(0, 950));
+  u.lang = 'it-IT';
+  u.rate = 0.92;
+  speechSynthesis.speak(u);
+}
+document.querySelectorAll('[data-speak-el]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var el = document.getElementById(btn.dataset.speakEl);
+    if (el) speakText(el.innerText);
+  });
+});
 
-  // Class discussion "Mostra risposta" buttons
-  document.querySelectorAll('.btn-reveal[data-reveal]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = document.getElementById(btn.dataset.reveal);
-      if (!target) return;
-      const isOpen = !target.hidden;
-      target.hidden = isOpen;
-      btn.setAttribute('aria-expanded', String(!isOpen));
+// Class discussion "Mostra risposta" buttons
+document.querySelectorAll('.btn-reveal[data-reveal]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var target = document.getElementById(btn.dataset.reveal);
+    if (!target) return;
+    var isOpen = !target.hidden;
+    target.hidden = isOpen;
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    if (btn.textContent.includes('soluzione')) {
+      btn.textContent = isOpen ? 'Mostra soluzione' : 'Nascondi soluzione';
+    } else if (btn.textContent.includes('docente')) {
+      btn.textContent = isOpen ? 'Mostra soluzioni guida docente' : 'Nascondi soluzioni guida docente';
+    } else {
       btn.textContent = isOpen ? 'Mostra risposta' : 'Nascondi risposta';
+    }
+  });
+});
+
+// ==================== 2. FOOD WATER CHART (TAB 2) ====================
+var foods = [['Carne bovina', 15400], ['Formaggio', 3178], ['Uova', 3300], ['Riso', 2497], ['Pasta', 1849], ['Pane', 1608], ['Mele', 822], ['Patate', 287], ['Pomodori', 214]];
+var others = [['Un paio di jeans', 7500], ['Una t-shirt di cotone', 2500], ['Un litro di latte', 1020], ['Un litro di birra', 300], ['Una tazzina di caffè', 130], ['Un foglio A4', 10]];
+function drawChart(data, max) {
+  var box = document.getElementById('foodChart');
+  if (!box) return;
+  box.innerHTML = data.map(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+      name = _ref2[0],
+      v = _ref2[1];
+    return `<div class="bar-row"><span>${name}</span>
+         <div class="bar-track"><div class="bar-fill" style="width:${Math.max(2, v / max * 100).toFixed(1)}%"></div></div>
+         <span class="bar-value">${v.toLocaleString('it-IT')} L</span></div>`;
+  }).join('');
+}
+drawChart(foods, 15400);
+document.querySelectorAll('#foodControls button').forEach(function (b) {
+  return b.addEventListener('click', function () {
+    document.querySelectorAll('#foodControls button').forEach(function (x) {
+      return x.setAttribute('aria-pressed', 'false');
+    });
+    b.setAttribute('aria-pressed', 'true');
+    if (b.dataset.view === 'food') drawChart(foods, 15400);else drawChart(others, 7500);
+  });
+});
+
+// ==================== 3. EXPLORE WATER COLORS (TAB 3) ====================
+var COLOR_PRODUCTS = [{
+  id: 'tshirt',
+  name: 'Maglietta cotone (250 g)',
+  total: '2.500 L',
+  g: 72,
+  b: 8,
+  gr: 20,
+  note: '72% pioggia sui campi di cotone, 8% irrigazione/lavaggi, 20% acqua grigia per diluire pesticidi e tinture tessili.'
+}, {
+  id: 'mela',
+  name: 'Mele (1 kg)',
+  total: '822 L',
+  g: 68,
+  b: 16,
+  gr: 16,
+  note: 'Prevale l\'acqua verde piovana nel frutteto, con irrigazione estiva (blu) e una quota grigia contenuta.'
+}, {
+  id: 'pane',
+  name: 'Pane di frumento (1 kg)',
+  total: '1.608 L',
+  g: 79,
+  b: 10,
+  gr: 11,
+  note: 'Quasi l\'80% è pioggia assorbita dal grano nei campi; la quota grigia deriva soprattutto dai fertilizzanti azotati.'
+}, {
+  id: 'riso',
+  name: 'Riso (1 kg)',
+  total: '2.497 L',
+  g: 62,
+  b: 26,
+  gr: 12,
+  note: 'In molte regioni le risaie richiedono molta acqua blu di irrigazione da fiumi e canali.'
+}, {
+  id: 'formaggio',
+  name: 'Formaggio (1 kg)',
+  total: '3.178 L',
+  g: 85,
+  b: 8,
+  gr: 7,
+  note: 'Prevale l\'acqua verde per erba e foraggio da pascolo, ma il volume totale resta alto per la concentrazione del latte.'
+}, {
+  id: 'manzo',
+  name: 'Carne bovina (1 kg)',
+  total: '15.400 L',
+  g: 94,
+  b: 4,
+  gr: 2,
+  note: 'Percentualmente domina l\'acqua verde dei pascoli/foraggi, ma il 4% di acqua blu vale comunque oltre 600 litri per kg!'
+}];
+function showColorProd(id) {
+  var p = COLOR_PRODUCTS.find(function (x) {
+    return x.id === id;
+  }) || COLOR_PRODUCTS[0];
+  document.querySelectorAll('#colorProdBtns button').forEach(function (b) {
+    return b.setAttribute('aria-pressed', String(b.dataset.cp === p.id));
+  });
+  var stack = document.getElementById('colorStack');
+  var note = document.getElementById('colorProdNote');
+  if (stack) {
+    stack.innerHTML = `<div style="width:${p.g}%;background:var(--green)">Verde ${p.g}%</div>` + `<div style="width:${p.b}%;background:var(--blue)">${p.b >= 10 ? 'Blu ' : ''}${p.b}%</div>` + `<div style="width:${p.gr}%;background:var(--grey)">${p.gr >= 10 ? 'Grigia ' : ''}${p.gr}%</div>`;
+  }
+  if (note) {
+    note.innerHTML = `<strong>${p.name} (~${p.total}):</strong> ${p.note}`;
+  }
+}
+var colorBtns = document.getElementById('colorProdBtns');
+if (colorBtns) {
+  COLOR_PRODUCTS.forEach(function (p) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.cp = p.id;
+    b.textContent = p.name;
+    b.addEventListener('click', function () {
+      return showColorProd(p.id);
+    });
+    colorBtns.appendChild(b);
+  });
+  showColorProd('tshirt');
+}
+
+// ==================== 4. LAB IMPRONTA ECOLOGICA ====================
+var ecoAllMode = false;
+function showEcoSub(id) {
+  var _document$getElementB;
+  ecoAllMode = false;
+  (_document$getElementB = document.getElementById('btnEcoAllMode')) === null || _document$getElementB === void 0 || _document$getElementB.setAttribute('aria-pressed', 'false');
+  document.querySelectorAll('#ecoSubNav button').forEach(function (b) {
+    return b.setAttribute('aria-selected', String(b.dataset.esub === id));
+  });
+  document.querySelectorAll('#lab-eco .sub-panel').forEach(function (p) {
+    return p.hidden = p.id !== id;
+  });
+  safeScrollTop();
+}
+document.querySelectorAll('#ecoSubNav button').forEach(function (b) {
+  return b.addEventListener('click', function () {
+    return showEcoSub(b.dataset.esub);
+  });
+});
+document.querySelectorAll('[data-esub-go]').forEach(function (b) {
+  return b.addEventListener('click', function () {
+    return showEcoSub(b.dataset.esubGo);
+  });
+});
+(_document$getElementB2 = document.getElementById('btnEcoAllMode')) === null || _document$getElementB2 === void 0 || _document$getElementB2.addEventListener('click', function (e) {
+  ecoAllMode = !ecoAllMode;
+  e.currentTarget.setAttribute('aria-pressed', String(ecoAllMode));
+  if (ecoAllMode) {
+    document.querySelectorAll('#lab-eco .sub-panel').forEach(function (p) {
+      return p.hidden = false;
+    });
+  } else {
+    showEcoSub('e0');
+  }
+});
+(_document$getElementB3 = document.getElementById('btn-speak-eco-lab')) === null || _document$getElementB3 === void 0 || _document$getElementB3.addEventListener('click', function () {
+  speakText('Laboratorio Impronta Ecologica. Un ettaro globale vale diecimila metri quadrati globali. Ogni abitante della Terra dispone in media di circa 1,6 ettari globali l anno di biocapacità.');
+});
+
+// Sort 0 (Eco)
+var ECO_SORT = [['Il quaderno di carta aperto sul banco', 'V'], ['La foresta produttiva rigenerata per ottenere la cellulosa', 'N'], ['La merendina confezionata che tengo in mano', 'V'], ['I campi e i pascoli agricoli per grano, latte e zucchero', 'N'], ['L\'automobile davanti al cancello della scuola', 'V'], ['I boschi e gli oceani per assorbire la CO₂ del carburante', 'N']];
+var ecoSortBox = document.getElementById('ecoSortBox');
+var ecoSortFb = document.getElementById('ecoSortFb');
+if (ecoSortBox && ecoSortFb) {
+  var ok = 0;
+  ECO_SORT.forEach(function (_ref3) {
+    var _ref4 = _slicedToArray(_ref3, 2),
+      txt = _ref4[0],
+      ans = _ref4[1];
+    var row = document.createElement('div');
+    row.className = 'sort-item';
+    var p = document.createElement('p');
+    p.textContent = txt;
+    var btns = document.createElement('div');
+    btns.className = 'sort-btns';
+    var fb = document.createElement('span');
+    [['V', 'Visibile'], ['N', 'Nascosta']].forEach(function (_ref5) {
+      var _ref6 = _slicedToArray(_ref5, 2),
+        code = _ref6[0],
+        label = _ref6[1];
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.addEventListener('click', function () {
+        if (row.dataset.done) return;
+        row.dataset.done = '1';
+        b.classList.add('picked');
+        if (code === ans) {
+          ok++;
+          fb.className = 'ok-txt';
+          fb.textContent = 'Giusto!';
+        } else {
+          fb.className = 'ko-txt';
+          fb.textContent = 'No: era ' + (ans === 'V' ? 'visibile' : 'nascosta');
+        }
+        ecoSortFb.textContent = `Risposte corrette: ${ok} su ${ECO_SORT.length}`;
+      });
+      btns.appendChild(b);
+    });
+    btns.appendChild(fb);
+    row.appendChild(p);
+    row.appendChild(btns);
+    ecoSortBox.appendChild(row);
+  });
+}
+
+// Istogramma Eco
+var ECO_HIST_DATA = [{
+  n: 'Carne bovina',
+  v: 950,
+  c: '#c62828'
+}, {
+  n: 'Formaggio',
+  v: 220,
+  c: '#b36b00'
+}, {
+  n: 'Pane',
+  v: 70,
+  c: '#1565c0'
+}, {
+  n: 'Mele',
+  v: 35,
+  c: '#2e7d32'
+}, {
+  n: 'Patate',
+  v: 20,
+  c: '#6d6d6d'
+}];
+var showEcoHistVals = false;
+function drawEcoHist() {
+  var svg = document.getElementById('ecoHistSvg');
+  if (!svg) return;
+  var maxV = 1000,
+    top = 22,
+    bot = 285,
+    left = 72,
+    right = 580;
+  var Y = function Y(v) {
+    return bot - v / maxV * (bot - top);
+  };
+  var out = '';
+  for (var v = 0; v <= maxV; v += 100) {
+    var y = Y(v);
+    out += `<line x1="${left}" x2="${right}" y1="${y}" y2="${y}" stroke="var(--border)"/>`;
+    if (v % 200 === 0) out += `<text x="${left - 8}" y="${y + 4}" text-anchor="end" font-size="13" fill="var(--muted)">${v}</text>`;
+  }
+  out += `<line x1="${left}" x2="${left}" y1="${top}" y2="${bot}" stroke="var(--text)" stroke-width="2"/>`;
+  out += `<line x1="${left}" x2="${right}" y1="${bot}" y2="${bot}" stroke="var(--text)" stroke-width="2"/>`;
+  out += `<text x="16" y="${(top + bot) / 2}" font-size="13" fill="var(--text)" transform="rotate(-90 16 ${(top + bot) / 2})" text-anchor="middle">g·m² per 1 kg</text>`;
+  var step = (right - left) / ECO_HIST_DATA.length;
+  ECO_HIST_DATA.forEach(function (d, i) {
+    var cx = left + step * i + step / 2,
+      w = 64,
+      y = Y(d.v);
+    out += `<rect x="${cx - w / 2}" y="${y}" width="${w}" height="${Math.max(4, bot - y)}" fill="${d.c}" rx="4"/>`;
+    out += `<text x="${cx}" y="${bot + 20}" text-anchor="middle" font-size="13" fill="var(--text)">${d.n}</text>`;
+    if (showEcoHistVals) out += `<text x="${cx}" y="${y - 7}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">${d.v} g·m²</text>`;
+  });
+  svg.innerHTML = out;
+}
+drawEcoHist();
+(_document$getElementB4 = document.getElementById('btnEcoHistVal')) === null || _document$getElementB4 === void 0 || _document$getElementB4.addEventListener('click', function (e) {
+  showEcoHistVals = !showEcoHistVals;
+  e.currentTarget.setAttribute('aria-pressed', String(showEcoHistVals));
+  drawEcoHist();
+});
+
+// Diagramma cartesiano Auto
+var ecoShownKm = [0];
+function drawEcoGrid() {
+  var svg = document.getElementById('ecoGridSvg');
+  if (!svg) return;
+  var left = 72,
+    right = 576,
+    top = 22,
+    bot = 292;
+  var X = function X(k) {
+    return left + k / 40 * (right - left);
+  };
+  var Y = function Y(g) {
+    return bot - g / 500 * (bot - top);
+  };
+  var out = '';
+  for (var g = 0; g <= 500; g += 100) {
+    var y = Y(g);
+    out += `<line x1="${left}" x2="${right}" y1="${y}" y2="${y}" stroke="var(--border)"/>`;
+    out += `<text x="${left - 8}" y="${y + 4}" text-anchor="end" font-size="13" fill="var(--muted)">${g}</text>`;
+  }
+  for (var k = 0; k <= 40; k += 10) {
+    var x = X(k);
+    out += `<line x1="${x}" x2="${x}" y1="${top}" y2="${bot}" stroke="var(--border)"/>`;
+    out += `<text x="${x}" y="${bot + 20}" text-anchor="middle" font-size="13" fill="var(--muted)">${k} km</text>`;
+  }
+  out += `<line x1="${left}" x2="${left}" y1="${top}" y2="${bot}" stroke="var(--text)" stroke-width="2"/>`;
+  out += `<line x1="${left}" x2="${right}" y1="${bot}" y2="${bot}" stroke="var(--text)" stroke-width="2"/>`;
+  out += `<text x="${(left + right) / 2}" y="${bot + 44}" text-anchor="middle" font-size="13" fill="var(--text)">Distanza in auto a settimana (km)</text>`;
+  out += `<text x="16" y="${(top + bot) / 2}" font-size="13" fill="var(--text)" transform="rotate(-90 16 ${(top + bot) / 2})" text-anchor="middle">Superficie (g·m²)</text>`;
+  var pts = ecoShownKm.map(function (k) {
+    return [k, k * 12];
+  });
+  if (pts.length > 1) out += `<polyline fill="none" stroke="var(--accent)" stroke-width="3" points="${pts.map(function (_ref7) {
+    var _ref8 = _slicedToArray(_ref7, 2),
+      k = _ref8[0],
+      g = _ref8[1];
+    return X(k) + ',' + Y(g);
+  }).join(' ')}"/>`;
+  pts.forEach(function (_ref9) {
+    var _ref0 = _slicedToArray(_ref9, 2),
+      k = _ref0[0],
+      g = _ref0[1];
+    out += `<circle cx="${X(k)}" cy="${Y(g)}" r="6" fill="var(--accent)"/>`;
+    out += `<text x="${X(k) + 8}" y="${Y(g) - 8}" font-size="12" font-weight="600" fill="var(--text)">(${k}; ${g})</text>`;
+  });
+  svg.innerHTML = out;
+  var btnBox = document.getElementById('ecoGridBtns');
+  if (btnBox && !btnBox.children.length) {
+    [0, 10, 20, 30, 40].forEach(function (k) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = `Punto ${k} km`;
+      b.addEventListener('click', function () {
+        if (!ecoShownKm.includes(k)) {
+          ecoShownKm.push(k);
+          ecoShownKm.sort(function (a, c) {
+            return a - c;
+          });
+          drawEcoGrid();
+        }
+      });
+      btnBox.appendChild(b);
+    });
+    var allB = document.createElement('button');
+    allB.type = 'button';
+    allB.className = 'primary';
+    allB.textContent = 'Mostra tutti';
+    allB.addEventListener('click', function () {
+      ecoShownKm = [0, 10, 20, 30, 40];
+      drawEcoGrid();
+    });
+    btnBox.appendChild(allB);
+    var resetB = document.createElement('button');
+    resetB.type = 'button';
+    resetB.textContent = 'Ricomincia';
+    resetB.addEventListener('click', function () {
+      ecoShownKm = [0];
+      drawEcoGrid();
+    });
+    btnBox.appendChild(resetB);
+  }
+  var tbody = document.querySelector('#ecoCalcTab tbody');
+  if (tbody) {
+    tbody.innerHTML = [0, 10, 20, 30, 40].map(function (k) {
+      return `<tr><td>${k} km</td><td>${k} × 12</td><td>${ecoShownKm.includes(k) ? (k * 12).toLocaleString('it-IT') + ' g·m²' : '—'}</td></tr>`;
+    }).join('');
+  }
+}
+drawEcoGrid();
+
+// Surplus Eco + Caso 2
+var ecoNeed = document.getElementById('ecoNeed');
+var ecoBuy = document.getElementById('ecoBuy');
+var ecoPickedChoice = '';
+function updateEcoSurplus() {
+  if (!ecoNeed || !ecoBuy) return;
+  var n = +ecoNeed.value,
+    b = +ecoBuy.value;
+  var sur = Math.max(0, b - n);
+  document.getElementById('ecoSurplusRes').innerHTML = `Serve davvero: <strong>${n} kg</strong> · Proposta d'acquisto: <strong>${b} kg</strong>.<br>` + `Surplus: ${b} − ${n} = <strong>${sur} kg</strong> in più → ${sur} × 120 = <strong>${(sur * 120).toLocaleString('it-IT')} g·m²</strong> di suolo/foreste occupati inutilmente.`;
+  if (ecoPickedChoice) pickEcoChoice(ecoPickedChoice);
+}
+function pickEcoChoice(mode) {
+  var _document$getElementB5, _document$getElementB6;
+  ecoPickedChoice = mode;
+  var n = +((ecoNeed === null || ecoNeed === void 0 ? void 0 : ecoNeed.value) || 3),
+    b = +((ecoBuy === null || ecoBuy === void 0 ? void 0 : ecoBuy.value) || 4),
+    sur = Math.max(0, b - n);
+  (_document$getElementB5 = document.getElementById('ecoPickBuy')) === null || _document$getElementB5 === void 0 || _document$getElementB5.setAttribute('aria-pressed', String(mode === 'buy'));
+  (_document$getElementB6 = document.getElementById('ecoPickNeed')) === null || _document$getElementB6 === void 0 || _document$getElementB6.setAttribute('aria-pressed', String(mode === 'need'));
+  document.getElementById('ecoSurplusFb').innerHTML = mode === 'need' ? `<span class="ok-txt">Scelta sostenibile: comprando ${n} kg risparmiamo ${sur * 120} g·m² di biocapacità!</span>` : `<span class="ko-txt">Attenzione: ${b} kg creano ${sur} kg di avanzo e sprecano ${sur * 120} g·m² di suolo.</span>`;
+}
+if (ecoNeed && ecoBuy) {
+  var _document$getElementB7, _document$getElementB8;
+  for (var k = 1; k <= 6; k++) {
+    ecoNeed.innerHTML += `<option value="${k}" ${k === 3 ? 'selected' : ''}>${k} kg</option>`;
+    ecoBuy.innerHTML += `<option value="${k}" ${k === 4 ? 'selected' : ''}>${k} kg</option>`;
+  }
+  ecoNeed.addEventListener('change', updateEcoSurplus);
+  ecoBuy.addEventListener('change', updateEcoSurplus);
+  (_document$getElementB7 = document.getElementById('ecoPickBuy')) === null || _document$getElementB7 === void 0 || _document$getElementB7.addEventListener('click', function () {
+    return pickEcoChoice('buy');
+  });
+  (_document$getElementB8 = document.getElementById('ecoPickNeed')) === null || _document$getElementB8 === void 0 || _document$getElementB8.addEventListener('click', function () {
+    return pickEcoChoice('need');
+  });
+  updateEcoSurplus();
+}
+(_document$getElementB9 = document.getElementById('btnEcoC2Check')) === null || _document$getElementB9 === void 0 || _document$getElementB9.addEventListener('click', function () {
+  var _document$getElementB0, _document$getElementB1;
+  var a = parseFloat((((_document$getElementB0 = document.getElementById('ecoC2Auto')) === null || _document$getElementB0 === void 0 ? void 0 : _document$getElementB0.value) || '').replace(',', '.'));
+  var d = parseFloat((((_document$getElementB1 = document.getElementById('ecoC2Diff')) === null || _document$getElementB1 === void 0 ? void 0 : _document$getElementB1.value) || '').replace(',', '.'));
+  document.getElementById('ecoC2Fb').innerHTML = a === 240 && d === 180 ? '<span class="ok-txt">Corretto! Auto: 240 g·m², Bus: 60 g·m², surplus evitabile: 180 g·m²/settimana!</span>' : '<span class="ko-txt">Ricontrolla: auto = 20 × 12; bus = 20 × 3; poi calcola auto − bus.</span>';
+});
+
+// Esercizi Eco
+var ECO_EX = [{
+  q: '1) 2 kg di pane (70 g·m²/kg): quanti g·m²?',
+  a: 140
+}, {
+  q: '2) 4 kg di mele locali (35 g·m²/kg): quanti g·m²?',
+  a: 140
+}, {
+  q: '3) 2 kg di formaggio (220 g·m²/kg): quanti g·m²?',
+  a: 440
+}, {
+  q: '4) 15 km in auto (12 g·m²/km): quanti g·m²?',
+  a: 180
+}, {
+  q: '5) 10 km in autobus (3 g·m²/km): quanti g·m²?',
+  a: 30
+}, {
+  q: '6) Quanti g·m² corrispondono a 1,5 ettari globali (gha)?',
+  a: 15000
+}];
+var ecoExBox = document.getElementById('ecoExBox');
+if (ecoExBox) {
+  ECO_EX.forEach(function (ex, i) {
+    var _document$getElementB10, _document$getElementB12;
+    var row = document.createElement('div');
+    row.className = 'sort-item';
+    row.innerHTML = `<p>${ex.q}</p><div class="controls"><input type="number" id="ecoExInp${i}" class="inline-input" style="width:7.5rem"> <button type="button" id="ecoExBtn${i}">Controlla</button> <button type="button" id="ecoExSol${i}">Soluzione</button> <span id="ecoExFb${i}"></span></div>`;
+    ecoExBox.appendChild(row);
+    (_document$getElementB10 = document.getElementById(`ecoExBtn${i}`)) === null || _document$getElementB10 === void 0 || _document$getElementB10.addEventListener('click', function () {
+      var _document$getElementB11;
+      var val = parseFloat((((_document$getElementB11 = document.getElementById(`ecoExInp${i}`)) === null || _document$getElementB11 === void 0 ? void 0 : _document$getElementB11.value) || '').replace(/\./g, '').replace(',', '.'));
+      document.getElementById(`ecoExFb${i}`).innerHTML = Math.abs(val - ex.a) < 0.5 ? '<span class="ok-txt">Corretto!</span>' : '<span class="ko-txt">Ricontrolla: unità × valore unitario</span>';
+    });
+    (_document$getElementB12 = document.getElementById(`ecoExSol${i}`)) === null || _document$getElementB12 === void 0 || _document$getElementB12.addEventListener('click', function () {
+      document.getElementById(`ecoExFb${i}`).innerHTML = `<strong>Soluzione: ${ex.a.toLocaleString('it-IT')} g·m²</strong>`;
     });
   });
+}
+
+// Costruttore settimana ecologica
+var ECO_WEEK_ITEMS = [{
+  label: 'Pasti con carne bovina (~150 g)',
+  unit: 142,
+  def: 2
+}, {
+  label: 'Porzioni formaggio/latticini (~50 g)',
+  unit: 25,
+  def: 5
+}, {
+  label: 'Pasti vegetali con legumi/cereali',
+  unit: 14,
+  def: 8
+}, {
+  label: 'Km in auto a settimana',
+  unit: 12,
+  def: 20
+}, {
+  label: 'Km in autobus/treno a settimana',
+  unit: 3,
+  def: 15
+}, {
+  label: 'Capi nuovi a settimana (media)',
+  unit: 85,
+  def: 0
+}, {
+  label: 'Ore streaming/console ad alto consumo',
+  unit: 4,
+  def: 10
+}];
+function updateEcoBuilder() {
+  var weekTot = 0;
+  ECO_WEEK_ITEMS.forEach(function (it, idx) {
+    var _document$getElementB13;
+    var q = Math.max(0, parseFloat(((_document$getElementB13 = document.getElementById(`ebQty${idx}`)) === null || _document$getElementB13 === void 0 ? void 0 : _document$getElementB13.value) || '0') || 0);
+    var val = Math.round(q * it.unit);
+    weekTot += val;
+    var cell = document.getElementById(`ebCell${idx}`);
+    if (cell) cell.textContent = val.toLocaleString('it-IT') + ' g·m²';
+  });
+  var yearGha = 0.7 + weekTot * 52 / 10000;
+  var planets = yearGha / 1.6;
+  document.getElementById('ecoBuilderWeek').textContent = weekTot.toLocaleString('it-IT') + ' g·m²';
+  document.getElementById('ecoBuilderYear').textContent = yearGha.toFixed(2).replace('.', ',') + ' gha/anno';
+  var pct = Math.min(100, Math.round(yearGha / 4.8 * 100));
+  var msg = planets <= 1.05 ? 'Dentro il budget sostenibile del pianeta!' : planets <= 1.8 ? 'Overshoot moderato: prova a scambiare qualche pasto di carne o km in auto.' : 'Impronta molto alta: se tutti vivessero così servirebbero più pianeti!';
+  document.getElementById('ecoPlanetRes').innerHTML = `<strong>Risultato:</strong> ~<strong>${yearGha.toFixed(2).replace('.', ',')} gha/anno</strong> → servirebbero <strong>${planets.toFixed(2).replace('.', ',')} pianeti Terra</strong> (vs 1,6 gha disponibili).` + `<div class="bar-track" style="margin:.45rem 0;"><div class="bar-fill" style="width:${pct}%;background:${planets <= 1.05 ? 'var(--green)' : planets <= 1.8 ? 'var(--warn)' : 'var(--bad)'}"></div></div>` + `<span class="note">${msg}</span>`;
+}
+var ecoBuilderBody = document.getElementById('ecoBuilderBody');
+if (ecoBuilderBody) {
+  ECO_WEEK_ITEMS.forEach(function (it, idx) {
+    var _document$getElementB14;
+    var tr = document.createElement('tr');
+    tr.innerHTML = `<td>${it.label}</td><td>${it.unit} g·m²</td><td><input type="number" min="0" step="1" value="${it.def}" id="ebQty${idx}"></td><td id="ebCell${idx}">0 g·m²</td>`;
+    ecoBuilderBody.appendChild(tr);
+    (_document$getElementB14 = document.getElementById(`ebQty${idx}`)) === null || _document$getElementB14 === void 0 || _document$getElementB14.addEventListener('input', updateEcoBuilder);
+  });
+  var presets = [['Profilo Sobrio', [0, 2, 12, 0, 20, 0, 5]], ['Profilo Medio', [2, 5, 8, 20, 15, 0, 10]], ['Profilo Alto Consumo', [6, 10, 4, 60, 0, 2, 20]]];
+  var pBox = document.getElementById('ecoPresetBtns');
+  presets.forEach(function (_ref1) {
+    var _ref10 = _slicedToArray(_ref1, 2),
+      name = _ref10[0],
+      vals = _ref10[1];
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = name;
+    b.addEventListener('click', function () {
+      vals.forEach(function (v, i) {
+        var inp = document.getElementById(`ebQty${i}`);
+        if (inp) inp.value = v;
+      });
+      updateEcoBuilder();
+    });
+    pBox.appendChild(b);
+  });
+  updateEcoBuilder();
+}
+(_document$getElementB15 = document.getElementById('btnPrintEcoLab')) === null || _document$getElementB15 === void 0 || _document$getElementB15.addEventListener('click', function () {
+  document.body.classList.remove('print-idrico-a4');
+  window.print();
+});
+
+// ==================== 5. LAB L'IMPRONTA NASCOSTA (NATIVO) ====================
+var activeHnSub = 'hn-t0';
+function showHnSub(id) {
+  activeHnSub = id;
+  document.querySelectorAll('#hnSubNav button').forEach(function (b) {
+    return b.setAttribute('aria-selected', String(b.dataset.hnsub === id));
+  });
+  document.querySelectorAll('#lab-nascosta .sub-panel').forEach(function (p) {
+    return p.hidden = p.id !== id;
+  });
+  safeScrollTop();
+}
+document.querySelectorAll('#hnSubNav button').forEach(function (b) {
+  return b.addEventListener('click', function () {
+    return showHnSub(b.dataset.hnsub);
+  });
+});
+document.querySelectorAll('[data-hnsub-go]').forEach(function (b) {
+  return b.addEventListener('click', function () {
+    return showHnSub(b.dataset.hnsubGo);
+  });
+});
+(_document$getElementB16 = document.getElementById('btn-speak-hn')) === null || _document$getElementB16 === void 0 || _document$getElementB16.addEventListener('click', function () {
+  var el = document.getElementById(activeHnSub);
+  if (el) speakText(el.innerText);
+});
+
+// HN Sort 0
+var HN_SORT = [['Il pane che mangio a merenda', 'V'], ['Acqua usata per far crescere il grano', 'N'], ['Trasporto del pane con il camion', 'N'], ['La mela che tengo in mano', 'V'], ['Terreno usato per il frutteto', 'N'], ['Energia per conservare il formaggio in frigo', 'N']];
+var hnSort0 = document.getElementById('hnSort0');
+if (hnSort0) {
+  var _ok = 0;
+  HN_SORT.forEach(function (_ref11) {
+    var _ref12 = _slicedToArray(_ref11, 2),
+      txt = _ref12[0],
+      ans = _ref12[1];
+    var row = document.createElement('div');
+    row.className = 'sort-item';
+    var p = document.createElement('p');
+    p.textContent = txt;
+    var btns = document.createElement('div');
+    btns.className = 'sort-btns';
+    var fb = document.createElement('span');
+    [['V', 'Visibile'], ['N', 'Nascosta']].forEach(function (_ref13) {
+      var _ref14 = _slicedToArray(_ref13, 2),
+        code = _ref14[0],
+        label = _ref14[1];
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.addEventListener('click', function () {
+        if (row.dataset.done) return;
+        row.dataset.done = '1';
+        b.classList.add('picked');
+        if (code === ans) {
+          _ok++;
+          fb.className = 'ok-txt';
+          fb.textContent = 'Giusto';
+        } else {
+          fb.className = 'ko-txt';
+          fb.textContent = 'No: era ' + (ans === 'V' ? 'visibile' : 'nascosta');
+        }
+        document.getElementById('hnSort0Fb').textContent = `Risposte corrette: ${_ok} su ${HN_SORT.length}`;
+      });
+      btns.appendChild(b);
+    });
+    btns.appendChild(fb);
+    row.appendChild(p);
+    row.appendChild(btns);
+    hnSort0.appendChild(row);
+  });
+}
+
+// HN Hist
+var HN_DATA = [{
+  n: 'Riso',
+  v: 2497,
+  c: '#1565c0'
+}, {
+  n: 'Pane',
+  v: 1608,
+  c: '#b36b00'
+}, {
+  n: 'Mele',
+  v: 822,
+  c: '#2e7d32'
+}, {
+  n: 'Patate',
+  v: 287,
+  c: '#7b4ea3'
+}];
+var hnShowVals = false;
+function drawHnHist() {
+  var svg = document.getElementById('hnHistSvg');
+  if (!svg) return;
+  var maxV = 2800,
+    top = 22,
+    bot = 305,
+    left = 72,
+    right = 580;
+  var Y = function Y(v) {
+    return bot - v / maxV * (bot - top);
+  };
+  var out = '';
+  for (var v = 0; v <= maxV; v += 100) {
+    var y = Y(v);
+    out += `<line x1="${left}" x2="${right}" y1="${y}" y2="${y}" stroke="var(--border)"/>`;
+    if (v % 500 === 0) out += `<text x="${left - 8}" y="${y + 4}" text-anchor="end" font-size="13" fill="var(--muted)">${v}</text>`;
+  }
+  out += `<line x1="${left}" x2="${left}" y1="${top}" y2="${bot}" stroke="var(--text)" stroke-width="2"/>`;
+  out += `<line x1="${left}" x2="${right}" y1="${bot}" y2="${bot}" stroke="var(--text)" stroke-width="2"/>`;
+  out += `<text x="16" y="${(top + bot) / 2}" font-size="13" fill="var(--text)" transform="rotate(-90 16 ${(top + bot) / 2})" text-anchor="middle">litri (L)</text>`;
+  var step = (right - left) / HN_DATA.length;
+  HN_DATA.forEach(function (d, i) {
+    var cx = left + step * i + step / 2,
+      w = 70,
+      y = Y(d.v);
+    out += `<rect x="${cx - w / 2}" y="${y}" width="${w}" height="${bot - y}" fill="${d.c}" rx="4"/>`;
+    out += `<text x="${cx}" y="${bot + 22}" text-anchor="middle" font-size="15" fill="var(--text)">${d.n}</text>`;
+    if (hnShowVals) out += `<text x="${cx}" y="${y - 8}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--text)">${d.v.toLocaleString('it-IT')} L</text>`;
+  });
+  svg.innerHTML = out;
+}
+drawHnHist();
+(_document$getElementB17 = document.getElementById('hnBtnHistVal')) === null || _document$getElementB17 === void 0 || _document$getElementB17.addEventListener('click', function (e) {
+  hnShowVals = !hnShowVals;
+  e.currentTarget.setAttribute('aria-pressed', String(hnShowVals));
+  drawHnHist();
+});
+
+// HN Grid mele
+var hnShownApples = [0];
+function drawHnGrid() {
+  var svg = document.getElementById('hnGridSvg');
+  if (!svg) return;
+  var left = 72,
+    right = 576,
+    top = 22,
+    bot = 315;
+  var X = function X(k) {
+    return left + k * (right - left) / 4;
+  };
+  var Y = function Y(l) {
+    return bot - l / 3500 * (bot - top);
+  };
+  var out = '';
+  for (var l = 0; l <= 3500; l += 500) {
+    var y = Y(l);
+    out += `<line x1="${left}" x2="${right}" y1="${y}" y2="${y}" stroke="var(--border)"/>`;
+    out += `<text x="${left - 8}" y="${y + 4}" text-anchor="end" font-size="13" fill="var(--muted)">${l}</text>`;
+  }
+  for (var _k = 0; _k <= 4; _k++) {
+    var x = X(_k);
+    out += `<line x1="${x}" x2="${x}" y1="${top}" y2="${bot}" stroke="var(--border)"/>`;
+    out += `<text x="${x}" y="${bot + 22}" text-anchor="middle" font-size="14" fill="var(--muted)">${_k}</text>`;
+  }
+  out += `<line x1="${left}" x2="${left}" y1="${top}" y2="${bot}" stroke="var(--text)" stroke-width="2"/>`;
+  out += `<line x1="${left}" x2="${right}" y1="${bot}" y2="${bot}" stroke="var(--text)" stroke-width="2"/>`;
+  out += `<text x="${(left + right) / 2}" y="${bot + 44}" text-anchor="middle" font-size="14" fill="var(--text)">kg di mele (x)</text>`;
+  out += `<text x="16" y="${(top + bot) / 2}" font-size="14" fill="var(--text)" transform="rotate(-90 16 ${(top + bot) / 2})" text-anchor="middle">litri (y)</text>`;
+  var pts = hnShownApples.map(function (k) {
+    return [k, k * 822];
+  });
+  if (pts.length > 1) out += `<polyline fill="none" stroke="var(--accent)" stroke-width="3" points="${pts.map(function (_ref15) {
+    var _ref16 = _slicedToArray(_ref15, 2),
+      k = _ref16[0],
+      l = _ref16[1];
+    return X(k) + ',' + Y(l);
+  }).join(' ')}"/>`;
+  pts.forEach(function (_ref17) {
+    var _ref18 = _slicedToArray(_ref17, 2),
+      k = _ref18[0],
+      l = _ref18[1];
+    out += `<circle cx="${X(k)}" cy="${Y(l)}" r="7" fill="var(--accent)"/>`;
+    out += `<text x="${X(k) + 10}" y="${Y(l) - 8}" font-size="13" font-weight="600" fill="var(--text)">(${k}; ${l.toLocaleString('it-IT')})</text>`;
+  });
+  svg.innerHTML = out;
+  var btnBox = document.getElementById('hnPtBtns');
+  if (btnBox && !btnBox.children.length) {
+    var _loop = function _loop(_k2) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = `Punto ${_k2} kg`;
+      b.addEventListener('click', function () {
+        if (!hnShownApples.includes(_k2)) {
+          hnShownApples.push(_k2);
+          hnShownApples.sort(function (a, c) {
+            return a - c;
+          });
+          drawHnGrid();
+        }
+      });
+      btnBox.appendChild(b);
+    };
+    for (var _k2 = 0; _k2 <= 4; _k2++) {
+      _loop(_k2);
+    }
+    var allB = document.createElement('button');
+    allB.type = 'button';
+    allB.className = 'primary';
+    allB.textContent = 'Mostra tutti';
+    allB.addEventListener('click', function () {
+      hnShownApples = [0, 1, 2, 3, 4];
+      drawHnGrid();
+    });
+    btnBox.appendChild(allB);
+    var rB = document.createElement('button');
+    rB.type = 'button';
+    rB.textContent = 'Ricomincia';
+    rB.addEventListener('click', function () {
+      hnShownApples = [0];
+      drawHnGrid();
+    });
+    btnBox.appendChild(rB);
+  }
+  var tbody = document.querySelector('#hnCalcTab tbody');
+  if (tbody) {
+    tbody.innerHTML = [0, 1, 2, 3, 4].map(function (k) {
+      return `<tr><td>${k} kg</td><td>${k} × 822</td><td>${hnShownApples.includes(k) ? (k * 822).toLocaleString('it-IT') + ' L' : '—'}</td></tr>`;
+    }).join('');
+  }
+}
+drawHnGrid();
+
+// HN Surplus mele
+var hnNeed = document.getElementById('hnNeed');
+var hnBuy = document.getElementById('hnBuy');
+var hnPicked = '';
+function updHnSurplus() {
+  if (!hnNeed || !hnBuy) return;
+  var n = +hnNeed.value,
+    b = +hnBuy.value,
+    s = Math.max(0, b - n),
+    l = s * 822;
+  document.getElementById('hnSurplusCalc').innerHTML = `Passo 1: serve <strong>${n} kg</strong>.<br>Passo 2: si propone <strong>${b} kg</strong>.<br>` + `Passo 3: ${b} − ${n} = <strong>${s} kg</strong> in più.<br>` + `Passo 4: ${s} × 822 = <strong>${l.toLocaleString('it-IT')} L</strong> (e ${s * 35} g·m²) associati al surplus.`;
+  if (hnPicked) pickHnChoice(hnPicked);
+}
+function pickHnChoice(c) {
+  var _document$getElementB18, _document$getElementB19;
+  hnPicked = c;
+  var n = +((hnNeed === null || hnNeed === void 0 ? void 0 : hnNeed.value) || 3),
+    b = +((hnBuy === null || hnBuy === void 0 ? void 0 : hnBuy.value) || 4);
+  (_document$getElementB18 = document.getElementById('hnChooseBuy')) === null || _document$getElementB18 === void 0 || _document$getElementB18.setAttribute('aria-pressed', String(c === 'buy'));
+  (_document$getElementB19 = document.getElementById('hnChooseNeed')) === null || _document$getElementB19 === void 0 || _document$getElementB19.setAttribute('aria-pressed', String(c === 'need'));
+  document.getElementById('hnChoiceFb').innerHTML = c === 'need' ? `<span class="ok-txt">Scelta motivata: proponiamo di acquistare ${n} kg, la quantità necessaria.</span>` : `<span class="ko-txt">Attenzione: comprare ${b} kg produrrebbe ${Math.max(0, b - n)} kg di avanzo e un'impronta da evitare.</span>`;
+}
+if (hnNeed && hnBuy) {
+  var _document$getElementB20, _document$getElementB21;
+  for (var _k3 = 1; _k3 <= 6; _k3++) {
+    hnNeed.innerHTML += `<option value="${_k3}" ${_k3 === 3 ? 'selected' : ''}>${_k3} kg</option>`;
+    hnBuy.innerHTML += `<option value="${_k3}" ${_k3 === 4 ? 'selected' : ''}>${_k3} kg</option>`;
+  }
+  hnNeed.addEventListener('change', updHnSurplus);
+  hnBuy.addEventListener('change', updHnSurplus);
+  (_document$getElementB20 = document.getElementById('hnChooseBuy')) === null || _document$getElementB20 === void 0 || _document$getElementB20.addEventListener('click', function () {
+    return pickHnChoice('buy');
+  });
+  (_document$getElementB21 = document.getElementById('hnChooseNeed')) === null || _document$getElementB21 === void 0 || _document$getElementB21.addEventListener('click', function () {
+    return pickHnChoice('need');
+  });
+  updHnSurplus();
+}
+
+// HN Biglietto d'uscita (t5)
+var HN_EXIT_Q = [{
+  q: '1. Quale grafico confronta l\'impronta idrica dei quattro alimenti?',
+  o: ['Il diagramma cartesiano', 'L\'istogramma', 'Il surplus'],
+  a: 1,
+  ok: 'Esatto: l\'istogramma confronta barre per ogni alimento.',
+  no: 'L\'istogramma confronta gli alimenti; il diagramma cartesiano mostra le coppie kg–litri.'
+}, {
+  q: '2. Che cosa significa il punto (3; 2.466) nel diagramma delle mele?',
+  o: ['3 litri per 2.466 kg', '3 kg di mele corrispondono a 2.466 litri stimati', '2.466 kg costano 3 euro'],
+  a: 1,
+  ok: 'Esatto: il primo numero è i kg, il secondo i litri stimati.',
+  no: 'Il primo numero indica sempre i kg (asse x), il secondo i litri (asse y).'
+}, {
+  q: '3. Quale azione evita di comprare cibo in eccesso?',
+  o: ['Comprare sempre di più per sicurezza', 'Calcolare la quantità necessaria prima di comprare', 'Buttare il cibo che avanza'],
+  a: 1,
+  ok: 'Esatto: pianificare la quantità necessaria evita lo spreco.',
+  no: 'Calcolare quanto serve prima di acquistare è la scelta sostenibile.'
+}];
+var hnExitBox = document.getElementById('hnExitQuiz');
+if (hnExitBox) {
+  var sc = 0;
+  HN_EXIT_Q.forEach(function (item) {
+    var d = document.createElement('div');
+    d.className = 'sort-item';
+    d.innerHTML = `<p>${item.q}</p><div class="quiz-opts"></div><div class="feedback"></div>`;
+    var optsEl = d.querySelector('.quiz-opts');
+    var fbEl = d.querySelector('.feedback');
+    item.o.forEach(function (txt, j) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = txt;
+      b.addEventListener('click', function () {
+        if (d.dataset.done) return;
+        d.dataset.done = '1';
+        if (j === item.a) {
+          b.classList.add('ok');
+          sc++;
+          fbEl.innerHTML = `<span class="ok-txt">${item.ok}</span>`;
+        } else {
+          b.classList.add('ko');
+          optsEl.children[item.a].classList.add('ok');
+          fbEl.innerHTML = `<span class="ko-txt">${item.no}</span>`;
+        }
+        document.getElementById('hnExitScore').textContent = `Risposte corrette: ${sc} su ${HN_EXIT_Q.length}`;
+      });
+      optsEl.appendChild(b);
+    });
+    hnExitBox.appendChild(d);
+  });
+}
+
+// HN Esercizi (t6)
+var HN_EX = [{
+  q: '2 kg di pane (1.608 L/kg): quanti litri?',
+  a: 3216
+}, {
+  q: '3 kg di riso (2.497 L/kg): quanti litri?',
+  a: 7491
+}, {
+  q: '5 kg di patate (287 L/kg): quanti litri?',
+  a: 1435
+}, {
+  q: '1,5 kg di mele (822 L/kg): quanti litri?',
+  a: 1233
+}, {
+  q: '2,5 kg di mele (822 L/kg): quanti litri?',
+  a: 2055
+}, {
+  q: 'Quanti kg di mele corrispondono a 2.466 L?',
+  a: 3
+}];
+var hnExBox = document.getElementById('hnExBox');
+if (hnExBox) {
+  HN_EX.forEach(function (e, i) {
+    var _document$getElementB22, _document$getElementB24;
+    var d = document.createElement('div');
+    d.className = 'sort-item';
+    d.innerHTML = `<p>${e.q}</p><div class="controls"><input type="text" inputmode="decimal" id="hnEx${i}" class="inline-input" style="width:7.5rem"> <button type="button" id="hnExBtn${i}">Controlla</button> <button type="button" id="hnExSol${i}">Soluzione</button> <span id="hnExFb${i}"></span></div>`;
+    hnExBox.appendChild(d);
+    (_document$getElementB22 = document.getElementById(`hnExBtn${i}`)) === null || _document$getElementB22 === void 0 || _document$getElementB22.addEventListener('click', function () {
+      var _document$getElementB23;
+      var v = parseFloat((((_document$getElementB23 = document.getElementById(`hnEx${i}`)) === null || _document$getElementB23 === void 0 ? void 0 : _document$getElementB23.value) || '').replace(/\./g, '').replace(',', '.'));
+      document.getElementById(`hnExFb${i}`).innerHTML = Math.abs(v - e.a) < 0.5 ? '<span class="ok-txt">Corretto</span>' : '<span class="ko-txt">Ricontrolla: kg × litri per kg</span>';
+    });
+    (_document$getElementB24 = document.getElementById(`hnExSol${i}`)) === null || _document$getElementB24 === void 0 || _document$getElementB24.addEventListener('click', function () {
+      document.getElementById(`hnExFb${i}`).innerHTML = `<strong>Soluzione: ${e.a.toLocaleString('it-IT')}</strong>`;
+    });
+  });
+}
+
+// HN Caso 2 patate (t7)
+(_document$getElementB25 = document.getElementById('btnHnC2Check')) === null || _document$getElementB25 === void 0 || _document$getElementB25.addEventListener('click', function () {
+  var _document$getElementB26, _document$getElementB27;
+  var kg = parseFloat((((_document$getElementB26 = document.getElementById('hnC2Kg')) === null || _document$getElementB26 === void 0 ? void 0 : _document$getElementB26.value) || '').replace(',', '.'));
+  var l = parseFloat((((_document$getElementB27 = document.getElementById('hnC2L')) === null || _document$getElementB27 === void 0 ? void 0 : _document$getElementB27.value) || '').replace(/\./g, '').replace(',', '.'));
+  document.getElementById('hnC2Fb').innerHTML = kg === 2 && l === 574 ? '<span class="ok-txt">Corretto: 7 − 5 = 2 kg; 2 × 287 = 574 L.</span>' : '<span class="ko-txt">Ricontrolla: surplus = acquistato − necessario; poi moltiplica per 287.</span>';
+});
+(_document$getElementB28 = document.getElementById('hnC2Need')) === null || _document$getElementB28 === void 0 || _document$getElementB28.addEventListener('click', function () {
+  document.getElementById('hnC2Ch').innerHTML = '<span class="ok-txt">Scelta motivata: 5 kg sono la quantità necessaria.</span>';
+});
+(_document$getElementB29 = document.getElementById('hnC2Buy')) === null || _document$getElementB29 === void 0 || _document$getElementB29.addEventListener('click', function () {
+  document.getElementById('hnC2Ch').innerHTML = '<span class="ko-txt">Con 7 kg avanzano 2 kg di patate, cioè 574 L associati da evitare.</span>';
+});
+
+// Print Elaborato A4 (t8)
+(_document$getElementB30 = document.getElementById('btnPrintIdricoA4')) === null || _document$getElementB30 === void 0 || _document$getElementB30.addEventListener('click', function () {
+  document.body.classList.add('print-idrico-a4');
+  window.print();
+  setTimeout(function () {
+    return document.body.classList.remove('print-idrico-a4');
+  }, 500);
+});
+
+// HN Costruttore menu duale (Water L + Eco g·m²)
+var HN_ING = [['Mela', 822, 35], ['Banana', 790, 32], ['Pane', 1608, 70], ['Pasta secca', 1849, 75], ['Riso', 2497, 95], ['Patate', 287, 20], ['Pomodoro', 214, 15], ['Cavolo', 237, 16], ['Formaggio', 3178, 220], ['Pollo', 4300, 260], ['Carne bovina', 15400, 950], ['Maiale', 6000, 340], ['Uova (60 g ≈ 196 L)', 3300, 140], ['Latte', 1020, 90], ['Yogurt', 291, 45], ['Arance', 460, 25], ['Cioccolato', 20000, 580]];
+function updateHnDualBuilder() {
+  var totW = 0,
+    totE = 0;
+  HN_ING.forEach(function (x, i) {
+    var _document$getElementB31;
+    var g = Math.max(0, parseFloat(((_document$getElementB31 = document.getElementById(`hnG${i}`)) === null || _document$getElementB31 === void 0 ? void 0 : _document$getElementB31.value) || '0') || 0);
+    var l = g * x[1] / 1000;
+    var e = g * x[2] / 1000;
+    totW += l;
+    totE += e;
+    var lc = document.getElementById(`hnL${i}`);
+    var ec = document.getElementById(`hnE${i}`);
+    if (lc) lc.textContent = Math.round(l).toLocaleString('it-IT') + ' L';
+    if (ec) ec.textContent = Math.round(e) + ' g·m²';
+  });
+  document.getElementById('hnDualTotals').innerHTML = `Totale menu: <strong>${Math.round(totW).toLocaleString('it-IT')} L</strong> (impronta idrica) · <strong>${Math.round(totE).toLocaleString('it-IT')} g·m²</strong> (impronta ecologica)`;
+}
+var hnBBody = document.getElementById('hnBuilderBody');
+if (hnBBody) {
+  HN_ING.forEach(function (x, i) {
+    var _document$getElementB32;
+    var tr = document.createElement('tr');
+    tr.innerHTML = `<td>${x[0]}</td><td>${x[1].toLocaleString('it-IT')} L · ${x[2]} g·m²</td><td><input type="number" min="0" value="0" id="hnG${i}"></td><td id="hnL${i}">0 L</td><td id="hnE${i}">0 g·m²</td>`;
+    hnBBody.appendChild(tr);
+    (_document$getElementB32 = document.getElementById(`hnG${i}`)) === null || _document$getElementB32 === void 0 || _document$getElementB32.addEventListener('input', updateHnDualBuilder);
+  });
+  var menuPresets = [['Merenda Mela (150 g)', {
+    Mela: 150
+  }], ['Panino Formaggio', {
+    Pane: 60,
+    Formaggio: 40
+  }], ['Pranzo Vegetariano', {
+    'Pasta secca': 80,
+    Formaggio: 40,
+    Pomodoro: 100,
+    Cavolo: 150,
+    Pane: 50
+  }], ['Pranzo Manzo', {
+    'Pasta secca': 80,
+    'Carne bovina': 100,
+    Pomodoro: 100,
+    Cavolo: 150,
+    Pane: 50
+  }], ['Azzera tutto', {}]];
+  var _pBox = document.getElementById('hnPresetBtns');
+  menuPresets.forEach(function (_ref19) {
+    var _ref20 = _slicedToArray(_ref19, 2),
+      label = _ref20[0],
+      map = _ref20[1];
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    b.addEventListener('click', function () {
+      HN_ING.forEach(function (x, idx) {
+        var inp = document.getElementById(`hnG${idx}`);
+        if (inp) inp.value = map[x[0]] || 0;
+      });
+      updateHnDualBuilder();
+    });
+    _pBox.appendChild(b);
+  });
+  updateHnDualBuilder();
+}
+
+// ==================== 6. VERIFICA UNIFICATA (10 DOMANDE) ====================
+var UNIFIED_QUIZ = [{
+  q: 'Quale unità di misura si usa per l\'impronta ecologica?',
+  opts: ['Litri (L)', 'Ettari globali (gha) o g·m²', 'Solo kg di CO₂'],
+  ans: 1,
+  why: 'L\'impronta ecologica misura la superficie biologicamente produttiva in ettari globali (1 gha = 10.000 g·m²).'
+}, {
+  q: 'Che cosa indica il sovrasfruttamento ecologico (overshoot)?',
+  opts: ['Consumiamo meno della biocapacità', 'Consumiamo più in fretta di quanto la Terra rigenera', 'La biocapacità è infinita'],
+  ans: 1,
+  why: 'Si ha overshoot quando l\'impronta supera ~1,6 gha per abitante.'
+}, {
+  q: 'Quale componente pesa di più oggi nell\'impronta ecologica mondiale (~55–60%)?',
+  opts: ['Suolo edificato', 'Zone di pesca', 'Impronta di carbonio (boschi/oceani per assorbire CO₂)'],
+  ans: 2,
+  why: 'Le emissioni fossili di CO₂ sono oggi la fetta dominante dell\'impronta ecologica globale.'
+}, {
+  q: 'Quale delle seguenti è acqua verde?',
+  opts: ['Acqua di fiume usata per irrigare', 'Acqua piovana nel suolo usata dalle piante', 'Acqua per diluire i fertilizzanti'],
+  ans: 1,
+  why: 'L\'acqua verde è la pioggia immagazzinata nel suolo e assorbita dalla vegetazione.'
+}, {
+  q: 'Che cosa misura l\'acqua grigia?',
+  opts: ['La pioggia evaporata', 'L\'acqua pulita teorica per diluire gli inquinanti', 'L\'acqua potabile in bottiglia'],
+  ans: 1,
+  why: 'Misura quanto volume d\'acqua servirebbe per riportare gli scarichi sotto i limiti ambientali.'
+}, {
+  q: 'Perché l\'impronta idrica indiretta (~90–95%) supera di gran lunga quella diretta del rubinetto?',
+  opts: ['Perché l\'acqua serve lungo tutta la filiera di cibo, vestiti ed energia', 'Perché lasciamo i rubinetti aperti', 'Perché il mare è salato'],
+  ans: 0,
+  why: 'In Italia il consumo diretto è ~236 L/giorno, mentre l\'impronta totale supera i 6.000 L/giorno.'
+}, {
+  q: 'Quale grafico permette di confrontare rapidamente 4 alimenti diversi (riso, pane, mele, patate)?',
+  opts: ['Il diagramma cartesiano di un solo alimento', 'L\'istogramma a barre partendo da zero', 'Una nota testuale senza scala'],
+  ans: 1,
+  why: 'L\'istogramma con barre che partono da zero rende immediato il confronto fra categorie.'
+}, {
+  q: 'Nel diagramma delle mele (kg × 822 L), che cosa rappresenta il punto (3; 2.466)?',
+  opts: ['3 L per 2.466 mele', '3 kg di mele corrispondono a ~2.466 L di acqua stimata', 'Un errore di misura'],
+  ans: 1,
+  why: 'Il primo numero indica la quantità (kg sull\'asse X) e il secondo i litri sull\'asse Y.'
+}, {
+  q: 'Se servono 5 kg di patate (287 L/kg) ma ne compriamo 7 kg, qual è l\'impronta idrica del surplus?',
+  opts: ['287 L', '574 L', '1.435 L'],
+  ans: 1,
+  why: 'Surplus = 7 − 5 = 2 kg; 2 × 287 = 574 L associati allo spreco potenziale.'
+}, {
+  q: 'Sostituire 20 km in auto (12 g·m²/km) con l\'autobus (3 g·m²/km) che effetto produce?',
+  opts: ['Aumenta l\'impronta ecologica', 'Risparmia 180 g·m² riducendo soprattutto le emissioni di CO₂', 'Non cambia nulla'],
+  ans: 1,
+  why: '20 × 12 = 240 g·m² contro 20 × 3 = 60 g·m² → risparmio netto di 180 g·m².'
+}];
+var qIdx = 0,
+  qScore = 0;
+function renderUnifiedQuiz() {
+  var _document$getElementB33;
+  var box = document.getElementById('quizBox');
+  var fill = document.getElementById('quizProgressFill');
+  if (!box) return;
+  if (fill) fill.style.width = `${Math.min(100, Math.round(qIdx / UNIFIED_QUIZ.length * 100))}%`;
+  if (qIdx >= UNIFIED_QUIZ.length) {
+    if (fill) fill.style.width = '100%';
+    box.innerHTML = `<div class="mini-box" style="text-align:center;padding:1.2rem;">` + `<div style="font-size:1.35rem;font-weight:700;color:var(--accent);">Risultato finale: ${qScore} su ${UNIFIED_QUIZ.length}</div>` + `<p style="margin:.45rem 0;">${qScore >= 8 ? 'Eccellente! Padronanza completa di Impronta Ecologica, Impronta Idrica e lettura grafici.' : 'Buon lavoro! Rivedi le schede precedenti e riprova per migliorare il punteggio.'}</p>` + `</div>`;
+    return;
+  }
+  var q = UNIFIED_QUIZ[qIdx];
+  box.innerHTML = `<p class="note">Domanda ${qIdx + 1} di ${UNIFIED_QUIZ.length} · Punteggio attuale: <strong>${qScore}</strong></p>` + `<p class="quiz-q">${q.q}</p>` + `<div class="quiz-opts">${q.opts.map(function (o, i) {
+    return `<button type="button" data-qi="${i}">${o}</button>`;
+  }).join('')}</div>` + `<div class="feedback" id="uqFb"></div>` + `<div class="controls"><button type="button" class="primary" id="uqNext" hidden>${qIdx < UNIFIED_QUIZ.length - 1 ? 'Prossima domanda →' : 'Vedi risultato finale'}</button></div>`;
+  box.querySelectorAll('.quiz-opts button').forEach(function (b) {
+    return b.addEventListener('click', function () {
+      var i = +b.dataset.qi;
+      var fb = document.getElementById('uqFb');
+      box.querySelectorAll('.quiz-opts button').forEach(function (x) {
+        return x.disabled = true;
+      });
+      if (i === q.ans) {
+        b.classList.add('ok');
+        qScore++;
+        fb.innerHTML = `<span class="ok-txt">Corretto!</span> ${q.why}`;
+      } else {
+        b.classList.add('ko');
+        box.querySelectorAll('.quiz-opts button')[q.ans].classList.add('ok');
+        fb.innerHTML = `<span class="ko-txt">Non esatto.</span> ${q.why}`;
+      }
+      document.getElementById('uqNext').hidden = false;
+    });
+  });
+  (_document$getElementB33 = document.getElementById('uqNext')) === null || _document$getElementB33 === void 0 || _document$getElementB33.addEventListener('click', function () {
+    qIdx++;
+    renderUnifiedQuiz();
+  });
+}
+(_document$getElementB34 = document.getElementById('restartQuiz')) === null || _document$getElementB34 === void 0 || _document$getElementB34.addEventListener('click', function () {
+  qIdx = 0;
+  qScore = 0;
+  renderUnifiedQuiz();
+});
+renderUnifiedQuiz();
+
+// ==================== 7. AZIONI & IMPATTO COMBINATO ====================
+var actionBoxes = document.querySelectorAll('#actionList input[type="checkbox"]');
+function updateActions() {
+  var w = 0,
+    e = 0,
+    n = 0;
+  actionBoxes.forEach(function (cb) {
+    if (cb.checked) {
+      n++;
+      w += Number(cb.dataset.w || 0);
+      e += Number(cb.dataset.e || 0);
+    }
+  });
+  document.getElementById('actionWaterOut').textContent = `${w.toLocaleString('it-IT')} L / settimana`;
+  document.getElementById('actionEcoOut').textContent = `${e.toLocaleString('it-IT')} g·m² / settimana`;
+  document.getElementById('actionCount').textContent = `Azioni spuntate: ${n} su ${actionBoxes.length}.`;
+}
+actionBoxes.forEach(function (cb) {
+  return cb.addEventListener('change', updateActions);
+});
+updateActions();
 </script>
 </body>
 </html>

@@ -281,10 +281,22 @@ async function bootSerrLabs(): Promise<void> {
   renderRoot();
   refreshExternalViews();
   window.__SERR_BRIDGE?.refreshMapVideo?.();
+  (window as unknown as { __SERR_MODULE_LOADED?: boolean }).__SERR_MODULE_LOADED = true;
+}
+
+function startBootSafe(): void {
+  bootSerrLabs().catch((err) => {
+    const win = window as unknown as {
+      __SERR_REPORT_ERROR?: (source: string, err: unknown) => void;
+    };
+    if (typeof win.__SERR_REPORT_ERROR === "function") {
+      win.__SERR_REPORT_ERROR("Caricamento moduli SERR (Percorsi / Video / Portale)", err);
+    }
+  });
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => void bootSerrLabs());
+  document.addEventListener("DOMContentLoaded", startBootSafe);
 } else {
-  void bootSerrLabs();
+  startBootSafe();
 }
