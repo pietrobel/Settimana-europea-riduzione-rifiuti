@@ -3329,6 +3329,7 @@
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;" class="no-print">
             <button type="button" class="btn btn-sm" id="btn-g11-tall">Espandi vista LIM</button>
+            <button type="button" class="btn btn-sm" id="btn-g11-fs" aria-pressed="false">Schermo intero</button>
             <button type="button" class="btn btn-primary btn-sm" id="btn-g11-xp">Segna completato (+15 XP)</button>
           </div>
         </div>
@@ -3338,6 +3339,9 @@
           title="App unificata: Impronte ecologica, idrica e L'Impronta Nascosta"
           class="embedded-app-iframe"
           style="width:100%;border:1.5px solid var(--border);border-radius:12px;background:#f5f7f3;display:block;"
+          allowfullscreen
+          webkitallowfullscreen
+          mozallowfullscreen
           loading="lazy"
         ></iframe>
       </div>
@@ -8307,6 +8311,72 @@
     const btnQuickImpronte = document.getElementById("btn-quick-app-impronte");
     if (btnQuickImpronte) btnQuickImpronte.addEventListener("click", () => switchGame(11));
 
+    function bindEmbeddedPanelFs(panel, frame, btn, toggleMsg, queryMsg, stateMsg) {
+      if (!btn || !panel) return;
+      const syncFs = function () {
+        const nativeFsEl = getNativeFsElement();
+        const isFs = panel.classList.contains("embedded-panel-fs") || nativeFsEl === panel || nativeFsEl === frame;
+        btn.setAttribute("aria-pressed", String(isFs));
+        btn.textContent = isFs ? "Esci schermo intero" : "Schermo intero";
+        try {
+          if (frame && frame.contentWindow) {
+            frame.contentWindow.postMessage({ type: stateMsg, active: isFs }, "*");
+          }
+        } catch (_errPost) {}
+      };
+      const toggleFs = function () {
+        const nativeFsEl = getNativeFsElement();
+        const currentlyFs = panel.classList.contains("embedded-panel-fs") || nativeFsEl === panel || nativeFsEl === frame;
+        if (!currentlyFs) {
+          panel.classList.add("embedded-panel-fs");
+          try {
+            const reqFs = panel.requestFullscreen || panel.webkitRequestFullscreen || panel.msRequestFullscreen;
+            if (reqFs) {
+              Promise.resolve(reqFs.call(panel)).then(function () {
+                panel.dataset.nativeFs = "1";
+                syncFs();
+              }).catch(function () {
+                panel.dataset.nativeFs = "0";
+                syncFs();
+              });
+            }
+          } catch (_errReq) {
+            panel.dataset.nativeFs = "0";
+          }
+        } else {
+          panel.classList.remove("embedded-panel-fs");
+          panel.dataset.nativeFs = "0";
+          try {
+            const exitFs = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+            if (getNativeFsElement() && exitFs) {
+              Promise.resolve(exitFs.call(document)).then(syncFs, syncFs);
+            }
+          } catch (_errExit) {}
+        }
+        syncFs();
+      };
+      btn.addEventListener("click", toggleFs);
+      ["fullscreenchange", "webkitfullscreenchange"].forEach(evName => {
+        document.addEventListener(evName, () => {
+          const nativeFsEl = getNativeFsElement();
+          if (!nativeFsEl && panel.dataset.nativeFs === "1") {
+            panel.classList.remove("embedded-panel-fs");
+            panel.dataset.nativeFs = "0";
+          }
+          syncFs();
+        });
+      });
+      window.addEventListener("message", (ev) => {
+        if (!ev || !ev.data) return;
+        if (frame && frame.contentWindow && ev.source && ev.source !== frame.contentWindow) return;
+        if (ev.data.type === toggleMsg) {
+          toggleFs();
+        } else if (ev.data.type === queryMsg) {
+          syncFs();
+        }
+      });
+    }
+
     const btnG10Tall = document.getElementById("btn-g10-tall");
     const btnG10Fs = document.getElementById("btn-g10-fs");
     const g10Panel = document.getElementById("panel-game-10");
@@ -8319,68 +8389,7 @@
         btnG10Tall.textContent = g10Expanded ? "Altezza compatta" : "Espandi vista LIM";
       });
     }
-    if (btnG10Fs && g10Panel) {
-      const syncG10Fs = function () {
-        const nativeFsEl = getNativeFsElement();
-        const isFs = g10Panel.classList.contains("embedded-panel-fs") || nativeFsEl === g10Panel || nativeFsEl === g10Frame;
-        btnG10Fs.setAttribute("aria-pressed", String(isFs));
-        btnG10Fs.textContent = isFs ? "Esci schermo intero" : "Schermo intero";
-        try {
-          if (g10Frame && g10Frame.contentWindow) {
-            g10Frame.contentWindow.postMessage({ type: "serr-g10-fs-state", active: isFs }, "*");
-          }
-        } catch (_errPost) {}
-      };
-      const toggleG10Fs = function () {
-        const nativeFsEl = getNativeFsElement();
-        const currentlyFs = g10Panel.classList.contains("embedded-panel-fs") || nativeFsEl === g10Panel || nativeFsEl === g10Frame;
-        if (!currentlyFs) {
-          g10Panel.classList.add("embedded-panel-fs");
-          try {
-            const reqFs = g10Panel.requestFullscreen || g10Panel.webkitRequestFullscreen || g10Panel.msRequestFullscreen;
-            if (reqFs) {
-              Promise.resolve(reqFs.call(g10Panel)).then(function () {
-                g10Panel.dataset.nativeFs = "1";
-                syncG10Fs();
-              }).catch(function () {
-                g10Panel.dataset.nativeFs = "0";
-                syncG10Fs();
-              });
-            }
-          } catch (_errReq) {
-            g10Panel.dataset.nativeFs = "0";
-          }
-        } else {
-          g10Panel.classList.remove("embedded-panel-fs");
-          g10Panel.dataset.nativeFs = "0";
-          try {
-            const exitFs = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
-            if (getNativeFsElement() && exitFs) {
-              Promise.resolve(exitFs.call(document)).then(syncG10Fs, syncG10Fs);
-            }
-          } catch (_errExit) {}
-        }
-        syncG10Fs();
-      };
-      btnG10Fs.addEventListener("click", toggleG10Fs);
-      ["fullscreenchange", "webkitfullscreenchange"].forEach(evName => {
-        document.addEventListener(evName, () => {
-          const nativeFsEl = getNativeFsElement();
-          if (!nativeFsEl && g10Panel.dataset.nativeFs === "1") {
-            g10Panel.classList.remove("embedded-panel-fs");
-            g10Panel.dataset.nativeFs = "0";
-          }
-          syncG10Fs();
-        });
-      });
-      window.addEventListener("message", (ev) => {
-        if (ev && ev.data && ev.data.type === "serr-g10-toggle-fs") {
-          toggleG10Fs();
-        } else if (ev && ev.data && ev.data.type === "serr-g10-query-fs") {
-          syncG10Fs();
-        }
-      });
-    }
+    bindEmbeddedPanelFs(g10Panel, g10Frame, btnG10Fs, "serr-g10-toggle-fs", "serr-g10-query-fs", "serr-g10-fs-state");
     const btnG10Xp = document.getElementById("btn-g10-xp");
     if (btnG10Xp) {
       btnG10Xp.addEventListener("click", () => {
@@ -8390,6 +8399,8 @@
     }
 
     const btnG11Tall = document.getElementById("btn-g11-tall");
+    const btnG11Fs = document.getElementById("btn-g11-fs");
+    const g11Panel = document.getElementById("panel-game-11");
     const g11Frame = document.getElementById("g11-impronte-frame");
     if (btnG11Tall && g11Frame) {
       let g11Expanded = false;
@@ -8399,6 +8410,7 @@
         btnG11Tall.textContent = g11Expanded ? "Altezza compatta" : "Espandi vista LIM";
       });
     }
+    bindEmbeddedPanelFs(g11Panel, g11Frame, btnG11Fs, "serr-impronte-toggle-fs", "serr-impronte-query-fs", "serr-impronte-fs-state");
     const btnG11Xp = document.getElementById("btn-g11-xp");
     if (btnG11Xp) {
       btnG11Xp.addEventListener("click", () => {

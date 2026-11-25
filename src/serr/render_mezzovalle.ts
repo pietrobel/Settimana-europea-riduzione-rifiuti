@@ -20,6 +20,7 @@ export interface MezzovalleContext {
 const uiState = {
   subTab: "home" as "home" | "impronte" | "a1" | "a2" | "a3" | "a4" | "a5" | "giochi",
   impronteFrameTall: false,
+  impronteFrameFs: false,
   a1SelectedId: "pane",
   a1CompareB: "manzo",
   a1Category: "Tutte",
@@ -149,12 +150,13 @@ function renderHome(ctx: MezzovalleContext): string {
 function renderImpronteEmbed(ctx: MezzovalleContext): string {
   const done = ctx.state.completedActivities.includes("M_IMPRONTE");
   const frameClass = uiState.impronteFrameTall ? "embedded-app-iframe tall" : "embedded-app-iframe";
+  const cardClass = uiState.impronteFrameFs ? "serr-card embedded-panel-fs" : "serr-card";
   return `
     <div class="serr-info-strip">
       <strong>App Unificata Integrata · Impronte Ecologica, Idrica &amp; L'Impronta Nascosta:</strong>
       7 schede complete senza passaggi esterni: <em>1. Impronta ecologica</em>, <em>2. Impronta idrica</em>, <em>3. Esploratore Verde/Blu/Grigia</em>, <em>4. Lab Impronta Ecologica (grafici, g·m², pianeti)</em>, <em>5. Lab L'Impronta Nascosta (11 attività &amp; A4)</em>, <em>6. Verifica 10 domande</em> e <em>7. Azioni &amp; Impatto</em>.
     </div>
-    <div class="serr-card">
+    <div id="mezz-impronte-card" class="${cardClass}">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
         <div>
           <span class="serr-badge-small">MODULO UNIFICATO · MEZZOVALLE</span>
@@ -162,15 +164,20 @@ function renderImpronteEmbed(ctx: MezzovalleContext): string {
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
           <button type="button" class="btn btn-sm" id="btn-impronte-tall">${uiState.impronteFrameTall ? "Altezza compatta" : "Espandi vista LIM"}</button>
+          <button type="button" class="btn btn-sm" id="btn-impronte-fs" aria-pressed="${uiState.impronteFrameFs ? "true" : "false"}">${uiState.impronteFrameFs ? "Esci schermo intero" : "Schermo intero"}</button>
           <button type="button" class="btn ${done ? "" : "btn-primary"} btn-sm" id="btn-impronte-done">${done ? "Modulo completato ✓" : "Segna completato (+15 XP)"}</button>
           <button type="button" class="btn btn-sm" data-m-tab="a1">Approfondisci in A1 (15 cibi) →</button>
         </div>
       </div>
       <iframe
+        id="mezz-impronte-frame"
         src="${import.meta.env.BASE_URL}assets/aistudio/Impronte__ecologica__idrica_e_acqua_verde__blu_e_grigia_a67eff9e.html"
         title="App unificata: Impronte ecologica, idrica e L'Impronta Nascosta"
         class="${frameClass}"
         style="width:100%;border:1.5px solid var(--border);border-radius:12px;background:#f5f7f3;display:block;"
+        allowfullscreen
+        webkitallowfullscreen
+        mozallowfullscreen
         loading="lazy"
       ></iframe>
     </div>
@@ -610,10 +617,107 @@ function renderGames(ctx: MezzovalleContext): string {
   `;
 }
 
+function getMezzNativeFsEl(): Element | null {
+  const d = document as Document & { webkitFullscreenElement?: Element | null; msFullscreenElement?: Element | null };
+  return d.fullscreenElement || d.webkitFullscreenElement || d.msFullscreenElement || null;
+}
+
+function syncMezzFsUi(): void {
+  const card = document.getElementById("mezz-impronte-card");
+  const frame = document.getElementById("mezz-impronte-frame") as HTMLIFrameElement | null;
+  const btn = document.getElementById("btn-impronte-fs");
+  const nativeEl = getMezzNativeFsEl();
+  const isFs = Boolean(uiState.impronteFrameFs || (card && card.classList.contains("embedded-panel-fs")) || (card && nativeEl === card) || (frame && nativeEl === frame));
+  uiState.impronteFrameFs = isFs;
+  if (card) card.classList.toggle("embedded-panel-fs", isFs);
+  if (btn) {
+    btn.setAttribute("aria-pressed", String(isFs));
+    btn.textContent = isFs ? "Esci schermo intero" : "Schermo intero";
+  }
+  try {
+    if (frame && frame.contentWindow) {
+      frame.contentWindow.postMessage({ type: "serr-impronte-fs-state", active: isFs }, "*");
+    }
+  } catch {
+    // ignore postMessage error
+  }
+}
+
+function toggleMezzImpronteFs(): void {
+  const card = document.getElementById("mezz-impronte-card") as (HTMLElement & {
+    webkitRequestFullscreen?: () => Promise<void> | void;
+    msRequestFullscreen?: () => Promise<void> | void;
+  }) | null;
+  const frame = document.getElementById("mezz-impronte-frame");
+  if (!card) return;
+  const nativeEl = getMezzNativeFsEl();
+  const currentlyFs = uiState.impronteFrameFs || card.classList.contains("embedded-panel-fs") || nativeEl === card || nativeEl === frame;
+  if (!currentlyFs) {
+    uiState.impronteFrameFs = true;
+    card.classList.add("embedded-panel-fs");
+    try {
+      const req = card.requestFullscreen || card.webkitRequestFullscreen || card.msRequestFullscreen;
+      if (req) {
+        Promise.resolve(req.call(card)).then(
+          () => { card.dataset.nativeFs = "1"; syncMezzFsUi(); },
+          () => { card.dataset.nativeFs = "0"; syncMezzFsUi(); },
+        );
+      }
+    } catch {
+      card.dataset.nativeFs = "0";
+    }
+  } else {
+    uiState.impronteFrameFs = false;
+    card.classList.remove("embedded-panel-fs");
+    card.dataset.nativeFs = "0";
+    try {
+      const d = document as Document & { webkitExitFullscreen?: () => Promise<void> | void; msExitFullscreen?: () => Promise<void> | void };
+      const exitFn = d.exitFullscreen || d.webkitExitFullscreen || d.msExitFullscreen;
+      if (getMezzNativeFsEl() && exitFn) {
+        Promise.resolve(exitFn.call(document)).then(syncMezzFsUi, syncMezzFsUi);
+      }
+    } catch {
+      // ignore exitFullscreen error
+    }
+  }
+  syncMezzFsUi();
+}
+
+let mezzFsGlobalBound = false;
+function ensureMezzFsListeners(): void {
+  if (mezzFsGlobalBound) return;
+  mezzFsGlobalBound = true;
+  ["fullscreenchange", "webkitfullscreenchange"].forEach((evName) => {
+    document.addEventListener(evName, () => {
+      const card = document.getElementById("mezz-impronte-card");
+      if (card && !getMezzNativeFsEl() && card.dataset.nativeFs === "1") {
+        uiState.impronteFrameFs = false;
+        card.classList.remove("embedded-panel-fs");
+        card.dataset.nativeFs = "0";
+      }
+      syncMezzFsUi();
+    });
+  });
+  window.addEventListener("message", (ev: MessageEvent) => {
+    const frame = document.getElementById("mezz-impronte-frame") as HTMLIFrameElement | null;
+    if (!frame || !ev || !ev.data) return;
+    if (frame.contentWindow && ev.source && ev.source !== frame.contentWindow) return;
+    if (ev.data.type === "serr-impronte-toggle-fs") {
+      toggleMezzImpronteFs();
+    } else if (ev.data.type === "serr-impronte-query-fs") {
+      syncMezzFsUi();
+    }
+  });
+}
+
 function bindEvents(container: HTMLElement, ctx: MezzovalleContext, _e: (s: string) => string): void {
+  ensureMezzFsListeners();
   container.querySelector("#btn-impronte-tall")?.addEventListener("click", () => {
     uiState.impronteFrameTall = !uiState.impronteFrameTall;
     renderMezzovalleView(container, ctx);
+  });
+  container.querySelector("#btn-impronte-fs")?.addEventListener("click", () => {
+    toggleMezzImpronteFs();
   });
   container.querySelector("#btn-impronte-done")?.addEventListener("click", () => {
     ctx.markActivityDone("M_IMPRONTE", 15);
