@@ -225,36 +225,37 @@ var CONT = [
    ci:"Tutto quello che non si ricicla: gomma, cotton fioc, pannolini.", no:"Niente cose che si possono riciclare.", hint:"Non si ricicla: va nel contenitore grigio."}
 ];
 
+// [emoji, nome, articolo, contenitore, facile]
 var OGG_RAW = [
-  ["📰","giornale","il","carta"],["📓","quaderno","il","carta"],["📦","scatola di cartone","la","carta"],
-  ["✉️","busta di carta","la","carta"],["📚","libro","il","carta"],["📃","volantino","il","carta"],
-  ["🎨","cartoncino","il","carta"],["📔","agenda","l'","carta"],["📖","rivista","la","carta"],["📄","foglio di carta","il","carta"],
+  ["📰","giornale","il","carta",true],["📓","quaderno","il","carta",true],["📦","scatola di cartone","la","carta",true],
+  ["✉️","busta di carta","la","carta",false],["📚","libro","il","carta",true],["📃","volantino","il","carta",false],
+  ["🎨","cartoncino","il","carta",false],["📔","agenda","l'","carta",false],["📖","rivista","la","carta",false],["📄","foglio di carta","il","carta",true],
 
-  ["💧","bottiglia d'acqua","la","plastica"],["🧼","flacone di detersivo","il","plastica"],
-  ["🥣","vaschetta di yogurt","la","plastica"],["🛍️","sacchetto di plastica","il","plastica"],
-  ["🥤","bicchiere di plastica","il","plastica"],["🍽️","vassoio di plastica","il","plastica"],
-  ["🧸","giocattolo di plastica","il","plastica"],["🧴","bottiglia di shampoo","la","plastica"],
-  ["🪣","secchio di plastica","il","plastica"],["🥗","contenitore dell'insalata","il","plastica"],
+  ["💧","bottiglia d'acqua","la","plastica",true],["🧼","flacone di detersivo","il","plastica",false],
+  ["🥣","vaschetta di yogurt","la","plastica",false],["🛍️","sacchetto di plastica","il","plastica",true],
+  ["🥤","bicchiere di plastica","il","plastica",true],["🍽️","vassoio di plastica","il","plastica",false],
+  ["🧸","giocattolo di plastica","il","plastica",true],["🧴","bottiglia di shampoo","la","plastica",false],
+  ["🪣","secchio di plastica","il","plastica",true],["🥗","contenitore dell'insalata","il","plastica",false],
 
-  ["🍾","bottiglia di vino","la","vetro"],["🫙","barattolo di marmellata","il","vetro"],
-  ["🍺","bottiglia di birra","la","vetro"],["🍯","vasetto di miele","il","vetro"],
-  ["🍶","bottiglia di sciroppo","la","vetro"],["🥃","bicchiere di vetro","il","vetro"],
-  ["🏺","vaso di vetro","il","vetro"],["🍷","calice di vetro","il","vetro"],
-  ["🧂","barattolo delle spezie","il","vetro"],["🫙","vasetto di crema","il","vetro"],
+  ["🍾","bottiglia di vino","la","vetro",true],["🫙","barattolo di marmellata","il","vetro",true],
+  ["🍺","bottiglia di birra","la","vetro",false],["🍯","vasetto di miele","il","vetro",true],
+  ["🍶","bottiglia di sciroppo","la","vetro",false],["🥃","bicchiere di vetro","il","vetro",true],
+  ["🏺","vaso di vetro","il","vetro",true],["🍷","calice di vetro","il","vetro",false],
+  ["🧂","barattolo delle spezie","il","vetro",false],["🫙","vasetto di crema","il","vetro",false],
 
-  ["🍌","buccia di banana","la","organico"],["☕","fondi di caffè","i","organico"],
-  ["🍎","avanzi di frutta","gli","organico"],["🥔","bucce di patata","le","organico"],
-  ["🍂","foglie secche","le","organico"],["🥚","gusci d'uovo","i","organico"],
-  ["🥕","avanzi di verdura","gli","organico"],["🫖","bustina di tè","la","organico"],
-  ["💐","fiori recisi","i","organico"],["🍞","resti di pane","i","organico"],
+  ["🍌","buccia di banana","la","organico",true],["☕","fondi di caffè","i","organico",false],
+  ["🍎","avanzi di frutta","gli","organico",true],["🥔","bucce di patata","le","organico",true],
+  ["🍂","foglie secche","le","organico",true],["🥚","gusci d'uovo","i","organico",false],
+  ["🥕","avanzi di verdura","gli","organico",false],["🫖","bustina di tè","la","organico",false],
+  ["💐","fiori recisi","i","organico",false],["🍞","resti di pane","i","organico",true],
 
-  ["👶","pannolino","il","indiff"],["🩹","cerotto","il","indiff"],["🖊️","penna biro","la","indiff"],
-  ["🫧","gomma da masticare","la","indiff"],["🧷","cotton fioc","il","indiff"],
-  ["🪒","rasoio usato","il","indiff"],["🚬","mozzicone di sigaretta","il","indiff"],
-  ["🧦","calza rotta","la","indiff"],["🌫️","polvere dell'aspirapolvere","la","indiff"],
-  ["🧻","tovagliolo sporco","il","indiff"]
+  ["👶","pannolino","il","indiff",true],["🩹","cerotto","il","indiff",true],["🖊️","penna biro","la","indiff",true],
+  ["🫧","gomma da masticare","la","indiff",true],["🧷","cotton fioc","il","indiff",false],
+  ["🪒","rasoio usato","il","indiff",true],["🚬","mozzicone di sigaretta","il","indiff",false],
+  ["🧦","calza rotta","la","indiff",false],["🌫️","polvere dell'aspirapolvere","la","indiff",false],
+  ["🧻","tovagliolo sporco","il","indiff",false]
 ];
-var OGG = OGG_RAW.map(function(r){ return {e:r[0], n:r[1], a:r[2], b:r[3]}; });
+var OGG = OGG_RAW.map(function(r){ return {e:r[0], n:r[1], a:r[2], b:r[3], facile:!!r[4]}; });
 
 function contenitore(id){ return CONT.find(function(c){ return c.id === id; }); }
 
@@ -270,14 +271,23 @@ function complimento(nome, sesso){
   return frasi[Math.floor(Math.random() * frasi.length)];
 }
 
-function nuovoRound(){
+function nuovoRound(livello){
+  var isFacile = livello === "facile";
+  var totale = isFacile ? 10 : 15;
+  var numAltri = isFacile ? 1 : 2;
   var ordine = mescola(CONT.map(function(c){ return c.id; }));
+  var usati = {};
   var dom = [];
-  for(var i = 0; i < 15; i++){
+  for(var i = 0; i < totale; i++){
     var bid = ordine[i % 5];
-    var pool = OGG.filter(function(o){ return o.b === bid; });
+    var pool = OGG.filter(function(o){
+      return o.b === bid && (!isFacile || o.facile);
+    });
+    var liberi = pool.filter(function(o){ return !usati[o.n]; });
+    if(liberi.length) pool = liberi;
     var o = pool[Math.floor(Math.random() * pool.length)];
-    var altri = mescola(CONT.map(function(c){ return c.id; }).filter(function(x){ return x !== bid; })).slice(0, 2);
+    usati[o.n] = true;
+    var altri = mescola(CONT.map(function(c){ return c.id; }).filter(function(x){ return x !== bid; })).slice(0, numAltri);
     dom.push({o: o, opts: mescola([bid].concat(altri))});
   }
   return dom;
@@ -362,8 +372,10 @@ function AscoltaBtn(p){
 
 function Gioco(p){
   var nome = p.nome, sesso = p.sesso;
-  var domState = React.useState(function(){ return nuovoRound(); });
+  var isFacile = p.livello === "facile";
+  var domState = React.useState(function(){ return nuovoRound(p.livello); });
   var dom = domState[0];
+  var totale = dom.length;
   var iState = React.useState(0), i = iState[0], setI = iState[1];
   var errState = React.useState(0), err = errState[0], setErr = errState[1];
   var sbState = React.useState([]), sbagliate = sbState[0], setSbagliate = sbState[1];
@@ -381,7 +393,7 @@ function Gioco(p){
   }, [i, fine]);
 
   function avanti(){
-    if(i + 1 >= dom.length){ setFine(true); parla("Hai completato il gioco! Hai dato " + corrette + " risposte giuste su 15."); return; }
+    if(i + 1 >= dom.length){ setFine(true); parla("Hai completato il " + (isFacile ? "livello facile" : "gioco") + "! Hai dato " + corrette + " risposte giuste su " + totale + "."); return; }
     setI(i + 1); setErr(0); setSbagliate([]); setEsito(null); setMsg(null);
   }
 
@@ -416,9 +428,10 @@ function Gioco(p){
     return h("div", {className:"pagina"},
       h(Barra, {home:p.home, indietro:null, fs:p.fs}),
       h("div", {className:"grande"}, "🏆"),
-      h("h1", null, "Hai completato il gioco!"),
-      h("p", {className:"testo", style:{textAlign:"center"}}, "Risposte giuste: " + corrette + " su 15."),
+      h("h1", null, isFacile ? "Complimenti! Livello facile completato!" : "Hai completato il gioco!"),
+      h("p", {className:"testo", style:{textAlign:"center"}}, "Risposte giuste: " + corrette + " su " + totale + "."),
       h("button", {className:"btn primario", onClick:p.ricomincia}, "🔁 RICOMINCIA"),
+      p.cambiaLivello ? h("button", {className:"btn", onClick:p.cambiaLivello}, isFacile ? "🎮 PROVA LIVELLO NORMALE (3 scelte)" : "🌱 PROVA LIVELLO FACILE (2 scelte)") : null,
       h("button", {className:"btn", onClick:p.altri}, "📦 ALTRI GIOCHI"),
       h("button", {className:"btn", onClick:p.home}, "🏠 MENU INIZIALE")
     );
@@ -426,11 +439,14 @@ function Gioco(p){
 
   if(!q) return null;
 
+  var aiutoFacile = isFacile ? contenitore(q.o.b).hint : null;
+
   return h("div", {className:"pagina"},
     h(Barra, {home:p.home, indietro:p.indietro, fs:p.fs}),
-    h("p", {className:"nota"}, "Domanda " + (i + 1) + " di 15 · Risposte giuste: " + corrette),
+    h("p", {className:"nota"}, (isFacile ? "🌱 Livello facile · " : "🎮 Livello normale · ") + "Domanda " + (i + 1) + " di " + totale + " · Risposte giuste: " + corrette),
     h("h2", null, testo),
     h("div", {className:"grande"}, q.o.e),
+    aiutoFacile ? h("div", {className:"blocco", style:{textAlign:"center"}}, "💡 Aiuto: ", aiutoFacile) : null,
     h(AscoltaBtn, {testo:testo, etichetta:"ASCOLTA LA DOMANDA"}),
     h("div", {className:"riga"},
       q.opts.map(function(id){
@@ -462,11 +478,18 @@ function App(){
   var vistiState = React.useState(function(){ return leggi("visti", []); }), visti = vistiState[0], setVisti = vistiState[1];
   var contState = React.useState(0), cont = contState[0], setCont = contState[1];
   var chiaveState = React.useState(0), chiave = chiaveState[0], setChiave = chiaveState[1];
+  var livState = React.useState("facile"), livello = livState[0], setLivello = livState[1];
   var fs = useFullscreenSync();
 
   var home = function(){ setSchermo("home"); };
   var indietroMappa = {lista:"home", scheda:"lista", gioco:"home", fine:"home"};
   var indietro = function(){ setSchermo(indietroMappa[schermo] || "home"); };
+
+  function avviaGioco(liv){
+    setLivello(liv);
+    setChiave(chiave + 1);
+    setSchermo("gioco");
+  }
 
   function inizia(){
     var n = bozza.trim();
@@ -512,7 +535,8 @@ function App(){
         h("div", {style:{width: percentuale + "%"}})),
       h("p", {className:"nota"}, visti.length + " / " + CONT.length + " contenitori visti"),
       h("button", {className:"btn", onClick:function(){ setSchermo("lista"); }}, "📦 I CONTENITORI"),
-      h("button", {className:"btn primario", onClick:function(){ setChiave(chiave + 1); setSchermo("gioco"); }}, "🎮 GIOCHIAMO"),
+      h("button", {className:"btn primario", onClick:function(){ avviaGioco("facile"); }}, "🌱 LIVELLO FACILE (2 scelte · con aiuto)"),
+      h("button", {className:"btn", onClick:function(){ avviaGioco("normale"); }}, "🎮 LIVELLO NORMALE (3 scelte · 15 domande)"),
       SUONO ? h("button", {className:"btn", onClick:function(){ parla("Scegli il contenitore giusto per ogni oggetto. Tocca la risposta che pensi sia giusta. Ti aiuto io!"); }}, "🔊 ASCOLTA LE ISTRUZIONI") : null
     );
   }
@@ -547,19 +571,22 @@ function App(){
       h("div", {className:"blocco"},
         h("strong", null, "Non ci vanno: "), c.no),
       h(AscoltaBtn, {testo:testo, etichetta:"ASCOLTA LA SCHEDA"}),
-      h("button", {className:"btn primario", onClick:function(){ setChiave(chiave + 1); setSchermo("gioco"); }}, "🎮 GIOCHIAMO")
+      h("button", {className:"btn primario", onClick:function(){ avviaGioco("facile"); }}, "🌱 GIOCHIAMO (LIVELLO FACILE)"),
+      h("button", {className:"btn", onClick:function(){ avviaGioco("normale"); }}, "🎮 GIOCHIAMO (LIVELLO NORMALE)")
     );
   }
 
   if(schermo === "gioco"){
     return h(Gioco, {
-      key: chiave,
+      key: chiave + "_" + livello,
+      livello: livello,
       nome: nome,
       sesso: sesso,
       home: home,
       indietro: indietro,
       fs: fs,
       ricomincia: function(){ setChiave(chiave + 1); },
+      cambiaLivello: function(){ avviaGioco(livello === "facile" ? "normale" : "facile"); },
       altri: function(){ setSchermo("lista"); }
     });
   }
