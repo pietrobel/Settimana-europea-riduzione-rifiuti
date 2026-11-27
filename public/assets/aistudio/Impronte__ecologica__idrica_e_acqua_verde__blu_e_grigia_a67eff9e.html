@@ -1115,15 +1115,20 @@
     </div>
   </section>
 
-  <!-- ==================== 6. VERIFICA UNIFICATA (10 DOMANDE) ==================== -->
+  <!-- ==================== 6. VERIFICA UNIFICATA (MULTI-LIVELLO + BES VOCALE) ==================== -->
   <section id="quiz" hidden>
     <div class="card">
       <div class="sec-head">
         <h2>6 · Verifica Unificata (Ecologica + Idrica + Grafici)</h2>
-        <button type="button" class="btn" id="restartQuiz">Ricomincia Verifica</button>
+        <button type="button" class="btn" id="restartQuiz">Ricomincia Livello</button>
       </div>
-      <p class="note">10 domande complete che uniscono tutti i concetti studiati nei laboratori.</p>
-      <div id="quizProgressTrack" class="bar-track" style="margin:.5rem 0 .85rem;"><div id="quizProgressFill" class="bar-fill" style="width:10%"></div></div>
+      <div class="controls" id="quizLevelBar" role="group" aria-label="Scegli livello verifica">
+        <button type="button" data-qlvl="bes" aria-pressed="true">🌼 Livello 1 · Base BES (Vocale · 2 scelte)</button>
+        <button type="button" data-qlvl="intermedio" aria-pressed="false">🎮 Livello 2 · Intermedio (3 scelte · 10 domande)</button>
+        <button type="button" data-qlvl="avanzato" aria-pressed="false">🏆 Livello 3 · Avanzato (Calcoli &amp; Sfide)</button>
+      </div>
+      <p class="note" id="quizLevelDesc">6 domande semplici con 2 scelte, aiuto visivo e lettura vocale per Primaria e BES.</p>
+      <div id="quizProgressTrack" class="bar-track" style="margin:.5rem 0 .85rem;"><div id="quizProgressFill" class="bar-fill" style="width:0%"></div></div>
       <div id="quizBox"></div>
     </div>
   </section>
@@ -2190,105 +2195,299 @@ if (hnBBody) {
   updateHnDualBuilder();
 }
 
-// ==================== 6. VERIFICA UNIFICATA (10 DOMANDE) ====================
-var UNIFIED_QUIZ = [{
-  q: 'Quale unità di misura si usa per l\'impronta ecologica?',
-  opts: ['Litri (L)', 'Ettari globali (gha) o g·m²', 'Solo kg di CO₂'],
-  ans: 1,
-  why: 'L\'impronta ecologica misura la superficie biologicamente produttiva in ettari globali (1 gha = 10.000 g·m²).'
-}, {
-  q: 'Che cosa indica il sovrasfruttamento ecologico (overshoot)?',
-  opts: ['Consumiamo meno della biocapacità', 'Consumiamo più in fretta di quanto la Terra rigenera', 'La biocapacità è infinita'],
-  ans: 1,
-  why: 'Si ha overshoot quando l\'impronta supera ~1,6 gha per abitante.'
-}, {
-  q: 'Quale componente pesa di più oggi nell\'impronta ecologica mondiale (~55–60%)?',
-  opts: ['Suolo edificato', 'Zone di pesca', 'Impronta di carbonio (boschi/oceani per assorbire CO₂)'],
-  ans: 2,
-  why: 'Le emissioni fossili di CO₂ sono oggi la fetta dominante dell\'impronta ecologica globale.'
-}, {
-  q: 'Quale delle seguenti è acqua verde?',
-  opts: ['Acqua di fiume usata per irrigare', 'Acqua piovana nel suolo usata dalle piante', 'Acqua per diluire i fertilizzanti'],
-  ans: 1,
-  why: 'L\'acqua verde è la pioggia immagazzinata nel suolo e assorbita dalla vegetazione.'
-}, {
-  q: 'Che cosa misura l\'acqua grigia?',
-  opts: ['La pioggia evaporata', 'L\'acqua pulita teorica per diluire gli inquinanti', 'L\'acqua potabile in bottiglia'],
-  ans: 1,
-  why: 'Misura quanto volume d\'acqua servirebbe per riportare gli scarichi sotto i limiti ambientali.'
-}, {
-  q: 'Perché l\'impronta idrica indiretta (~90–95%) supera di gran lunga quella diretta del rubinetto?',
-  opts: ['Perché l\'acqua serve lungo tutta la filiera di cibo, vestiti ed energia', 'Perché lasciamo i rubinetti aperti', 'Perché il mare è salato'],
-  ans: 0,
-  why: 'In Italia il consumo diretto è ~236 L/giorno, mentre l\'impronta totale supera i 6.000 L/giorno.'
-}, {
-  q: 'Quale grafico permette di confrontare rapidamente 4 alimenti diversi (riso, pane, mele, patate)?',
-  opts: ['Il diagramma cartesiano di un solo alimento', 'L\'istogramma a barre partendo da zero', 'Una nota testuale senza scala'],
-  ans: 1,
-  why: 'L\'istogramma con barre che partono da zero rende immediato il confronto fra categorie.'
-}, {
-  q: 'Nel diagramma delle mele (kg × 822 L), che cosa rappresenta il punto (3; 2.466)?',
-  opts: ['3 L per 2.466 mele', '3 kg di mele corrispondono a ~2.466 L di acqua stimata', 'Un errore di misura'],
-  ans: 1,
-  why: 'Il primo numero indica la quantità (kg sull\'asse X) e il secondo i litri sull\'asse Y.'
-}, {
-  q: 'Se servono 5 kg di patate (287 L/kg) ma ne compriamo 7 kg, qual è l\'impronta idrica del surplus?',
-  opts: ['287 L', '574 L', '1.435 L'],
-  ans: 1,
-  why: 'Surplus = 7 − 5 = 2 kg; 2 × 287 = 574 L associati allo spreco potenziale.'
-}, {
-  q: 'Sostituire 20 km in auto (12 g·m²/km) con l\'autobus (3 g·m²/km) che effetto produce?',
-  opts: ['Aumenta l\'impronta ecologica', 'Risparmia 180 g·m² riducendo soprattutto le emissioni di CO₂', 'Non cambia nulla'],
-  ans: 1,
-  why: '20 × 12 = 240 g·m² contro 20 × 3 = 60 g·m² → risparmio netto di 180 g·m².'
-}];
-var qIdx = 0,
+// ==================== 6. VERIFICA UNIFICATA (3 LIVELLI + BES VOCALE) ====================
+var QUIZ_LEVELS = {
+  bes: {
+    id: 'bes',
+    nome: 'Livello 1 · Base BES (Vocale)',
+    desc: '6 domande chiare con 2 scelte grandi, aiuto visivo e lettura vocale automatica o su richiesta.',
+    vocalAuto: true,
+    questions: [{
+      q: 'Che cosa misura l\'impronta idrica di un cibo?',
+      hint: 'Pensa a tutta l\'acqua che serve dal campo fino al piatto.',
+      opts: ['Tutta l\'acqua usata per produrlo', 'Solo l\'acqua che beviamo al tavolo'],
+      ans: 0,
+      why: 'Esatto! L\'impronta idrica conta tutta l\'acqua usata per coltivare, trasformare e trasportare il cibo.'
+    }, {
+      q: 'Quale colore indica l\'acqua della pioggia nel terreno?',
+      hint: 'È il colore delle piante e dei prati.',
+      opts: ['Acqua verde', 'Acqua grigia'],
+      ans: 0,
+      why: 'Esatto! L\'acqua verde è la pioggia trattenuta nel suolo e usata dalle piante.'
+    }, {
+      q: 'Che cosa misura l\'impronta ecologica?',
+      hint: 'Si misura in ettari o metri quadrati di terra e mare.',
+      opts: ['Lo spazio di terra e mare che usiamo per vivere', 'Il peso dello zaino scolastico'],
+      ans: 0,
+      why: 'Bravissimo! Misura quanta superficie di campi, boschi e mari serve per risorse e CO2.'
+    }, {
+      q: 'Quale cibo consuma molta più acqua per ogni chilo?',
+      hint: 'Gli animali mangiano tanti cereali e foraggio per mesi.',
+      opts: ['La carne bovina (circa 15.400 litri)', 'Le patate (circa 287 litri)'],
+      ans: 0,
+      why: 'Esatto! 1 kg di carne bovina richiede oltre 50 volte più acqua di 1 kg di patate.'
+    }, {
+      q: 'Come evitiamo lo spreco di cibo e acqua a merenda?',
+      hint: 'Meglio comprare troppo o solo quello che serve?',
+      opts: ['Comprare solo la quantità che serve davvero', 'Comprare sempre il doppio per sicurezza'],
+      ans: 0,
+      why: 'Giusto! Calcolare quanto serve evita gli avanzi e risparmia litri e suolo.'
+    }, {
+      q: 'Come possiamo andare a scuola inquinando meno?',
+      hint: 'Meno auto significa meno CO2 nell\'aria.',
+      opts: ['A piedi, in bici o con l\'autobus', 'Sempre in auto da soli anche per brevi tratti'],
+      ans: 0,
+      why: 'Perfetto! Bici, piedi e autobus riducono molto l\'impronta ecologica.'
+    }]
+  },
+  intermedio: {
+    id: 'intermedio',
+    nome: 'Livello 2 · Intermedio',
+    desc: '10 domande complete con 3 scelte su Impronta Ecologica, Idrica e lettura dei grafici.',
+    vocalAuto: false,
+    questions: [{
+      q: 'Quale unità di misura si usa per l\'impronta ecologica?',
+      opts: ['Litri (L)', 'Ettari globali (gha) o g·m²', 'Solo kg di CO₂'],
+      ans: 1,
+      why: 'L\'impronta ecologica misura la superficie biologicamente produttiva in ettari globali (1 gha = 10.000 g·m²).'
+    }, {
+      q: 'Che cosa indica il sovrasfruttamento ecologico (overshoot)?',
+      opts: ['Consumiamo meno della biocapacità', 'Consumiamo più in fretta di quanto la Terra rigenera', 'La biocapacità è infinita'],
+      ans: 1,
+      why: 'Si ha overshoot quando l\'impronta supera ~1,6 gha per abitante.'
+    }, {
+      q: 'Quale componente pesa di più oggi nell\'impronta ecologica mondiale (~55–60%)?',
+      opts: ['Suolo edificato', 'Zone di pesca', 'Impronta di carbonio (boschi/oceani per assorbire CO₂)'],
+      ans: 2,
+      why: 'Le emissioni fossili di CO₂ sono oggi la fetta dominante dell\'impronta ecologica globale.'
+    }, {
+      q: 'Quale delle seguenti è acqua verde?',
+      opts: ['Acqua di fiume usata per irrigare', 'Acqua piovana nel suolo usata dalle piante', 'Acqua per diluire i fertilizzanti'],
+      ans: 1,
+      why: 'L\'acqua verde è la pioggia immagazzinata nel suolo e assorbita dalla vegetazione.'
+    }, {
+      q: 'Che cosa misura l\'acqua grigia?',
+      opts: ['La pioggia evaporata', 'L\'acqua pulita teorica per diluire gli inquinanti', 'L\'acqua potabile in bottiglia'],
+      ans: 1,
+      why: 'Misura quanto volume d\'acqua servirebbe per riportare gli scarichi sotto i limiti ambientali.'
+    }, {
+      q: 'Perché l\'impronta idrica indiretta (~90–95%) supera di gran lunga quella diretta del rubinetto?',
+      opts: ['Perché l\'acqua serve lungo tutta la filiera di cibo, vestiti ed energia', 'Perché lasciamo i rubinetti aperti', 'Perché il mare è salato'],
+      ans: 0,
+      why: 'In Italia il consumo diretto è ~236 L/giorno, mentre l\'impronta totale supera i 6.000 L/giorno.'
+    }, {
+      q: 'Quale grafico permette di confrontare rapidamente 4 alimenti diversi (riso, pane, mele, patate)?',
+      opts: ['Il diagramma cartesiano di un solo alimento', 'L\'istogramma a barre partendo da zero', 'Una nota testuale senza scala'],
+      ans: 1,
+      why: 'L\'istogramma con barre che partono da zero rende immediato il confronto fra categorie.'
+    }, {
+      q: 'Nel diagramma delle mele (kg × 822 L), che cosa rappresenta il punto (3; 2.466)?',
+      opts: ['3 L per 2.466 mele', '3 kg di mele corrispondono a ~2.466 L di acqua stimata', 'Un errore di misura'],
+      ans: 1,
+      why: 'Il primo numero indica la quantità (kg sull\'asse X) e il secondo i litri sull\'asse Y.'
+    }, {
+      q: 'Se servono 5 kg di patate (287 L/kg) ma ne compriamo 7 kg, qual è l\'impronta idrica del surplus?',
+      opts: ['287 L', '574 L', '1.435 L'],
+      ans: 1,
+      why: 'Surplus = 7 − 5 = 2 kg; 2 × 287 = 574 L associati allo spreco potenziale.'
+    }, {
+      q: 'Sostituire 20 km in auto (12 g·m²/km) con l\'autobus (3 g·m²/km) che effetto produce?',
+      opts: ['Aumenta l\'impronta ecologica', 'Risparmia 180 g·m² riducendo soprattutto le emissioni di CO₂', 'Non cambia nulla'],
+      ans: 1,
+      why: '20 × 12 = 240 g·m² contro 20 × 3 = 60 g·m² → risparmio netto di 180 g·m².'
+    }]
+  },
+  avanzato: {
+    id: 'avanzato',
+    nome: 'Livello 3 · Avanzato (Calcoli & Strategie)',
+    desc: '8 sfide matematiche e scientifiche su pianeti Terra, conversioni gha/g·m², surplus multipli e stress idrico.',
+    vocalAuto: false,
+    questions: [{
+      q: 'Se uno stile di vita ha un\'impronta di 4,8 gha/anno e la biocapacità media è 1,6 gha, quanti pianeti Terra servirebbero?',
+      opts: ['1,6 pianeti', '2 pianeti', '3 pianeti Terra', '4,8 pianeti'],
+      ans: 2,
+      why: 'Numero di pianeti = 4,8 ÷ 1,6 = 3 pianeti Terra.'
+    }, {
+      q: 'A quanti metri quadrati globali (g·m²) equivalgono 2,5 ettari globali (gha)?',
+      opts: ['2.500 g·m²', '25.000 g·m²', '250.000 g·m²'],
+      ans: 1,
+      why: '1 gha = 10.000 g·m², quindi 2,5 × 10.000 = 25.000 g·m².'
+    }, {
+      q: 'Per una classe di 18 alunni prepariamo panini con 60 g di pane ciascuno, ma compriamo 1,5 kg di pane. Quanti litri di surplus si creano (pane 1.608 L/kg)?',
+      opts: ['Circa 675 L (surplus 0,42 kg)', 'Circa 1.608 L (surplus 1 kg)', 'Zero litri'],
+      ans: 0,
+      why: 'Necessario = 18 × 0,06 = 1,08 kg; surplus = 1,5 − 1,08 = 0,42 kg; 0,42 × 1.608 ≈ 675 L.'
+    }, {
+      q: 'Un paio di jeans richiede ~7.500 L d\'acqua. A quanti metri cubi (m³) corrisponde?',
+      opts: ['0,75 m³', '7,5 m³', '75 m³'],
+      ans: 1,
+      why: 'Poiché 1 m³ = 1.000 litri, 7.500 ÷ 1.000 = 7,5 m³.'
+    }, {
+      q: 'Se l\'Italia ha un\'impronta ecologica di ~4,2 gha/persona e una biocapacità interna di ~0,9 gha/persona, qual è il deficit ecologico per abitante?',
+      opts: ['3,3 gha/persona', '5,1 gha/persona', '0,9 gha/persona'],
+      ans: 0,
+      why: 'Deficit = Impronta − Biocapacità = 4,2 − 0,9 = 3,3 gha per abitante.'
+    }, {
+      q: 'Due coltivazioni usano entrambe 1.500 L/kg: nella zona A l\'80% è acqua verde, nella zona B il 70% è acqua blu da falde in calo. Quale ha impatto idrico locale più grave?',
+      opts: ['Hanno identico impatto perché i litri totali sono 1.500', 'La zona B, perché preleva acqua blu scarsa da fiumi e falde', 'La zona A, perché sfrutta la pioggia'],
+      ans: 1,
+      why: 'A parità di litri totali, un\'alta quota di acqua blu in un bacino arido genera forte stress idrico locale.'
+    }, {
+      q: 'Sostituire un pranzo con manzo (1.825 L) con un pranzo vegetariano (412 L) per 22 alunni in un giorno quanti litri risparmia circa?',
+      opts: ['Circa 1.413 L', 'Circa 14.130 L', 'Circa 31.086 L'],
+      ans: 2,
+      why: 'Differenza per pasto = 1.825 − 412 = 1.413 L; per 22 alunni = 1.413 × 22 = 31.086 L.'
+    }, {
+      q: 'Andando a scuola in bus invece che in auto risparmiamo 180 g·m² a settimana. In 30 settimane scolastiche quanti g·m² risparmiamo?',
+      opts: ['540 g·m²', '1.800 g·m²', '5.400 g·m²'],
+      ans: 2,
+      why: '180 g·m² × 30 settimane = 5.400 g·m² (oltre mezzo ettaro globale ÷ 10).'
+    }]
+  }
+};
+
+var currentQuizLevel = 'bes';
+var qIdx = 0;
+var qScore = 0;
+var quizCompletedMap = {};
+
+function getQuizConfig() {
+  return QUIZ_LEVELS[currentQuizLevel] || QUIZ_LEVELS.bes;
+}
+
+function updateQuizLevelBar() {
+  var btns = document.querySelectorAll('#quizLevelBar button[data-qlvl]');
+  for (var i = 0; i < btns.length; i++) {
+    var b = btns[i];
+    var id = b.getAttribute('data-qlvl');
+    b.setAttribute('aria-pressed', id === currentQuizLevel ? 'true' : 'false');
+  }
+  var descEl = document.getElementById('quizLevelDesc');
+  var cfg = getQuizConfig();
+  if (descEl) descEl.textContent = cfg.desc;
+}
+
+function selectQuizLevel(lvlId) {
+  currentQuizLevel = QUIZ_LEVELS[lvlId] ? lvlId : 'bes';
+  qIdx = 0;
   qScore = 0;
+  updateQuizLevelBar();
+  renderUnifiedQuiz();
+}
+
+function speakQuizQuestion(q) {
+  if (!q) return;
+  var optsTxt = [];
+  for (var k = 0; k < q.opts.length; k++) {
+    optsTxt.push('Opzione ' + (k + 1) + ': ' + q.opts[k]);
+  }
+  speakText(q.q + ' ' + optsTxt.join('. '));
+}
+
+function escQuizHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function renderUnifiedQuiz() {
-  var _document$getElementB33;
   var box = document.getElementById('quizBox');
   var fill = document.getElementById('quizProgressFill');
   if (!box) return;
-  if (fill) fill.style.width = `${Math.min(100, Math.round(qIdx / UNIFIED_QUIZ.length * 100))}%`;
-  if (qIdx >= UNIFIED_QUIZ.length) {
+  var cfg = getQuizConfig();
+  var list = cfg.questions;
+  if (fill) fill.style.width = Math.min(100, Math.round(qIdx / list.length * 100)) + '%';
+  if (qIdx >= list.length) {
     if (fill) fill.style.width = '100%';
-    box.innerHTML = `<div class="mini-box" style="text-align:center;padding:1.2rem;">` + `<div style="font-size:1.35rem;font-weight:700;color:var(--accent);">Risultato finale: ${qScore} su ${UNIFIED_QUIZ.length}</div>` + `<p style="margin:.45rem 0;">${qScore >= 8 ? 'Eccellente! Padronanza completa di Impronta Ecologica, Impronta Idrica e lettura grafici.' : 'Buon lavoro! Rivedi le schede precedenti e riprova per migliorare il punteggio.'}</p>` + `</div>`;
+    quizCompletedMap[cfg.id] = qScore + '/' + list.length;
+    var nextId = cfg.id === 'bes' ? 'intermedio' : (cfg.id === 'intermedio' ? 'avanzato' : '');
+    var nextLabel = nextId === 'intermedio' ? '🎮 Passa al Livello 2 · Intermedio →' : (nextId === 'avanzato' ? '🏆 Passa al Livello 3 · Avanzato →' : '');
+    box.innerHTML =
+      '<div class="mini-box" style="text-align:center;padding:1.2rem;">' +
+      '<div style="font-size:1.35rem;font-weight:700;color:var(--accent);">' + escQuizHtml(cfg.nome) + ' · Risultato: ' + qScore + ' su ' + list.length + '</div>' +
+      '<p style="margin:.45rem 0;">' + (qScore >= Math.ceil(list.length * 0.7) ? 'Ottimo lavoro! Hai dimostrato una buona padronanza di questo livello.' : 'Buon tentativo! Rileggi le schede e riprova oppure prova un altro livello.') + '</p>' +
+      '<div class="controls" style="justify-content:center;">' +
+      '<button type="button" class="primary" id="uqReplayBtn">🔁 Rigioca questo livello</button>' +
+      (nextId ? '<button type="button" id="uqNextLevelBtn">' + nextLabel + '</button>' : '') +
+      '</div></div>';
+    var repBtn = document.getElementById('uqReplayBtn');
+    if (repBtn) repBtn.addEventListener('click', function () { selectQuizLevel(cfg.id); });
+    var nlBtn = document.getElementById('uqNextLevelBtn');
+    if (nlBtn && nextId) nlBtn.addEventListener('click', function () { selectQuizLevel(nextId); });
     return;
   }
-  var q = UNIFIED_QUIZ[qIdx];
-  box.innerHTML = `<p class="note">Domanda ${qIdx + 1} di ${UNIFIED_QUIZ.length} · Punteggio attuale: <strong>${qScore}</strong></p>` + `<p class="quiz-q">${q.q}</p>` + `<div class="quiz-opts">${q.opts.map(function (o, i) {
-    return `<button type="button" data-qi="${i}">${o}</button>`;
-  }).join('')}</div>` + `<div class="feedback" id="uqFb"></div>` + `<div class="controls"><button type="button" class="primary" id="uqNext" hidden>${qIdx < UNIFIED_QUIZ.length - 1 ? 'Prossima domanda →' : 'Vedi risultato finale'}</button></div>`;
-  box.querySelectorAll('.quiz-opts button').forEach(function (b) {
-    return b.addEventListener('click', function () {
-      var i = +b.dataset.qi;
-      var fb = document.getElementById('uqFb');
-      box.querySelectorAll('.quiz-opts button').forEach(function (x) {
-        return x.disabled = true;
+
+  var q = list[qIdx];
+  var optsHtml = '';
+  for (var j = 0; j < q.opts.length; j++) {
+    optsHtml += '<button type="button" data-qi="' + j + '">' + escQuizHtml(q.opts[j]) + '</button>';
+  }
+  box.innerHTML =
+    '<div class="sec-head" style="margin-bottom:.25rem;">' +
+    '<p class="note" style="margin:0;">' + escQuizHtml(cfg.nome) + ' · Domanda ' + (qIdx + 1) + ' di ' + list.length + ' · Punteggio: <strong>' + qScore + '</strong></p>' +
+    '<button type="button" class="speak-btn" id="uqSpeakBtn">🔊 Ascolta domanda</button>' +
+    '</div>' +
+    '<p class="quiz-q">' + escQuizHtml(q.q) + '</p>' +
+    (q.hint ? '<div class="mini-box" style="margin-bottom:.5rem;">💡 <strong>Aiuto:</strong> ' + escQuizHtml(q.hint) + '</div>' : '') +
+    '<div class="quiz-opts">' + optsHtml + '</div>' +
+    '<div class="feedback" id="uqFb"></div>' +
+    '<div class="controls"><button type="button" class="primary" id="uqNext" hidden>' + (qIdx < list.length - 1 ? 'Prossima domanda →' : 'Vedi risultato finale') + '</button></div>';
+
+  var spk = document.getElementById('uqSpeakBtn');
+  if (spk) spk.addEventListener('click', function () { speakQuizQuestion(q); });
+  if (cfg.vocalAuto) {
+    var quizSec = document.getElementById('quiz');
+    if (quizSec && !quizSec.hidden) speakQuizQuestion(q);
+  }
+
+  var optBtns = box.querySelectorAll('.quiz-opts button');
+  for (var m = 0; m < optBtns.length; m++) {
+    (function (b) {
+      b.addEventListener('click', function () {
+        var idx = Number(b.getAttribute('data-qi'));
+        var fb = document.getElementById('uqFb');
+        for (var x = 0; x < optBtns.length; x++) optBtns[x].disabled = true;
+        if (idx === q.ans) {
+          b.className += ' ok';
+          qScore++;
+          if (fb) fb.innerHTML = '<span class="ok-txt">Corretto!</span> ' + escQuizHtml(q.why);
+          if (cfg.vocalAuto) speakText('Corretto! ' + q.why);
+        } else {
+          b.className += ' ko';
+          if (optBtns[q.ans]) optBtns[q.ans].className += ' ok';
+          if (fb) fb.innerHTML = '<span class="ko-txt">Non esatto.</span> ' + escQuizHtml(q.why);
+          if (cfg.vocalAuto) speakText('Non esatto. ' + q.why);
+        }
+        var nextBtn = document.getElementById('uqNext');
+        if (nextBtn) nextBtn.hidden = false;
       });
-      if (i === q.ans) {
-        b.classList.add('ok');
-        qScore++;
-        fb.innerHTML = `<span class="ok-txt">Corretto!</span> ${q.why}`;
-      } else {
-        b.classList.add('ko');
-        box.querySelectorAll('.quiz-opts button')[q.ans].classList.add('ok');
-        fb.innerHTML = `<span class="ko-txt">Non esatto.</span> ${q.why}`;
-      }
-      document.getElementById('uqNext').hidden = false;
+    })(optBtns[m]);
+  }
+  var nBtn = document.getElementById('uqNext');
+  if (nBtn) {
+    nBtn.addEventListener('click', function () {
+      qIdx++;
+      renderUnifiedQuiz();
     });
-  });
-  (_document$getElementB33 = document.getElementById('uqNext')) === null || _document$getElementB33 === void 0 || _document$getElementB33.addEventListener('click', function () {
-    qIdx++;
-    renderUnifiedQuiz();
-  });
+  }
 }
-(_document$getElementB34 = document.getElementById('restartQuiz')) === null || _document$getElementB34 === void 0 || _document$getElementB34.addEventListener('click', function () {
-  qIdx = 0;
-  qScore = 0;
+
+(function () {
+  var lvlBtns = document.querySelectorAll('#quizLevelBar button[data-qlvl]');
+  for (var i = 0; i < lvlBtns.length; i++) {
+    (function (btn) {
+      btn.addEventListener('click', function () {
+        selectQuizLevel(btn.getAttribute('data-qlvl'));
+      });
+    })(lvlBtns[i]);
+  }
+  var rBtn = document.getElementById('restartQuiz');
+  if (rBtn) {
+    rBtn.addEventListener('click', function () {
+      selectQuizLevel(currentQuizLevel);
+    });
+  }
+  updateQuizLevelBar();
   renderUnifiedQuiz();
-});
-renderUnifiedQuiz();
+})();
 
 // ==================== 7. AZIONI & IMPATTO COMBINATO ====================
 var actionBoxes = document.querySelectorAll('#actionList input[type="checkbox"]');

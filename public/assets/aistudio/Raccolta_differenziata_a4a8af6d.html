@@ -80,7 +80,10 @@ html.no-flex-gap .barra > * + *{margin-left:8px}
 .c-vetro{background:#2e7d32;background:var(--vetro-bg);color:#ffffff;color:var(--vetro-txt)}
 .c-organico{background:#6d4c41;background:var(--organico-bg);color:#ffffff;color:var(--organico-txt)}
 .c-indiff{background:#424242;background:var(--indiff-bg);color:#ffffff;color:var(--indiff-txt)}
-.risposta{min-height:110px;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;flex-direction:column;font-size:22px}
+.risposta{min-height:106px;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;flex-direction:column;font-size:22px}
+.riga-5 .btn{-webkit-box-flex:1;-webkit-flex:1 1 175px;flex:1 1 175px;min-height:96px}
+.liv-card{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;flex-direction:column;gap:4px;-webkit-box-align:center;-webkit-align-items:center;align-items:center}
+.liv-sub{font-size:17px;font-weight:normal;opacity:.92}
 .risposta.giusta{border:8px solid #1b5e20;border-color:var(--ok);background:#1b5e20;background:var(--ok);color:#ffffff;color:var(--ok-txt)}
 .risposta.sbagliata{border:8px solid #b71c1c;border-color:var(--err);-webkit-filter:saturate(.3);filter:saturate(.3)}
 .segno{font-size:28px;font-weight:bold}
@@ -225,37 +228,56 @@ var CONT = [
    ci:"Tutto quello che non si ricicla: gomma, cotton fioc, pannolini.", no:"Niente cose che si possono riciclare.", hint:"Non si ricicla: va nel contenitore grigio."}
 ];
 
-// [emoji, nome, articolo, contenitore, facile]
+// [emoji, nome, articolo, contenitore, tier: 1=scoperta, 2=facile, 3=normale/esperto]
 var OGG_RAW = [
-  ["📰","giornale","il","carta",true],["📓","quaderno","il","carta",true],["📦","scatola di cartone","la","carta",true],
-  ["✉️","busta di carta","la","carta",false],["📚","libro","il","carta",true],["📃","volantino","il","carta",false],
-  ["🎨","cartoncino","il","carta",false],["📔","agenda","l'","carta",false],["📖","rivista","la","carta",false],["📄","foglio di carta","il","carta",true],
+  ["📰","giornale","il","carta",1],["📓","quaderno","il","carta",1],["📦","scatola di cartone","la","carta",1],
+  ["📚","libro","il","carta",1],["📄","foglio di carta","il","carta",1],["✉️","busta di carta","la","carta",2],
+  ["📦","scatola delle scarpe","la","carta",2],["🎨","cartoncino","il","carta",2],["📖","rivista","la","carta",2],
+  ["📃","volantino","il","carta",3],["📔","agenda","l'","carta",3],["🧻","rotolo di cartone","il","carta",3],
+  ["🛍️","sacchetto di carta pulito","il","carta",3],
 
-  ["💧","bottiglia d'acqua","la","plastica",true],["🧼","flacone di detersivo","il","plastica",false],
-  ["🥣","vaschetta di yogurt","la","plastica",false],["🛍️","sacchetto di plastica","il","plastica",true],
-  ["🥤","bicchiere di plastica","il","plastica",true],["🍽️","vassoio di plastica","il","plastica",false],
-  ["🧸","giocattolo di plastica","il","plastica",true],["🧴","bottiglia di shampoo","la","plastica",false],
-  ["🪣","secchio di plastica","il","plastica",true],["🥗","contenitore dell'insalata","il","plastica",false],
+  ["💧","bottiglia d'acqua","la","plastica",1],["🛍️","sacchetto di plastica","il","plastica",1],["🥤","bicchiere di plastica","il","plastica",1],
+  ["🧸","giocattolo di plastica","il","plastica",1],["🪣","secchio di plastica","il","plastica",1],["🥣","vaschetta di yogurt","la","plastica",2],
+  ["🥛","bottiglia di plastica del latte","la","plastica",2],["🧼","flacone di detersivo","il","plastica",2],["🍽️","vassoio di plastica","il","plastica",2],
+  ["🧴","bottiglia di shampoo","la","plastica",3],["🥗","contenitore dell'insalata","il","plastica",3],["🔴","tappo di plastica","il","plastica",3],
+  ["🧼","flaconcino di sapone liquido","il","plastica",3],
 
-  ["🍾","bottiglia di vino","la","vetro",true],["🫙","barattolo di marmellata","il","vetro",true],
-  ["🍺","bottiglia di birra","la","vetro",false],["🍯","vasetto di miele","il","vetro",true],
-  ["🍶","bottiglia di sciroppo","la","vetro",false],["🥃","bicchiere di vetro","il","vetro",true],
-  ["🏺","vaso di vetro","il","vetro",true],["🍷","calice di vetro","il","vetro",false],
-  ["🧂","barattolo delle spezie","il","vetro",false],["🫙","vasetto di crema","il","vetro",false],
+  ["🍾","bottiglia di vino","la","vetro",1],["🫙","barattolo di marmellata","il","vetro",1],["🍯","vasetto di miele","il","vetro",1],
+  ["🥃","bicchiere di vetro","il","vetro",1],["🏺","vaso di vetro","il","vetro",1],["🍺","bottiglia di birra","la","vetro",2],
+  ["🥒","barattolo di vetro dei sottaceti","il","vetro",2],["🍷","calice di vetro","il","vetro",2],["🍶","bottiglia di sciroppo","la","vetro",3],
+  ["🧂","barattolo delle spezie","il","vetro",3],["🫙","vasetto di crema","il","vetro",3],["🫒","bottiglia di vetro dell'olio","la","vetro",3],
+  ["🥛","bottiglia di vetro del latte","la","vetro",3],
 
-  ["🍌","buccia di banana","la","organico",true],["☕","fondi di caffè","i","organico",false],
-  ["🍎","avanzi di frutta","gli","organico",true],["🥔","bucce di patata","le","organico",true],
-  ["🍂","foglie secche","le","organico",true],["🥚","gusci d'uovo","i","organico",false],
-  ["🥕","avanzi di verdura","gli","organico",false],["🫖","bustina di tè","la","organico",false],
-  ["💐","fiori recisi","i","organico",false],["🍞","resti di pane","i","organico",true],
+  ["🍌","buccia di banana","la","organico",1],["🍎","avanzi di frutta","gli","organico",1],["🍏","torsolo di mela","il","organico",1],
+  ["🍂","foglie secche","le","organico",1],["🍞","resti di pane","i","organico",1],["🥔","bucce di patata","le","organico",2],
+  ["🍊","bucce d'arancia","le","organico",2],["🥕","avanzi di verdura","gli","organico",2],["☕","fondi di caffè","i","organico",3],
+  ["🥚","gusci d'uovo","i","organico",3],["🫖","bustina di tè","la","organico",3],["💐","fiori recisi","i","organico",3],
+  ["🥜","gusci di noce","i","organico",3],
 
-  ["👶","pannolino","il","indiff",true],["🩹","cerotto","il","indiff",true],["🖊️","penna biro","la","indiff",true],
-  ["🫧","gomma da masticare","la","indiff",true],["🧷","cotton fioc","il","indiff",false],
-  ["🪒","rasoio usato","il","indiff",true],["🚬","mozzicone di sigaretta","il","indiff",false],
-  ["🧦","calza rotta","la","indiff",false],["🌫️","polvere dell'aspirapolvere","la","indiff",false],
-  ["🧻","tovagliolo sporco","il","indiff",false]
+  ["👶","pannolino","il","indiff",1],["🩹","cerotto","il","indiff",1],["🖊️","penna biro","la","indiff",1],
+  ["🫧","gomma da masticare","la","indiff",1],["🪒","rasoio usato","il","indiff",1],["🪥","spazzolino da denti usato","lo","indiff",2],
+  ["🧷","cotton fioc","il","indiff",2],["🧦","calza rotta","la","indiff",2],["🚬","mozzicone di sigaretta","il","indiff",3],
+  ["🌫️","polvere dell'aspirapolvere","la","indiff",3],["🧻","tovagliolo sporco","il","indiff",3],["💿","CD rotto","il","indiff",3],
+  ["🧽","spugna vecchia","la","indiff",3]
 ];
-var OGG = OGG_RAW.map(function(r){ return {e:r[0], n:r[1], a:r[2], b:r[3], facile:!!r[4]}; });
+var OGG = OGG_RAW.map(function(r){ return {e:r[0], n:r[1], a:r[2], b:r[3], tier:r[4] || 3}; });
+
+var LIVELLI = [
+  { id:"scoperta", nome:"Livello 1 · Scoperta BES", icona:"🌼", desc:"6 domande semplicissime · 2 scelte · con aiuto", totale:6, scelte:2, maxTier:1, aiutoSempre:true, primario:true },
+  { id:"facile", nome:"Livello 2 · Facile", icona:"🌱", desc:"10 domande · 2 scelte · con aiuto", totale:10, scelte:2, maxTier:2, aiutoSempre:true, primario:false },
+  { id:"normale", nome:"Livello 3 · Normale", icona:"🎮", desc:"15 domande · 3 scelte · senza aiuto iniziale", totale:15, scelte:3, maxTier:3, aiutoSempre:false, primario:false },
+  { id:"esperto", nome:"Livello 4 · Esperto (5 contenitori)", icona:"🏆", desc:"20 domande · tutti e 5 i contenitori", totale:20, scelte:5, maxTier:3, aiutoSempre:false, primario:false }
+];
+
+function getLivello(id){
+  return LIVELLI.find(function(l){ return l.id === id; }) || LIVELLI[0];
+}
+function nextLivello(id){
+  for(var i = 0; i < LIVELLI.length - 1; i++){
+    if(LIVELLI[i].id === id) return LIVELLI[i + 1];
+  }
+  return null;
+}
 
 function contenitore(id){ return CONT.find(function(c){ return c.id === id; }); }
 
@@ -271,18 +293,22 @@ function complimento(nome, sesso){
   return frasi[Math.floor(Math.random() * frasi.length)];
 }
 
-function nuovoRound(livello){
-  var isFacile = livello === "facile";
-  var totale = isFacile ? 10 : 15;
-  var numAltri = isFacile ? 1 : 2;
+function nuovoRound(livelloId){
+  var cfg = getLivello(livelloId);
+  var totale = cfg.totale;
+  var numAltri = Math.max(1, cfg.scelte - 1);
   var ordine = mescola(CONT.map(function(c){ return c.id; }));
   var usati = {};
   var dom = [];
   for(var i = 0; i < totale; i++){
     var bid = ordine[i % 5];
     var pool = OGG.filter(function(o){
-      return o.b === bid && (!isFacile || o.facile);
+      return o.b === bid && o.tier <= cfg.maxTier;
     });
+    if(cfg.id === "esperto"){
+      var avanzati = pool.filter(function(o){ return o.tier >= 2; });
+      if(avanzati.length && i % 2 === 1) pool = avanzati;
+    }
     var liberi = pool.filter(function(o){ return !usati[o.n]; });
     if(liberi.length) pool = liberi;
     var o = pool[Math.floor(Math.random() * pool.length)];
@@ -372,7 +398,7 @@ function AscoltaBtn(p){
 
 function Gioco(p){
   var nome = p.nome, sesso = p.sesso;
-  var isFacile = p.livello === "facile";
+  var cfg = getLivello(p.livello);
   var domState = React.useState(function(){ return nuovoRound(p.livello); });
   var dom = domState[0];
   var totale = dom.length;
@@ -384,7 +410,8 @@ function Gioco(p){
   var msgState = React.useState(null), msg = msgState[0], setMsg = msgState[1];
   var fineState = React.useState(false), fine = fineState[0], setFine = fineState[1];
   var q = dom[i];
-  var testo = q ? "Dove va " + (q.o.a.endsWith("'") ? q.o.a + q.o.n : q.o.a + " " + q.o.n) + "?" : "";
+  var verbo = q && (q.o.a === "i" || q.o.a === "gli" || q.o.a === "le") ? "Dove vanno " : "Dove va ";
+  var testo = q ? verbo + (q.o.a.endsWith("'") ? q.o.a + q.o.n : q.o.a + " " + q.o.n) + "?" : "";
 
   React.useEffect(function(){
     if(!q || fine) return;
@@ -392,8 +419,14 @@ function Gioco(p){
     return function(){ clearTimeout(t); };
   }, [i, fine]);
 
+  function termina(finaleCorrette){
+    setFine(true);
+    if(p.onFine) p.onFine(cfg.id, finaleCorrette, totale);
+    parla("Hai completato " + cfg.nome + "! Hai dato " + finaleCorrette + " risposte giuste su " + totale + ".");
+  }
+
   function avanti(){
-    if(i + 1 >= dom.length){ setFine(true); parla("Hai completato il " + (isFacile ? "livello facile" : "gioco") + "! Hai dato " + corrette + " risposte giuste su " + totale + "."); return; }
+    if(i + 1 >= dom.length){ termina(corrette); return; }
     setI(i + 1); setErr(0); setSbagliate([]); setEsito(null); setMsg(null);
   }
 
@@ -414,7 +447,8 @@ function Gioco(p){
     var e = err + 1;
     setErr(e); setSbagliate(sbagliate.concat([id]));
     var c = contenitore(q.o.b);
-    if(e >= 2){
+    var maxErr = cfg.scelte >= 5 ? 3 : 2;
+    if(e >= maxErr){
       setEsito("fine");
       var t1 = "La risposta giusta è il contenitore " + c.nome + ". " + c.hint;
       setMsg({t:t1, tipo:"err"}); parla(t1);
@@ -425,30 +459,34 @@ function Gioco(p){
   }
 
   if(fine){
+    var succ = nextLivello(cfg.id);
     return h("div", {className:"pagina"},
       h(Barra, {home:p.home, indietro:null, fs:p.fs}),
       h("div", {className:"grande"}, "🏆"),
-      h("h1", null, isFacile ? "Complimenti! Livello facile completato!" : "Hai completato il gioco!"),
+      h("h1", null, "Complimenti! " + cfg.nome + " completato!"),
       h("p", {className:"testo", style:{textAlign:"center"}}, "Risposte giuste: " + corrette + " su " + totale + "."),
-      h("button", {className:"btn primario", onClick:p.ricomincia}, "🔁 RICOMINCIA"),
-      p.cambiaLivello ? h("button", {className:"btn", onClick:p.cambiaLivello}, isFacile ? "🎮 PROVA LIVELLO NORMALE (3 scelte)" : "🌱 PROVA LIVELLO FACILE (2 scelte)") : null,
-      h("button", {className:"btn", onClick:p.altri}, "📦 ALTRI GIOCHI"),
+      h("button", {className:"btn primario", onClick:p.ricomincia}, "🔁 RIGIOCA QUESTO LIVELLO"),
+      succ ? h("button", {className:"btn", onClick:function(){ p.cambiaLivello(succ.id); }}, succ.icona + " PASSA A " + succ.nome.toUpperCase()) : null,
+      LIVELLI.filter(function(l){ return l.id !== cfg.id && (!succ || l.id !== succ.id); }).map(function(l){
+        return h("button", {key:l.id, className:"btn piccolo", onClick:function(){ p.cambiaLivello(l.id); }}, l.icona + " " + l.nome);
+      }),
+      h("button", {className:"btn", onClick:p.altri}, "📦 I CONTENITORI"),
       h("button", {className:"btn", onClick:p.home}, "🏠 MENU INIZIALE")
     );
   }
 
   if(!q) return null;
 
-  var aiutoFacile = isFacile ? contenitore(q.o.b).hint : null;
+  var aiutoVisibile = cfg.aiutoSempre ? contenitore(q.o.b).hint : null;
 
   return h("div", {className:"pagina"},
     h(Barra, {home:p.home, indietro:p.indietro, fs:p.fs}),
-    h("p", {className:"nota"}, (isFacile ? "🌱 Livello facile · " : "🎮 Livello normale · ") + "Domanda " + (i + 1) + " di " + totale + " · Risposte giuste: " + corrette),
+    h("p", {className:"nota"}, cfg.icona + " " + cfg.nome + " · Domanda " + (i + 1) + " di " + totale + " · Giuste: " + corrette),
     h("h2", null, testo),
     h("div", {className:"grande"}, q.o.e),
-    aiutoFacile ? h("div", {className:"blocco", style:{textAlign:"center"}}, "💡 Aiuto: ", aiutoFacile) : null,
+    aiutoVisibile ? h("div", {className:"blocco", style:{textAlign:"center"}}, "💡 Aiuto: ", aiutoVisibile) : null,
     h(AscoltaBtn, {testo:testo, etichetta:"ASCOLTA LA DOMANDA"}),
-    h("div", {className:"riga"},
+    h("div", {className:"riga" + (cfg.scelte >= 5 ? " riga-5" : "")},
       q.opts.map(function(id){
         var c = contenitore(id);
         var cls = "btn risposta " + c.cls;
@@ -476,9 +514,10 @@ function App(){
   var sexState = React.useState(sessoSalvato), sesso = sexState[0], setSesso = sexState[1];
   var bozState = React.useState(nomeSalvato), bozza = bozState[0], setBozza = bozState[1];
   var vistiState = React.useState(function(){ return leggi("visti", []); }), visti = vistiState[0], setVisti = vistiState[1];
+  var bestState = React.useState(function(){ return leggi("best_livelli", {}); }), bestLivelli = bestState[0], setBestLivelli = bestState[1];
   var contState = React.useState(0), cont = contState[0], setCont = contState[1];
   var chiaveState = React.useState(0), chiave = chiaveState[0], setChiave = chiaveState[1];
-  var livState = React.useState("facile"), livello = livState[0], setLivello = livState[1];
+  var livState = React.useState("scoperta"), livello = livState[0], setLivello = livState[1];
   var fs = useFullscreenSync();
 
   var home = function(){ setSchermo("home"); };
@@ -489,6 +528,17 @@ function App(){
     setLivello(liv);
     setChiave(chiave + 1);
     setSchermo("gioco");
+  }
+
+  function registraFine(livId, score, total){
+    setBestLivelli(function(prev){
+      var cur = prev && prev[livId];
+      var nextBest = cur && cur.score >= score ? cur : { score: score, total: total };
+      var upd = Object.assign({}, prev || {});
+      upd[livId] = nextBest;
+      salva("best_livelli", upd);
+      return upd;
+    });
   }
 
   function inizia(){
@@ -535,9 +585,19 @@ function App(){
         h("div", {style:{width: percentuale + "%"}})),
       h("p", {className:"nota"}, visti.length + " / " + CONT.length + " contenitori visti"),
       h("button", {className:"btn", onClick:function(){ setSchermo("lista"); }}, "📦 I CONTENITORI"),
-      h("button", {className:"btn primario", onClick:function(){ avviaGioco("facile"); }}, "🌱 LIVELLO FACILE (2 scelte · con aiuto)"),
-      h("button", {className:"btn", onClick:function(){ avviaGioco("normale"); }}, "🎮 LIVELLO NORMALE (3 scelte · 15 domande)"),
-      SUONO ? h("button", {className:"btn", onClick:function(){ parla("Scegli il contenitore giusto per ogni oggetto. Tocca la risposta che pensi sia giusta. Ti aiuto io!"); }}, "🔊 ASCOLTA LE ISTRUZIONI") : null
+      h("h2", null, "Scegli il livello di gioco"),
+      LIVELLI.map(function(l){
+        var rec = bestLivelli && bestLivelli[l.id];
+        return h("button", {
+          key: l.id,
+          className: "btn liv-card" + (l.primario ? " primario" : ""),
+          onClick: function(){ avviaGioco(l.id); }
+        },
+          h("span", null, l.icona + " " + l.nome.toUpperCase()),
+          h("span", {className:"liv-sub"}, l.desc + (rec ? " · ⭐ Record: " + rec.score + "/" + rec.total : ""))
+        );
+      }),
+      SUONO ? h("button", {className:"btn", onClick:function(){ parla("Scegli uno dei quattro livelli e tocca il contenitore giusto per ogni oggetto. Ti aiuto io!"); }}, "🔊 ASCOLTA LE ISTRUZIONI") : null
     );
   }
 
@@ -571,8 +631,10 @@ function App(){
       h("div", {className:"blocco"},
         h("strong", null, "Non ci vanno: "), c.no),
       h(AscoltaBtn, {testo:testo, etichetta:"ASCOLTA LA SCHEDA"}),
-      h("button", {className:"btn primario", onClick:function(){ avviaGioco("facile"); }}, "🌱 GIOCHIAMO (LIVELLO FACILE)"),
-      h("button", {className:"btn", onClick:function(){ avviaGioco("normale"); }}, "🎮 GIOCHIAMO (LIVELLO NORMALE)")
+      h("button", {className:"btn primario", onClick:function(){ avviaGioco("scoperta"); }}, "🌼 GIOCHIAMO · LIVELLO 1 (BES)"),
+      h("button", {className:"btn", onClick:function(){ avviaGioco("facile"); }}, "🌱 GIOCHIAMO · LIVELLO 2 (FACILE)"),
+      h("button", {className:"btn", onClick:function(){ avviaGioco("normale"); }}, "🎮 GIOCHIAMO · LIVELLO 3 (NORMALE)"),
+      h("button", {className:"btn", onClick:function(){ avviaGioco("esperto"); }}, "🏆 GIOCHIAMO · LIVELLO 4 (ESPERTO)")
     );
   }
 
@@ -585,8 +647,9 @@ function App(){
       home: home,
       indietro: indietro,
       fs: fs,
+      onFine: registraFine,
       ricomincia: function(){ setChiave(chiave + 1); },
-      cambiaLivello: function(){ avviaGioco(livello === "facile" ? "normale" : "facile"); },
+      cambiaLivello: function(nextId){ avviaGioco(nextId || "scoperta"); },
       altri: function(){ setSchermo("lista"); }
     });
   }
